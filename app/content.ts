@@ -32,16 +32,15 @@ export const education = [
   {
     institution: "Seoul National University",
     degree: "B.S. Naval Architecture & Ocean Engineering · Double major in Economics",
-    period: "2019 — 2027 (expected)",
+    period: "Mar 2019 — Feb 2027 (expected)",
+    location: "Seoul, South Korea",
     detail: "Signal Processing · Derivatives · Advanced Econometrics · Economic Forecasting & Data Intelligence",
-    scholarship: "Jung-Gong Scholarship · 2025",
   },
   {
     institution: "Sejong Science High School",
     degree: "Early graduation",
-    period: "2014 — 2016",
-    detail: "Seoul, South Korea",
-    scholarship: "MEXT · 2016",
+    period: "Mar 2014 — Feb 2016",
+    location: "Seoul, South Korea",
   },
 ];
 
@@ -113,7 +112,7 @@ export const workStudies: CaseStudy[] = [
     number: "02",
     slug: "finburh-document-automation",
     title: "Financial Document Automation",
-    organization: "Main Gate Partners · FINBURH",
+    organization: "MainGate Partners Inc. · FINBURH",
     period: "Feb 2025 — Dec 2025",
     accent: "lime",
     shape: "agents",

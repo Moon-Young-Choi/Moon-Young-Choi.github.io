@@ -41,11 +41,8 @@ export default function Home() {
                 <div>
                   <h2>{item.institution}</h2>
                   <p>{item.degree}</p>
-                  <small>{item.detail}</small>
-                  <div className="education-scholarship">
-                    <span className="mono">Scholarship</span>
-                    <strong>{item.scholarship}</strong>
-                  </div>
+                  <small className="education-location">{item.location}</small>
+                  {item.detail && <small className="education-detail">{item.detail}</small>}
                 </div>
                 <time className="mono">{item.period}</time>
               </article>

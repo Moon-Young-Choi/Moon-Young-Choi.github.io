@@ -40,6 +40,7 @@ The site is a compact, multi-page index of education, experience, public work, a
 ## 5. Layout
 
 - The first section combines identity, public contact, and education with kinetic geometry. No biography or slogan.
+- Education shows institutions, degrees, month-level attendance dates, location, and selected coursework only. Do not add scholarships or awards.
 - Two experience cards follow education and link to public-safe case studies.
 - Research projects remain the largest content index and use asymmetric colored blocks.
 - Home cards always open an internal case study. A public GitHub link appears only on that case-study page.
@@ -62,3 +63,4 @@ Before merging a design change, verify:
 7. Does every external source link live on the corresponding detail page?
 8. Are employer logos official, locally stored, decorative to assistive technology, and limited to work cards?
 9. Are dates of birth, ages, and age-derived metadata absent from the public site and repository?
+10. Does education omit scholarships and retain month-level dates and legible supporting text?

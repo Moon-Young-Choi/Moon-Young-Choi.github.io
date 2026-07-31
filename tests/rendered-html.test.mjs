@@ -40,15 +40,17 @@ test("renders the revised home information architecture", async () => {
   assert.match(html, />02 roles</i);
   assert.match(html, />Research and tech experience</);
   assert.match(html, />06 projects</i);
-  assert.match(html, />Jung-Gong Scholarship · 2025</);
-  assert.match(html, />MEXT · 2016</);
+  assert.match(html, />Mar 2019 — Feb 2027 \(expected\)</);
+  assert.match(html, />Mar 2014 — Feb 2016</);
+  assert.match(html, />Seoul, South Korea</);
   assert.match(html, />mnyngch8@gmail\.com</);
   assert.match(html, /src="\/brand\/hd-hyundai\.png"/);
   assert.match(html, /src="\/brand\/avikus\.png"/);
   assert.match(html, />MainGate</);
+  assert.match(html, />Partners Inc\.</);
 
   assert.doesNotMatch(html, /Methods &amp; tools|Methods & tools/i);
-  assert.doesNotMatch(html, /Japanese Government|Undergraduate Scholarship/i);
+  assert.doesNotMatch(html, /Scholarship|MEXT|Jung-Gong|Japanese Government/i);
   assert.doesNotMatch(html, /date of birth|\bage\b/i);
 });
 

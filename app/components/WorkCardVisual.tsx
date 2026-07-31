@@ -14,7 +14,7 @@ export function WorkCardVisual({ type }: { type: string }) {
       ) : (
         <div className="maingate-wordmark">
           <strong>MainGate</strong>
-          <span>Partners</span>
+          <span>Partners Inc.</span>
         </div>
       )}
       <span className="brand-cross">×</span>
