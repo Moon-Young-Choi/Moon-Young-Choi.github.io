@@ -1,168 +1,205 @@
-const projects = [
+const repositories = [
   {
     number: "01",
     title: "PWR Scan",
-    description:
-      "Structured covariance shifts를 탐지하는 pooled-whitened randomization scan. 재현 가능성과 감사 가능한 통계 검증을 중심으로 설계했습니다.",
-    tags: ["Python", "Statistical Testing", "Research"],
     href: "https://github.com/Moon-Young-Choi/pwr-scan",
+    description:
+      "Detects covariance-structure changes in acoustic frequency data when affected intervals are unknown. Uses pooled whitening, a Roy-type maximum generalized eigenvalue statistic, and permutation calibration for finite-sample global error control.",
+    tags: ["Python", "Covariance", "Permutation Test"],
     accent: "lime",
     shape: "scan",
   },
   {
     number: "02",
-    title: "Open Source Intelligence",
+    title: "PWR Scan Validation",
+    href: "https://github.com/Moon-Young-Choi/pwr-scan-validation",
     description:
-      "DART 공시와 한국 주식시장 경로를 point-in-time으로 정렬해 학습하는 리서치 파이프라인입니다.",
-    tags: ["Python", "Representation Learning", "Finance"],
+      "A theory-first validation suite for exchangeability, calibration, null controls, structured alternatives, and reproducible simulation cases used by PWR Scan.",
+    tags: ["Python", "Validation", "Simulation"],
+    accent: "ink",
+    shape: "validation",
+  },
+  {
+    number: "03",
+    title: "Open Source Intelligence",
     href: "https://github.com/Moon-Young-Choi/open-source-intelligence",
+    description:
+      "Ingests DART disclosures and Korean market data as point-in-time evidence bundles. Exact values remain separate from encoded narrative evidence behind a standardized model input layer.",
+    tags: ["Python", "DART", "Point-in-time Data"],
     accent: "blue",
     shape: "grid",
   },
   {
-    number: "03",
+    number: "04",
     title: "Bayesian Ad Targeting",
-    description:
-      "증분 효과를 베이지안 방식으로 추정하고 제한된 예산 아래에서 타기팅 정책을 시뮬레이션합니다.",
-    tags: ["Bayesian", "Causal Inference", "Optimization"],
     href: "https://github.com/Moon-Young-Choi/bayesian-ad-targeting",
+    description:
+      "Estimates incremental effects with Bayesian updates and simulates budget-constrained policies with uncertainty-aware allocation and policy evaluation.",
+    tags: ["Python", "Bayesian Inference", "Policy Simulation"],
     accent: "coral",
     shape: "bayes",
   },
   {
-    number: "04",
+    number: "05",
     title: "Triangular Arbitrage Detector",
-    description:
-      "안전장치를 갖춘 Upbit 삼각 차익거래 스캐너, 리플레이 엔진, 실행 연구 시스템입니다.",
-    tags: ["JavaScript", "Market Microstructure", "Systems"],
     href: "https://github.com/Moon-Young-Choi/triangular-arbitrage-detector",
+    description:
+      "Scans Upbit three-leg paths with safety gates, replays recorded order books, and separates signal generation, simulation, and execution research.",
+    tags: ["JavaScript", "Market Data", "Replay Engine"],
     accent: "violet",
     shape: "arbitrage",
   },
 ];
 
-const capabilities = [
-  ["01", "Research Engineering", "아이디어를 재현 가능한 실험과 검증 가능한 코드로 옮깁니다."],
-  ["02", "Statistical Learning", "불확실성을 숨기지 않고 측정하는 모델과 의사결정 규칙을 만듭니다."],
-  ["03", "Financial Data Systems", "시점 정합성, 데이터 계보, 안전한 실행을 시스템의 기본값으로 둡니다."],
+const records = [
+  {
+    label: "Education",
+    entries: [
+      ["Seoul National University", "B.S. Naval Architecture & Ocean Engineering / Economics", "2019 - 2027 (expected)"],
+      ["Sejong Science High School", "Early graduation", "2014 - 2016"],
+    ],
+  },
+  {
+    label: "Experience",
+    entries: [
+      ["HD Hyundai Avikus", "Research Intern / CUDA, OpenCV, OpenMP", "Dec 2025 - Jan 2026"],
+      ["Main Gate Partners (FINBURH)", "Co-Founder & CEO / Financial document automation", "Feb 2025 - Dec 2025"],
+    ],
+  },
 ];
+
+const tools = [
+  "Python",
+  "C++",
+  "CUDA",
+  "OpenCV",
+  "OpenMP",
+  "Monte Carlo Simulation",
+  "Bayesian Inference",
+  "Econometrics",
+  "Time-Series Analysis",
+  "Signal Processing",
+];
+
+function ProjectShape({ type }: { type: string }) {
+  return (
+    <div className={`project-shape shape-${type}`} aria-hidden="true">
+      {Array.from({ length: 12 }, (_, index) => <span key={index} />)}
+    </div>
+  );
+}
 
 export default function Home() {
   return (
     <main>
       <header className="site-header">
-        <a className="wordmark" href="#top" aria-label="홈으로 이동">
-          MYC<span className="wordmark-dot">•</span>
-        </a>
-        <nav aria-label="주요 메뉴">
-          <a href="#about">About</a>
-          <a href="#work">Work</a>
-          <a href="#contact">Contact</a>
+        <a className="wordmark" href="#top" aria-label="Back to top">MYC / 26</a>
+        <nav aria-label="Primary navigation">
+          <a href="#repositories">Repositories</a>
+          <a href="#record">Record</a>
         </nav>
-        <a className="header-link" href="https://github.com/Moon-Young-Choi" target="_blank" rel="noreferrer">
-          GitHub ↗
-        </a>
+        <a className="header-link" href="mailto:mnyngch8@gmail.com">Email</a>
       </header>
 
-      <section className="hero" id="top">
-        <div className="hero-kicker">
-          <span className="status-dot" /> Available for thoughtful collaborations
+      <section className="hero" id="top" aria-labelledby="hero-title">
+        <div className="hero-index mono">
+          <span>Portfolio / 2026</span>
+          <span>Seoul, South Korea</span>
         </div>
-        <h1>
-          Building systems
-          <span className="outline">that make uncertainty</span>
-          <span className="hero-last">useful.</span>
+
+        <div className="kinetic-field" aria-hidden="true">
+          <div className="field-grid" />
+          <div className="field-orbit orbit-a"><span /><span /><span /></div>
+          <div className="field-orbit orbit-b"><span /><span /></div>
+          <div className="field-triangle"><span /><span /><span /></div>
+          <div className="field-axis"><span /><span /><span /><span /><span /></div>
+          <div className="field-square" />
+        </div>
+
+        <h1 id="hero-title">
+          <span>Moonyoung</span>
+          <span>Choi</span>
         </h1>
-        <div className="hero-bottom">
-          <p>
-            통계적 엄밀함과 실제로 작동하는 소프트웨어 사이를 설계하는
-            <strong> Research Engineer, Moonyoung Choi</strong>입니다.
-          </p>
-          <a className="round-link" href="#work" aria-label="선별 프로젝트 보기">
-            <span>Selected</span>
-            <span>work ↓</span>
-          </a>
-        </div>
-        <div className="orbit orbit-one" aria-hidden="true" />
-        <div className="orbit orbit-two" aria-hidden="true" />
-      </section>
 
-      <section className="ticker" aria-label="전문 분야">
-        <div>
-          <span>STATISTICAL LEARNING</span><i>✦</i><span>RESEARCH ENGINEERING</span><i>✦</i>
-          <span>FINANCIAL DATA</span><i>✦</i><span>CAUSAL INFERENCE</span><i>✦</i>
+        <div className="hero-footer mono">
+          <span>Public repositories / 05</span>
+          <a href="#repositories">View index <span aria-hidden="true">↓</span></a>
         </div>
       </section>
 
-      <section className="about section-pad" id="about">
-        <div className="section-label">( ABOUT / 01 )</div>
-        <div className="about-copy">
-          <p className="big-copy">
-            복잡한 문제를 <em>정확한 질문</em>으로 바꾸고, 그 답을 누구나 검증할 수 있는 시스템으로 만듭니다.
-          </p>
-          <p className="small-copy">
-            통계적 검정, 표현 학습, 베이지안 의사결정, 금융 데이터 파이프라인을 다룹니다. 멋진 숫자보다 재현 가능한 근거를, 데모보다 실패 조건까지 설명되는 제품을 선호합니다.
-          </p>
+      <section className="repositories" id="repositories">
+        <div className="section-head">
+          <span className="mono">01 / Repositories</span>
+          <h2>Public work</h2>
+          <span className="mono section-count">05 systems</span>
         </div>
-      </section>
 
-      <section className="capabilities section-pad" aria-label="핵심 역량">
-        {capabilities.map(([number, title, body]) => (
-          <article className="capability" key={number}>
-            <span>{number}</span>
-            <h2>{title}</h2>
-            <p>{body}</p>
-          </article>
-        ))}
-      </section>
-
-      <section className="work section-pad" id="work">
-        <div className="work-heading">
-          <div className="section-label">( SELECTED WORK / 02 )</div>
-          <h2>Proof over promises.</h2>
-          <p>공개 저장소에서 코드와 접근 방식을 직접 확인할 수 있습니다.</p>
-        </div>
         <div className="project-grid">
-          {projects.map((project) => (
+          {repositories.map((repo) => (
             <a
-              className={`project-card ${project.accent}`}
-              href={project.href}
+              className={`project-card ${repo.accent}`}
+              href={repo.href}
               target="_blank"
               rel="noreferrer"
-              key={project.title}
+              key={repo.title}
             >
-              <div className="card-top">
-                <span>{project.number}</span>
-                <span className="arrow">↗</span>
+              <div className="card-top mono">
+                <span>{repo.number}</span>
+                <span>GitHub <i aria-hidden="true">↗</i></span>
               </div>
-              <div className={`project-mark shape-${project.shape}`} aria-hidden="true">
-                {Array.from({ length: 9 }, (_, index) => <span key={index} />)}
-              </div>
-              <h3>{project.title}</h3>
-              <p>{project.description}</p>
-              <div className="tags">
-                {project.tags.map((tag) => <span key={tag}>{tag}</span>)}
+              <ProjectShape type={repo.shape} />
+              <div className="card-copy">
+                <h3>{repo.title}</h3>
+                <p>{repo.description}</p>
+                <div className="tags">
+                  {repo.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                </div>
               </div>
             </a>
           ))}
         </div>
       </section>
 
-      <section className="contact section-pad" id="contact">
-        <div className="section-label light">( CONTACT / 03 )</div>
-        <div className="contact-content">
-          <p>Have a difficult question?</p>
-          <h2>Let&apos;s make it<br /><em>testable.</em></h2>
-          <a className="email-link" href="mailto:mnyngch8@gmail.com">
-            mnyngch8@gmail.com <span>↗</span>
-          </a>
+      <section className="record" id="record">
+        <div className="section-head record-head">
+          <span className="mono">02 / Record</span>
+          <h2>Education & experience</h2>
+          <span className="mono section-count">Seoul / KR</span>
         </div>
-        <footer>
-          <span>© 2026 Moonyoung Choi</span>
-          <span>Seoul · Korea</span>
-          <a href="#top">Back to top ↑</a>
-        </footer>
+
+        <div className="record-grid">
+          {records.map((group) => (
+            <div className="record-group" key={group.label}>
+              <h3 className="mono">{group.label}</h3>
+              {group.entries.map(([organization, detail, date]) => (
+                <div className="record-row" key={organization}>
+                  <strong>{organization}</strong>
+                  <span>{detail}</span>
+                  <time>{date}</time>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="tool-index">
+          <h3 className="mono">Technical index</h3>
+          <div>
+            {tools.map((tool, index) => (
+              <span key={tool}><i>{String(index + 1).padStart(2, "0")}</i>{tool}</span>
+            ))}
+          </div>
+        </div>
       </section>
+
+      <footer className="site-footer">
+        <a href="mailto:mnyngch8@gmail.com">mnyngch8@gmail.com</a>
+        <div className="footer-links mono">
+          <a href="https://github.com/Moon-Young-Choi" target="_blank" rel="noreferrer">GitHub ↗</a>
+          <a href="#top">Top ↑</a>
+        </div>
+        <span className="mono">&copy; 2026 Moonyoung Choi</span>
+      </footer>
     </main>
   );
 }
