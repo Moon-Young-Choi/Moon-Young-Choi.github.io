@@ -42,7 +42,8 @@ The site is a compact, multi-page index of education, experience, public work, a
 
 - The first section combines identity, public contact, and education with kinetic geometry. No biography or slogan.
 - Education shows institutions, degrees, month-level attendance dates, location, and selected coursework only. Do not add scholarships or awards.
-- Two experience cards follow education and link to public-safe case studies.
+- Two experience cards follow education as equal full-width rows, stacked vertically, and link to public-safe case studies.
+- In each experience card, the employer lockup and system geometry form one visual band with generous separation before the title, description, and tags.
 - Research projects remain the largest content index and use asymmetric colored blocks.
 - Home cards always open an internal case study. A public GitHub link appears only on that case-study page.
 - Each case study follows `system map → model and decisions → technology stack → validation and evidence boundary`; use KaTeX for mathematical notation and HTML/CSS for diagrams.
@@ -51,7 +52,7 @@ The site is a compact, multi-page index of education, experience, public work, a
 - Contact information is limited to public email and GitHub.
 - Mobile layouts use the `900px`, `640px`, and `420px` breakpoints, collapse to one column, and recompose every diagram without removing content or interaction affordances.
 - At 320px and above, no text, logo, formula, card, or diagram may widen the document viewport. Formula overflow stays inside its own scroll region.
-- Keep `Moonyoung` on one line on mobile by reducing its type size, and keep the two work cards on equal-width `minmax(0, 1fr)` tracks.
+- Keep `Moonyoung` on one line on mobile by reducing its type size, and keep the two work cards stacked on the same full-width `minmax(0, 1fr)` track.
 
 ## 6. Change checklist
 
