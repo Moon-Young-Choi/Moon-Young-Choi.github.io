@@ -27,7 +27,7 @@ The site is a compact, multi-page index of education, experience, public work, a
 - Use geometry rather than portraits, stock imagery, illustrations, or decorative screenshots.
 - Official employer wordmarks are the only logo exception. Store source-provenance assets locally, preserve their proportions, render them as a monochrome part of the corresponding work-card lockup, and never hotlink or recreate them with a model. Current approved sources are the official [HD Hyundai CI page](https://www.hd.com/en/brand-story/typeface/contents) and [Avikus site](https://www.avikus.ai/).
 - Avoid glassmorphism, soft gradients, drop-shadow stacks, skill bars, logo clouds, and generic card templates.
-- Declare the site as light-only in both metadata and CSS. Device dark mode must not recolor the interface; intentional Ink and Blue color fields remain part of the light design.
+- Declare the site as light-only with the exact `only light` metadata opt-out and CSS property, plus the legacy supported-scheme hint. Device and browser force-dark modes must not recolor the interface; intentional Ink and Blue color fields remain part of the light design.
 
 ## 4. Geometry and motion
 
@@ -51,6 +51,7 @@ The site is a compact, multi-page index of education, experience, public work, a
 - Contact information is limited to public email and GitHub.
 - Mobile layouts use the `900px`, `640px`, and `420px` breakpoints, collapse to one column, and recompose every diagram without removing content or interaction affordances.
 - At 320px and above, no text, logo, formula, card, or diagram may widen the document viewport. Formula overflow stays inside its own scroll region.
+- Keep `Moonyoung` on one line on mobile by reducing its type size, and keep the two work cards on equal-width `minmax(0, 1fr)` tracks.
 
 ## 6. Change checklist
 

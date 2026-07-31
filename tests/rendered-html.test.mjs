@@ -86,11 +86,15 @@ test("locks the rendered site to light mode and keeps all responsive tiers", asy
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
-  assert.match(html, /<meta name="color-scheme" content="light"\/>/i);
+  assert.match(html, /<meta name="color-scheme" content="only light"\/>/i);
+  assert.match(html, /<meta name="supported-color-schemes" content="light"\/>/i);
   assert.match(html, /<meta name="theme-color" content="#f0eee6"\/>/i);
   assert.match(css, /color-scheme:\s*only light/);
   assert.match(css, /@media \(max-width:\s*900px\)/);
   assert.match(css, /@media \(max-width:\s*640px\)/);
   assert.match(css, /@media \(max-width:\s*420px\)/);
   assert.match(css, /@media \(hover:\s*hover\) and \(pointer:\s*fine\)/);
+  assert.match(css, /@media \(prefers-color-scheme:\s*dark\)/);
+  assert.match(css, /\.experience-grid[^}]+repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(css, /\.identity-name h1 span\s*\{\s*white-space:\s*nowrap/);
 });
