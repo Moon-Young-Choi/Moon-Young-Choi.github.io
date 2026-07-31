@@ -1,72 +1,6 @@
-const repositories = [
-  {
-    number: "01",
-    title: "PWR Scan",
-    href: "https://github.com/Moon-Young-Choi/pwr-scan",
-    description:
-      "Detects covariance-structure changes in acoustic frequency data when affected intervals are unknown. Uses pooled whitening, a Roy-type maximum generalized eigenvalue statistic, and permutation calibration for finite-sample global error control.",
-    tags: ["Python", "Covariance", "Permutation Test"],
-    accent: "lime",
-    shape: "scan",
-  },
-  {
-    number: "02",
-    title: "PWR Scan Validation",
-    href: "https://github.com/Moon-Young-Choi/pwr-scan-validation",
-    description:
-      "A theory-first validation suite for exchangeability, calibration, null controls, structured alternatives, and reproducible simulation cases used by PWR Scan.",
-    tags: ["Python", "Validation", "Simulation"],
-    accent: "ink",
-    shape: "validation",
-  },
-  {
-    number: "03",
-    title: "Open Source Intelligence",
-    href: "https://github.com/Moon-Young-Choi/open-source-intelligence",
-    description:
-      "Ingests DART disclosures and Korean market data as point-in-time evidence bundles. Exact values remain separate from encoded narrative evidence behind a standardized model input layer.",
-    tags: ["Python", "DART", "Point-in-time Data"],
-    accent: "blue",
-    shape: "grid",
-  },
-  {
-    number: "04",
-    title: "Bayesian Ad Targeting",
-    href: "https://github.com/Moon-Young-Choi/bayesian-ad-targeting",
-    description:
-      "Estimates incremental effects with Bayesian updates and simulates budget-constrained policies with uncertainty-aware allocation and policy evaluation.",
-    tags: ["Python", "Bayesian Inference", "Policy Simulation"],
-    accent: "coral",
-    shape: "bayes",
-  },
-  {
-    number: "05",
-    title: "Triangular Arbitrage Detector",
-    href: "https://github.com/Moon-Young-Choi/triangular-arbitrage-detector",
-    description:
-      "Scans Upbit three-leg paths with safety gates, replays recorded order books, and separates signal generation, simulation, and execution research.",
-    tags: ["JavaScript", "Market Data", "Replay Engine"],
-    accent: "violet",
-    shape: "arbitrage",
-  },
-];
-
-const records = [
-  {
-    label: "Education",
-    entries: [
-      ["Seoul National University", "B.S. Naval Architecture & Ocean Engineering / Economics", "2019 - 2027 (expected)"],
-      ["Sejong Science High School", "Early graduation", "2014 - 2016"],
-    ],
-  },
-  {
-    label: "Experience",
-    entries: [
-      ["HD Hyundai Avikus", "Research Intern / CUDA, OpenCV, OpenMP", "Dec 2025 - Jan 2026"],
-      ["Main Gate Partners (FINBURH)", "Co-Founder & CEO / Financial document automation", "Feb 2025 - Dec 2025"],
-    ],
-  },
-];
+import Link from "next/link";
+import { ProjectShape } from "@/app/components/ProjectShape";
+import { education, projectStudies, workStudies } from "@/app/content";
 
 const tools = [
   "Python",
@@ -81,109 +15,119 @@ const tools = [
   "Signal Processing",
 ];
 
-function ProjectShape({ type }: { type: string }) {
-  return (
-    <div className={`project-shape shape-${type}`} aria-hidden="true">
-      {Array.from({ length: 12 }, (_, index) => <span key={index} />)}
-    </div>
-  );
-}
-
 export default function Home() {
   return (
-    <main>
+    <main id="top">
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Back to top">MYC / 26</a>
         <nav aria-label="Primary navigation">
-          <a href="#repositories">Repositories</a>
-          <a href="#record">Record</a>
+          <a href="#education">Education</a>
+          <a href="#experience">Experience</a>
+          <a href="#projects">Projects</a>
         </nav>
         <a className="header-link" href="mailto:mnyngch8@gmail.com">Email</a>
       </header>
 
-      <section className="hero" id="top" aria-labelledby="hero-title">
-        <div className="hero-index mono">
+      <section className="identity" id="education" aria-labelledby="identity-title">
+        <div className="identity-meta mono">
           <span>Portfolio / 2026</span>
           <span>Seoul, South Korea</span>
         </div>
 
-        <div className="kinetic-field" aria-hidden="true">
-          <div className="field-grid" />
-          <div className="field-orbit orbit-a"><span /><span /><span /></div>
-          <div className="field-orbit orbit-b"><span /><span /></div>
-          <div className="field-triangle"><span /><span /><span /></div>
-          <div className="field-axis"><span /><span /><span /><span /><span /></div>
-          <div className="field-square" />
+        <div className="identity-grid">
+          <div className="identity-name">
+            <h1 id="identity-title"><span>Moonyoung</span><span>Choi</span></h1>
+            <div className="identity-links mono">
+              <a href="mailto:mnyngch8@gmail.com">mnyngch8@gmail.com</a>
+              <a href="https://github.com/Moon-Young-Choi" target="_blank" rel="noreferrer">GitHub ↗</a>
+            </div>
+          </div>
+
+          <div className="education-index">
+            <div className="education-label mono">Education / 02</div>
+            {education.map((item, index) => (
+              <article className="education-row" key={item.institution}>
+                <span className="mono">{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <h2>{item.institution}</h2>
+                  <p>{item.degree}</p>
+                  <small>{item.detail}</small>
+                </div>
+                <time className="mono">{item.period}</time>
+              </article>
+            ))}
+            <div className="education-awards mono">
+              <span>Jung-Gong Scholarship / 2025</span>
+              <span>MEXT Undergraduate Scholarship / 2016</span>
+            </div>
+          </div>
         </div>
 
-        <h1 id="hero-title">
-          <span>Moonyoung</span>
-          <span>Choi</span>
-        </h1>
-
-        <div className="hero-footer mono">
-          <span>Public repositories / 05</span>
-          <a href="#repositories">View index <span aria-hidden="true">↓</span></a>
+        <div className="identity-geometry" aria-hidden="true">
+          <div className="identity-orbit"><span /><span /><span /></div>
+          <div className="identity-axis"><span /><span /><span /><span /><span /></div>
+          <div className="identity-block" />
         </div>
       </section>
 
-      <section className="repositories" id="repositories">
+      <section className="experience" id="experience">
         <div className="section-head">
-          <span className="mono">01 / Repositories</span>
-          <h2>Public work</h2>
-          <span className="mono section-count">05 systems</span>
+          <span className="mono">01 / Experience</span>
+          <h2>Selected roles</h2>
+          <span className="mono section-count">02 systems</span>
+        </div>
+
+        <div className="experience-grid">
+          {workStudies.map((study) => (
+            <Link className={`project-card ${study.accent}`} href={`/work/${study.slug}/`} key={study.slug}>
+              <div className="card-top mono">
+                <span>{study.number}</span>
+                <span>Case study <i aria-hidden="true">↗</i></span>
+              </div>
+              <ProjectShape type={study.shape} />
+              <div className="card-copy">
+                <span className="card-org mono">{study.organization} / {study.period}</span>
+                <h3>{study.title}</h3>
+                <p>{study.summary}</p>
+                <div className="tags">{study.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="repositories" id="projects">
+        <div className="section-head">
+          <span className="mono">02 / Projects</span>
+          <h2>Research systems</h2>
+          <span className="mono section-count">06 studies</span>
         </div>
 
         <div className="project-grid">
-          {repositories.map((repo) => (
-            <a
-              className={`project-card ${repo.accent}`}
-              href={repo.href}
-              target="_blank"
-              rel="noreferrer"
-              key={repo.title}
-            >
+          {projectStudies.map((study) => (
+            <Link className={`project-card ${study.accent}`} href={`/projects/${study.slug}/`} key={study.slug}>
               <div className="card-top mono">
-                <span>{repo.number}</span>
-                <span>GitHub <i aria-hidden="true">↗</i></span>
+                <span>{study.number}</span>
+                <span>{study.github ? "Study + source" : "Case study"} <i aria-hidden="true">↗</i></span>
               </div>
-              <ProjectShape type={repo.shape} />
+              <ProjectShape type={study.shape} />
               <div className="card-copy">
-                <h3>{repo.title}</h3>
-                <p>{repo.description}</p>
-                <div className="tags">
-                  {repo.tags.map((tag) => <span key={tag}>{tag}</span>)}
-                </div>
+                <h3>{study.title}</h3>
+                <p>{study.summary}</p>
+                <div className="tags">{study.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </section>
 
-      <section className="record" id="record">
-        <div className="section-head record-head">
-          <span className="mono">02 / Record</span>
-          <h2>Education & experience</h2>
-          <span className="mono section-count">Seoul / KR</span>
+      <section className="technical-index" aria-labelledby="technical-title">
+        <div className="section-head compact-head">
+          <span className="mono">03 / Technical index</span>
+          <h2 id="technical-title">Methods & tools</h2>
+          <span className="mono section-count">10 entries</span>
         </div>
-
-        <div className="record-grid">
-          {records.map((group) => (
-            <div className="record-group" key={group.label}>
-              <h3 className="mono">{group.label}</h3>
-              {group.entries.map(([organization, detail, date]) => (
-                <div className="record-row" key={organization}>
-                  <strong>{organization}</strong>
-                  <span>{detail}</span>
-                  <time>{date}</time>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-
         <div className="tool-index">
-          <h3 className="mono">Technical index</h3>
           <div>
             {tools.map((tool, index) => (
               <span key={tool}><i>{String(index + 1).padStart(2, "0")}</i>{tool}</span>
@@ -198,7 +142,7 @@ export default function Home() {
           <a href="https://github.com/Moon-Young-Choi" target="_blank" rel="noreferrer">GitHub ↗</a>
           <a href="#top">Top ↑</a>
         </div>
-        <span className="mono">&copy; 2026 Moonyoung Choi</span>
+        <span className="mono">© 2026 Moonyoung Choi</span>
       </footer>
     </main>
   );
