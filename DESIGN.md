@@ -27,6 +27,7 @@ The site is a compact, multi-page index of education, experience, public work, a
 - Use geometry rather than portraits, stock imagery, illustrations, or decorative screenshots.
 - Official employer wordmarks are the only logo exception. Store source-provenance assets locally, preserve their proportions, render them as a monochrome part of the corresponding work-card lockup, and never hotlink or recreate them with a model. Current approved sources are the official [HD Hyundai CI page](https://www.hd.com/en/brand-story/typeface/contents) and [Avikus site](https://www.avikus.ai/).
 - Avoid glassmorphism, soft gradients, drop-shadow stacks, skill bars, logo clouds, and generic card templates.
+- Declare the site as light-only in both metadata and CSS. Device dark mode must not recolor the interface; intentional Ink and Blue color fields remain part of the light design.
 
 ## 4. Geometry and motion
 
@@ -48,7 +49,8 @@ The site is a compact, multi-page index of education, experience, public work, a
 - Case-study content should remain approximately one to two A4 pages when printed, prioritizing diagrams and equations over prose.
 - Technology is summarized on each detail page. Compact technology tags remain on home cards, but there is no separate home-page tool index.
 - Contact information is limited to public email and GitHub.
-- Mobile layouts collapse to one column without removing content or interaction affordances.
+- Mobile layouts use the `900px`, `640px`, and `420px` breakpoints, collapse to one column, and recompose every diagram without removing content or interaction affordances.
+- At 320px and above, no text, logo, formula, card, or diagram may widen the document viewport. Formula overflow stays inside its own scroll region.
 
 ## 6. Change checklist
 
@@ -64,3 +66,4 @@ Before merging a design change, verify:
 8. Are employer logos official, locally stored, decorative to assistive technology, and limited to work cards?
 9. Are dates of birth, ages, and age-derived metadata absent from the public site and repository?
 10. Does education omit scholarships and retain month-level dates and legible supporting text?
+11. Does the page remain light-only and free of horizontal overflow at 320px in both device theme settings?

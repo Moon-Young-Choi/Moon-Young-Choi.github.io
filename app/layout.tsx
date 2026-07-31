@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo_Black, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
@@ -10,6 +10,13 @@ const sans = Space_Grotesk({ variable: "--font-sans", weight: ["400", "500", "60
 export const metadata: Metadata = {
   title: "Moonyoung Choi — Portfolio",
   description: "Education, work experience, research and technology projects, and public repositories by Moonyoung Choi.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  colorScheme: "light",
+  themeColor: "#f0eee6",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

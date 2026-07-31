@@ -79,3 +79,18 @@ test("ships official employer assets locally", async () => {
   const html = await routeHtml();
   assert.doesNotMatch(html, /<img[^>]+src="https?:\/\//i);
 });
+
+test("locks the rendered site to light mode and keeps all responsive tiers", async () => {
+  const [html, css] = await Promise.all([
+    routeHtml(),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(html, /<meta name="color-scheme" content="light"\/>/i);
+  assert.match(html, /<meta name="theme-color" content="#f0eee6"\/>/i);
+  assert.match(css, /color-scheme:\s*only light/);
+  assert.match(css, /@media \(max-width:\s*900px\)/);
+  assert.match(css, /@media \(max-width:\s*640px\)/);
+  assert.match(css, /@media \(max-width:\s*420px\)/);
+  assert.match(css, /@media \(hover:\s*hover\) and \(pointer:\s*fine\)/);
+});
