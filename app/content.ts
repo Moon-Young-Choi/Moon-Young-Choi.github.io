@@ -18,6 +18,7 @@ export type CaseStudy = {
   eyebrow: string;
   summary: string;
   tags: string[];
+  stack: Array<{ group: string; items: string[] }>;
   facts: Array<[string, string]>;
   flow: string[];
   formulas: Formula[];
@@ -33,12 +34,14 @@ export const education = [
     degree: "B.S. Naval Architecture & Ocean Engineering · Double major in Economics",
     period: "2019 — 2027 (expected)",
     detail: "Signal Processing · Derivatives · Advanced Econometrics · Economic Forecasting & Data Intelligence",
+    scholarship: "Jung-Gong Scholarship · 2025",
   },
   {
     institution: "Sejong Science High School",
     degree: "Early graduation",
     period: "2014 — 2016",
     detail: "Seoul, South Korea",
+    scholarship: "MEXT · 2016",
   },
 ];
 
@@ -56,6 +59,11 @@ export const workStudies: CaseStudy[] = [
     summary:
       "Synthetic signal and video scenarios for autonomous-navigation training, coupled with an accelerated panoramic alignment pipeline.",
     tags: ["C++", "CUDA", "OpenCV", "OpenMP"],
+    stack: [
+      { group: "Core", items: ["C++", "CUDA"] },
+      { group: "Vision & parallelism", items: ["OpenCV", "OpenMP"] },
+      { group: "Methods", items: ["Homography", "Synthetic signal generation"] },
+    ],
     facts: [
       ["Role", "Research Intern"],
       ["Domain", "Autonomous navigation"],
@@ -113,6 +121,12 @@ export const workStudies: CaseStudy[] = [
     summary:
       "An agentic workflow that converted public financial evidence into editable valuation and transaction documents.",
     tags: ["Python", "Agent orchestration", "DART · KRX", "MCP"],
+    stack: [
+      { group: "Core", items: ["Python", "MCP"] },
+      { group: "Orchestration", items: ["Multi-agent orchestration"] },
+      { group: "Data & retrieval", items: ["DART", "KRX", "Embedding & retrieval"] },
+      { group: "Output", items: ["Spreadsheet and presentation generation"] },
+    ],
     facts: [
       ["Role", "Co-Founder & CEO"],
       ["Domain", "IB · PE workflows"],
@@ -171,6 +185,11 @@ export const projectStudies: CaseStudy[] = [
     summary:
       "A local research workstation for detecting a structured covariance increase when its frequency interval and direction are both unknown.",
     tags: ["Python", "Covariance", "Randomization"],
+    stack: [
+      { group: "Core", items: ["Python", "NumPy", "SciPy"] },
+      { group: "API & audio", items: ["FastAPI", "Pydantic", "SoundFile"] },
+      { group: "Interface", items: ["Next.js", "React", "TypeScript"] },
+    ],
     facts: [
       ["Scope", "CPU-first · local only"],
       ["Inputs", "Feature matrices · audio"],
@@ -227,6 +246,11 @@ export const projectStudies: CaseStudy[] = [
     summary:
       "An executable claim map linking algebraic identities, randomization calibration, simulation designs, and figure provenance.",
     tags: ["Python", "Validation", "Simulation"],
+    stack: [
+      { group: "Core", items: ["Python", "NumPy", "SciPy", "pandas"] },
+      { group: "Visualization", items: ["Matplotlib", "Plotly"] },
+      { group: "Verification", items: ["pytest"] },
+    ],
     facts: [
       ["Completed", "V0 reference audit"],
       ["In progress", "V1 global level"],
@@ -283,6 +307,12 @@ export const projectStudies: CaseStudy[] = [
     summary:
       "A source-to-result pipeline for Korean disclosures and post-disclosure return paths, with immutable evidence and explicit leakage controls.",
     tags: ["Python", "DART · FSC", "Point-in-time"],
+    stack: [
+      { group: "Core", items: ["Python", "NumPy"] },
+      { group: "Modeling", items: ["PyTorch", "Transformers", "SafeTensors"] },
+      { group: "Data", items: ["DART", "FSC/KRX"] },
+      { group: "Verification", items: ["pytest"] },
+    ],
     facts: [
       ["Unit", "Issuer × receipt-date bundle"],
       ["Horizons", "1 · 3 · 5 sessions"],
@@ -339,6 +369,10 @@ export const projectStudies: CaseStudy[] = [
     summary:
       "A compact decision system that estimates treatment uplift and allocates a limited budget by sampled net incremental value.",
     tags: ["Python", "Bayesian inference", "Policy simulation"],
+    stack: [
+      { group: "Core", items: ["Python", "NumPy", "pandas"] },
+      { group: "Inference & policy", items: ["Beta–Bernoulli inference", "Thompson Sampling"] },
+    ],
     facts: [
       ["Evidence", "Randomized treatment logs"],
       ["Model", "Beta–Bernoulli"],
@@ -395,6 +429,11 @@ export const projectStudies: CaseStudy[] = [
     summary:
       "An Upbit scanner and replay engine that evaluates three-leg routes against order-book depth, fees, latency, and execution constraints.",
     tags: ["JavaScript", "Order books", "Replay"],
+    stack: [
+      { group: "Runtime", items: ["Node.js", "JavaScript"] },
+      { group: "Connectivity", items: ["Axios", "WebSocket", "Upbit REST/WebSocket"] },
+      { group: "Verification", items: ["Node test runner"] },
+    ],
     facts: [
       ["Venue", "Upbit"],
       ["Modes", "Observe · dry-run · replay"],
@@ -451,6 +490,12 @@ export const projectStudies: CaseStudy[] = [
     summary:
       "A multi-game derivatives market where public game states generate joint payoff scenarios, quotes, package orders, and portfolio risk.",
     tags: ["C++", "Monte Carlo", "CVaR", "Market making"],
+    stack: [
+      { group: "Core", items: ["C++", "Linux CLI"] },
+      { group: "Risk & simulation", items: ["Monte Carlo simulation", "CVaR"] },
+      { group: "Market model", items: ["order-book simulation"] },
+      { group: "Verification", items: ["exact-enumeration/CFR validation"] },
+    ],
     facts: [
       ["Underlyings", "Kuhn · Leduc games"],
       ["Contracts", "Futures · options · swaps"],

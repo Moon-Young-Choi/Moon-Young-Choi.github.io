@@ -14,6 +14,7 @@ export function CaseStudyPage({ study }: { study: CaseStudy }) {
         <nav aria-label="Case study navigation">
           <Link href={indexHref}>Index</Link>
           <a href="#method">Method</a>
+          <a href="#stack">Stack</a>
           <a href="#validation">Validation</a>
         </nav>
         <Link className="header-link" href={indexHref}>Close ×</Link>
@@ -74,8 +75,25 @@ export function CaseStudyPage({ study }: { study: CaseStudy }) {
             </div>
           </section>
 
+          <section className="case-section" id="stack" aria-labelledby="stack-title">
+            <div className="case-section-label mono">03 / Technology stack</div>
+            <div className="case-section-content">
+              <h2 id="stack-title">Technology stack</h2>
+              <div className="stack-grid">
+                {study.stack.map((group) => (
+                  <div className="stack-group" key={group.group}>
+                    <h3 className="mono">{group.group}</h3>
+                    <div className="stack-items">
+                      {group.items.map((item) => <span key={item}>{item}</span>)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           <section className="case-section" id="validation" aria-labelledby="validation-title">
-            <div className="case-section-label mono">03 / Validation</div>
+            <div className="case-section-label mono">04 / Validation</div>
             <div className="case-section-content">
               <h2 id="validation-title">Checks & boundary</h2>
               <ol className="validation-list">

@@ -9,7 +9,7 @@ const sans = Space_Grotesk({ variable: "--font-sans", weight: ["400", "500", "60
 
 export const metadata: Metadata = {
   title: "Moonyoung Choi — Portfolio",
-  description: "Education, experience, research systems, and public repositories by Moonyoung Choi.",
+  description: "Education, work experience, research and technology projects, and public repositories by Moonyoung Choi.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -1,21 +1,11 @@
 import Link from "next/link";
 import { ProjectShape } from "@/app/components/ProjectShape";
+import { WorkCardVisual } from "@/app/components/WorkCardVisual";
 import { education, projectStudies, workStudies } from "@/app/content";
 
-const tools = [
-  "Python",
-  "C++",
-  "CUDA",
-  "OpenCV",
-  "OpenMP",
-  "Monte Carlo Simulation",
-  "Bayesian Inference",
-  "Econometrics",
-  "Time-Series Analysis",
-  "Signal Processing",
-];
-
 export default function Home() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <main id="top">
       <header className="site-header">
@@ -25,7 +15,7 @@ export default function Home() {
           <a href="#experience">Experience</a>
           <a href="#projects">Projects</a>
         </nav>
-        <a className="header-link" href="mailto:mnyngch8@gmail.com">Email</a>
+        <a className="header-link email-link" href="mailto:mnyngch8@gmail.com">email</a>
       </header>
 
       <section className="identity" id="education" aria-labelledby="identity-title">
@@ -38,7 +28,7 @@ export default function Home() {
           <div className="identity-name">
             <h1 id="identity-title"><span>Moonyoung</span><span>Choi</span></h1>
             <div className="identity-links mono">
-              <a href="mailto:mnyngch8@gmail.com">mnyngch8@gmail.com</a>
+              <a className="email-link" href="mailto:mnyngch8@gmail.com">mnyngch8@gmail.com</a>
               <a href="https://github.com/Moon-Young-Choi" target="_blank" rel="noreferrer">GitHub ↗</a>
             </div>
           </div>
@@ -52,14 +42,14 @@ export default function Home() {
                   <h2>{item.institution}</h2>
                   <p>{item.degree}</p>
                   <small>{item.detail}</small>
+                  <div className="education-scholarship">
+                    <span className="mono">Scholarship</span>
+                    <strong>{item.scholarship}</strong>
+                  </div>
                 </div>
                 <time className="mono">{item.period}</time>
               </article>
             ))}
-            <div className="education-awards mono">
-              <span>Jung-Gong Scholarship / 2025</span>
-              <span>MEXT Undergraduate Scholarship / 2016</span>
-            </div>
           </div>
         </div>
 
@@ -73,8 +63,8 @@ export default function Home() {
       <section className="experience" id="experience">
         <div className="section-head">
           <span className="mono">01 / Experience</span>
-          <h2>Selected roles</h2>
-          <span className="mono section-count">02 systems</span>
+          <h2>Work experience</h2>
+          <span className="mono section-count">02 roles</span>
         </div>
 
         <div className="experience-grid">
@@ -84,7 +74,7 @@ export default function Home() {
                 <span>{study.number}</span>
                 <span>Case study <i aria-hidden="true">↗</i></span>
               </div>
-              <ProjectShape type={study.shape} />
+              <WorkCardVisual type={study.shape} />
               <div className="card-copy">
                 <span className="card-org mono">{study.organization} / {study.period}</span>
                 <h3>{study.title}</h3>
@@ -99,8 +89,8 @@ export default function Home() {
       <section className="repositories" id="projects">
         <div className="section-head">
           <span className="mono">02 / Projects</span>
-          <h2>Research systems</h2>
-          <span className="mono section-count">06 studies</span>
+          <h2>Research and tech experience</h2>
+          <span className="mono section-count">06 projects</span>
         </div>
 
         <div className="project-grid">
@@ -121,28 +111,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="technical-index" aria-labelledby="technical-title">
-        <div className="section-head compact-head">
-          <span className="mono">03 / Technical index</span>
-          <h2 id="technical-title">Methods & tools</h2>
-          <span className="mono section-count">10 entries</span>
-        </div>
-        <div className="tool-index">
-          <div>
-            {tools.map((tool, index) => (
-              <span key={tool}><i>{String(index + 1).padStart(2, "0")}</i>{tool}</span>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <footer className="site-footer">
-        <a href="mailto:mnyngch8@gmail.com">mnyngch8@gmail.com</a>
+        <a className="email-link" href="mailto:mnyngch8@gmail.com">mnyngch8@gmail.com</a>
         <div className="footer-links mono">
           <a href="https://github.com/Moon-Young-Choi" target="_blank" rel="noreferrer">GitHub ↗</a>
           <a href="#top">Top ↑</a>
         </div>
-        <span className="mono">© 2026 Moonyoung Choi</span>
+        <span className="mono">© {currentYear} Moonyoung Choi</span>
       </footer>
     </main>
   );
