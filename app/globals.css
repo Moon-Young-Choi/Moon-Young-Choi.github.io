@@ -67,18 +67,71 @@ nav a:hover, .header-link:hover { opacity: .5; }
 .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .project-card { min-height: 540px; padding: 28px; position: relative; overflow: hidden; border-radius: 3px; display: flex; flex-direction: column; transition: transform .25s; }
 .project-card:hover { transform: translateY(-6px); }
-.project-card.lime { background: var(--lime); }
-.project-card.blue { background: var(--blue); color: white; }
-.project-card.coral { background: var(--coral); }
-.project-card.violet { background: var(--violet); }
+.project-card.lime { --card-bg: var(--lime); background: var(--card-bg); }
+.project-card.blue { --card-bg: var(--blue); background: var(--card-bg); color: white; }
+.project-card.coral { --card-bg: var(--coral); background: var(--card-bg); }
+.project-card.violet { --card-bg: var(--violet); background: var(--card-bg); }
 .card-top { display: flex; justify-content: space-between; font: 12px var(--font-mono); }
 .arrow { font-size: 27px; transition: transform .25s; }
 .project-card:hover .arrow { transform: translate(5px,-5px); }
-.project-mark { height: 180px; margin: 20px 0 10px; position: relative; }
-.project-mark::before, .project-mark::after, .project-mark span { content: ""; position: absolute; border: 1px solid currentColor; border-radius: 50%; }
-.project-mark::before { width: 155px; height: 155px; left: calc(50% - 78px); top: 12px; }
-.project-mark::after { width: 100px; height: 100px; left: calc(50% - 22px); top: 38px; }
-.project-mark span { width: 55px; height: 55px; left: calc(50% - 28px); top: 62px; background: currentColor; }
+.project-mark { height: 180px; margin: 20px 0 10px; position: relative; display: grid; place-items: center; }
+.project-mark span { position: absolute; display: none; transition: transform .55s cubic-bezier(.2,.75,.25,1), opacity .35s; }
+
+/* PWR Scan — concentric detection field */
+.shape-scan span:nth-child(-n+4) { display: block; border-radius: 50%; }
+.shape-scan span:nth-child(1) { width: 158px; height: 158px; border: 1px solid currentColor; }
+.shape-scan span:nth-child(2) { width: 108px; height: 108px; border: 1px solid currentColor; transform: translateX(36px); }
+.shape-scan span:nth-child(3) { width: 55px; height: 55px; background: currentColor; }
+.shape-scan span:nth-child(4) { width: 11px; height: 11px; background: currentColor; transform: translate(76px,-52px); }
+.project-card:hover .shape-scan span:nth-child(1) { transform: rotate(45deg) scale(.92); }
+.project-card:hover .shape-scan span:nth-child(2) { transform: translateX(-36px) rotate(-35deg); }
+.project-card:hover .shape-scan span:nth-child(3) { transform: scale(.72); }
+.project-card:hover .shape-scan span:nth-child(4) { transform: translate(-72px,55px); }
+
+/* OSINT — indexed search grid */
+.shape-grid::before {
+  content: ""; width: 190px; height: 142px; border: 1px solid currentColor; opacity: .55;
+  background-image: linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px);
+  background-size: 38px 28px; transition: transform .55s cubic-bezier(.2,.75,.25,1);
+}
+.shape-grid span:nth-child(-n+3) { display: block; border-radius: 50%; background: currentColor; }
+.shape-grid span:nth-child(1) { width: 46px; height: 46px; transform: translate(-57px,-29px); }
+.shape-grid span:nth-child(2) { width: 14px; height: 14px; transform: translate(58px,42px); }
+.shape-grid span:nth-child(3) { width: 8px; height: 8px; transform: translate(19px,-43px); }
+.shape-grid::after { content: "+"; position: absolute; font: 400 34px var(--font-mono); transform: translate(51px,-39px); }
+.project-card:hover .shape-grid::before { transform: rotate(6deg) scale(.94); }
+.project-card:hover .shape-grid span:nth-child(1) { transform: translate(57px,29px) scale(.65); }
+.project-card:hover .shape-grid span:nth-child(2) { transform: translate(-58px,-42px) scale(2); }
+.project-card:hover .shape-grid span:nth-child(3) { transform: translate(-19px,43px); }
+
+/* Bayesian targeting — discrete probability distribution */
+.shape-bayes { display: flex; align-items: flex-end; justify-content: center; gap: 7px; padding-bottom: 15px; }
+.shape-bayes::before { content: ""; position: absolute; bottom: 14px; width: 224px; height: 1px; background: currentColor; opacity: .7; }
+.shape-bayes span { position: relative; bottom: 0; display: block; width: 14px; border: 1px solid currentColor; transform-origin: bottom; }
+.shape-bayes span:nth-child(1), .shape-bayes span:nth-child(9) { height: 25px; }
+.shape-bayes span:nth-child(2), .shape-bayes span:nth-child(8) { height: 44px; }
+.shape-bayes span:nth-child(3), .shape-bayes span:nth-child(7) { height: 76px; }
+.shape-bayes span:nth-child(4), .shape-bayes span:nth-child(6) { height: 116px; }
+.shape-bayes span:nth-child(5) { height: 154px; background: currentColor; }
+.project-card:hover .shape-bayes span:nth-child(odd) { transform: scaleY(.74); }
+.project-card:hover .shape-bayes span:nth-child(even) { transform: scaleY(1.14); }
+.project-card:hover .shape-bayes span:nth-child(5) { transform: scaleY(.9) translateY(-7px); }
+
+/* Arbitrage — closed three-market cycle */
+.shape-arbitrage::before, .shape-arbitrage::after {
+  content: ""; position: absolute; clip-path: polygon(50% 0, 100% 100%, 0 100%); transition: transform .55s cubic-bezier(.2,.75,.25,1);
+}
+.shape-arbitrage::before { width: 175px; height: 156px; background: currentColor; }
+.shape-arbitrage::after { width: 145px; height: 126px; background: var(--card-bg); transform: translateY(10px); }
+.shape-arbitrage span:nth-child(-n+3) { display: block; width: 24px; height: 24px; z-index: 2; border-radius: 50%; background: currentColor; border: 5px solid var(--card-bg); }
+.shape-arbitrage span:nth-child(1) { transform: translate(0,-73px); }
+.shape-arbitrage span:nth-child(2) { transform: translate(-86px,69px); }
+.shape-arbitrage span:nth-child(3) { transform: translate(86px,69px); }
+.project-card:hover .shape-arbitrage::before { transform: rotate(9deg) scale(.96); }
+.project-card:hover .shape-arbitrage::after { transform: translateY(10px) rotate(-7deg) scale(.94); }
+.project-card:hover .shape-arbitrage span:nth-child(1) { transform: translate(0,-67px) scale(1.35); }
+.project-card:hover .shape-arbitrage span:nth-child(2) { transform: translate(-80px,63px) scale(.72); }
+.project-card:hover .shape-arbitrage span:nth-child(3) { transform: translate(80px,63px) scale(.72); }
 .project-card h3 { margin: auto 0 16px; max-width: 85%; font: 400 clamp(31px, 4vw, 58px)/.95 var(--font-display); letter-spacing: -.05em; text-transform: uppercase; }
 .project-card > p { max-width: 590px; min-height: 55px; margin: 0 0 24px; font-size: 14px; line-height: 1.65; }
 .tags { display: flex; flex-wrap: wrap; gap: 7px; }

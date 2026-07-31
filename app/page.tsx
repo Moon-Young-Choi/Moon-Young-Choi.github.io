@@ -7,6 +7,7 @@ const projects = [
     tags: ["Python", "Statistical Testing", "Research"],
     href: "https://github.com/Moon-Young-Choi/pwr-scan",
     accent: "lime",
+    shape: "scan",
   },
   {
     number: "02",
@@ -16,6 +17,7 @@ const projects = [
     tags: ["Python", "Representation Learning", "Finance"],
     href: "https://github.com/Moon-Young-Choi/open-source-intelligence",
     accent: "blue",
+    shape: "grid",
   },
   {
     number: "03",
@@ -25,6 +27,7 @@ const projects = [
     tags: ["Bayesian", "Causal Inference", "Optimization"],
     href: "https://github.com/Moon-Young-Choi/bayesian-ad-targeting",
     accent: "coral",
+    shape: "bayes",
   },
   {
     number: "04",
@@ -34,6 +37,7 @@ const projects = [
     tags: ["JavaScript", "Market Microstructure", "Systems"],
     href: "https://github.com/Moon-Young-Choi/triangular-arbitrage-detector",
     accent: "violet",
+    shape: "arbitrage",
   },
 ];
 
@@ -131,7 +135,9 @@ export default function Home() {
                 <span>{project.number}</span>
                 <span className="arrow">↗</span>
               </div>
-              <div className="project-mark" aria-hidden="true"><span /></div>
+              <div className={`project-mark shape-${project.shape}`} aria-hidden="true">
+                {Array.from({ length: 9 }, (_, index) => <span key={index} />)}
+              </div>
               <h3>{project.title}</h3>
               <p>{project.description}</p>
               <div className="tags">
