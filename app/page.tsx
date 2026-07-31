@@ -79,7 +79,7 @@ export default function Home() {
 
         <div className="experience-grid">
           {workStudies.map((study) => (
-            <Link className={`project-card ${study.accent}`} href={`/work/${study.slug}/`} key={study.slug}>
+            <Link className={`project-card ${study.accent}`} href={`/experience/${study.slug}/`} key={study.slug}>
               <div className="card-top mono">
                 <span>{study.number}</span>
                 <span>Case study <i aria-hidden="true">↗</i></span>
