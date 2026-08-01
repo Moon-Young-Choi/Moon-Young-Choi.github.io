@@ -9,8 +9,12 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs tests/arbitrage-showcase.test.mjs",
+    "test": "npm run build && node --experimental-strip-types --test tests/rendered-html.test.mjs tests/arbitrage-showcase.test.mjs tests/arbitrage-universe.test.mjs tests/triangle-route-graphic.test.mjs",
+    "test:arbitrage-universe": "node --experimental-strip-types --test tests/arbitrage-universe.test.mjs",
+    "test:browser": "npm run build && playwright test",
+    "test:browser:built": "playwright test",
     "sync:arbitrage": "node scripts/sync-arbitrage.mjs",
+    "sync:arbitrage-universe": "node scripts/sync-arbitrage-universe.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate"
   },
@@ -23,6 +27,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.37.1",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "4.2.1",
     "@types/katex": "^0.16.8",
     "@types/node": "22.19.19",

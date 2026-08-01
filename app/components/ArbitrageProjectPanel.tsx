@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
 import { arbitrageShowcase, defaultShowcaseRow } from "@/app/lib/arbitrageShowcase";
+import { arbitrageUniverseManifest } from "@/app/lib/arbitrageUniverse";
+import { TriangleRouteGraphic } from "@/app/components/TriangleRouteGraphic";
 import styles from "@/app/components/ArbitrageLab.module.css";
 
 export function ArbitrageProjectPanel() {
@@ -13,13 +15,7 @@ export function ArbitrageProjectPanel() {
   return (
     <div className={styles.homePanel} aria-hidden="true">
       <div className={styles.homeTriangle}>
-        {row.route.slice(0, 3).map((asset, index) => (
-          <span className={styles[`homeNode${index + 1}`]} key={asset}>{asset}</span>
-        ))}
-        <i className={styles.homeEdgeA} />
-        <i className={styles.homeEdgeB} />
-        <i className={styles.homeEdgeC} />
-        <b className={styles.homeSignal} />
+        <TriangleRouteGraphic assets={row.route} direction={row.direction} variant="card" />
       </div>
       <div className={styles.homeBook}>
         <span className={styles.homePanelLabel}>{book.market} / depth</span>
@@ -32,9 +28,9 @@ export function ArbitrageProjectPanel() {
         ))}
       </div>
       <div className={styles.homeStats}>
-        <span><b>{arbitrageShowcase.verification.passedTests}</b> tests passing</span>
-        <span><b>{arbitrageShowcase.guards.rows.filter((guard) => guard.passed).length}/{arbitrageShowcase.guards.rows.length}</b> baseline gates</span>
-        <span><b>Off</b> live trading</span>
+        <span><b>{arbitrageUniverseManifest.triangleSetCount}</b> listed triangles</span>
+        <span><b>{arbitrageUniverseManifest.routeCount}</b> directional points</span>
+        <span><b>{arbitrageShowcase.verification.passedTests}</b> engine tests</span>
       </div>
     </div>
   );

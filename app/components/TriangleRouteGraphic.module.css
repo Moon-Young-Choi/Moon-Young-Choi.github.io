@@ -1,0 +1,139 @@
+.graphic {
+  --edge-width: 2px;
+  --node-size: 92px;
+  --side-max: 999px;
+  --signal-size: 13px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  color: inherit;
+}
+
+.geometry {
+  width: min(calc(100% - var(--node-size)), var(--side-max));
+  aspect-ratio: 1.154700538 / 1;
+  position: relative;
+}
+
+.node {
+  position: absolute;
+  z-index: 3;
+  width: var(--node-size);
+  height: var(--node-size);
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.node small {
+  font: 8px var(--font-mono);
+  text-transform: uppercase;
+}
+
+.node strong {
+  margin: auto;
+  font: 400 25px var(--font-display);
+}
+
+.node1 { left: 50%; top: 0; }
+.node2 { left: 0; top: 100%; }
+.node3 { left: 100%; top: 100%; }
+
+.edge {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: var(--edge-width);
+  display: block;
+  background: currentColor;
+  transform-origin: left center;
+}
+
+.edge12 { left: 50%; top: 0; transform: rotate(120deg); }
+.edge23 { left: 0; top: 100%; transform: rotate(0deg); }
+.edge31 { left: 100%; top: 100%; transform: rotate(-120deg); }
+
+.signal {
+  position: absolute;
+  z-index: 2;
+  width: var(--signal-size);
+  height: var(--signal-size);
+  left: 8%;
+  top: calc(50% - var(--signal-size) / 2);
+  display: block;
+  border-radius: 50%;
+  background: var(--blue);
+  animation: edge-signal 4.8s linear infinite;
+}
+
+.edge23 .signal { animation-delay: -1.6s; }
+.edge31 .signal { animation-delay: -3.2s; }
+.graphic[data-direction="reverse"] .signal { animation-direction: reverse; }
+
+.hero .node { background: var(--lime); }
+
+.lab {
+  --node-size: 118px;
+  --side-max: 420px;
+}
+
+.lab .node { background: var(--paper); }
+.lab .node1 { background: var(--lime); }
+.lab .signal { animation-duration: 4s; }
+
+.card {
+  --edge-width: 1px;
+  --node-size: 55px;
+  --side-max: 210px;
+  --signal-size: 10px;
+}
+
+.card .node {
+  padding: 0;
+  display: grid;
+  place-items: center;
+  background: var(--violet);
+}
+
+.card .node strong { font: 500 9px var(--font-mono); }
+.card .node small { display: none; }
+.card .signal { background: var(--lime); animation-duration: 4.2s; }
+.card .edge12 .signal, .card .edge31 .signal { display: none; }
+
+@keyframes edge-signal {
+  from { left: 8%; }
+  to { left: calc(92% - var(--signal-size)); }
+}
+
+@media (max-width: 900px) {
+  .card { --side-max: 190px; }
+}
+
+@media (max-width: 640px) {
+  .hero { --node-size: 70px; }
+  .lab { --node-size: 88px; --side-max: 266px; }
+  .card { --side-max: 170px; }
+}
+
+@media (max-width: 420px) {
+  .hero { --node-size: 58px; }
+  .lab { --node-size: 74px; --side-max: 235px; }
+  .lab .node { padding: 8px; }
+  .lab .node small { display: none; }
+  .lab .node strong { font-size: 16px; }
+}
+
+@media (max-width: 320px) {
+  .lab { --node-size: 68px; --side-max: 228px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal { animation: none !important; }
+}

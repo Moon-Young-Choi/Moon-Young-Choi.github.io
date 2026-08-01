@@ -4,6 +4,7 @@ import test from "node:test";
 
 const outputRoot = new URL("../dist/client/", import.meta.url);
 const showcase = JSON.parse(await readFile(new URL("../app/data/arbitrage-showcase.json", import.meta.url), "utf8"));
+const universeManifest = JSON.parse(await readFile(new URL("../app/data/arbitrage-universe-manifest.json", import.meta.url), "utf8"));
 const routes = [
   "experience/avikus-simulation-perception",
   "experience/finburh-document-automation",
@@ -76,26 +77,28 @@ test("keeps the standard case-study contract on the other seven pages", async ()
 });
 
 test("renders the dedicated arbitrage lab and its precomputed controls", async () => {
-  const [html, home, css, clientSource] = await Promise.all([
+  const [html, home, css, consoleCss, triangleCss, clientSource] = await Promise.all([
     routeHtml(arbitrageRoute),
     routeHtml(),
     readFile(new URL("../app/components/ArbitrageLab.module.css", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/ArbitrageRouteLab.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ArbitrageMarketConsole.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/TriangleRouteGraphic.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ArbitrageMarketConsole.tsx", import.meta.url), "utf8"),
   ]);
 
   for (const marker of [
     "Live trading disabled",
-    "Inspect a precomputed route.",
-    "Executable book, not midpoint",
-    "Amount &amp; fee waterfall",
+    "All valid listed triangles, one plane.",
+    "Loading the verified local simulation artifact",
+    "Guards and evidence stay attached.",
     "Baseline guarded-mode requirements",
-    "One valuation path, four permissions.",
+    "Execution modes",
     "Core SHA-256",
-    "What this evidence does not claim.",
+    "No live calls, orders or profit claims",
   ]) assert.ok(html.includes(marker), `arbitrage lab is missing ${marker}`);
 
-  for (const option of ["Forward", "Reverse", "0 bp", "5 bp", "10 bp", "Normal", "Stale book", "Shallow depth", "Partial fill"]) {
-    assert.ok(html.includes(`>${option}<`), `arbitrage lab is missing control ${option}`);
+  for (const marker of ["role=\"combobox\"", "Universe", "Liquidity", "Timeline", "Forward", "Reverse", "const feeOptions: UniverseFeeBps[] = [0, 5, 10]", "SimulatedUniverseSource"]) {
+    assert.ok(clientSource.includes(marker), `arbitrage console source is missing ${marker}`);
   }
 
   for (const item of expectedStack[arbitrageRoute]) {
@@ -105,19 +108,33 @@ test("renders the dedicated arbitrage lab and its precomputed controls", async (
   assert.match(html, /<table[^>]*>.*?<caption>/s);
   assert.match(html, /aria-live="polite"/);
   assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
-  assert.match(home, new RegExp(`>${showcase.verification.passedTests}<.*?> tests passing.*?baseline gates.*?live trading`, "s"));
+  assert.match(home, new RegExp(`>${universeManifest.triangleSetCount}<.*?> listed triangles.*?>${universeManifest.routeCount}<.*?> directional points.*?>${showcase.verification.passedTests}<.*?> engine tests`, "s"));
   assert.match(css, /@media \(max-width:\s*900px\)/);
   assert.match(css, /@media \(max-width:\s*640px\)/);
   assert.match(css, /@media \(max-width:\s*420px\)/);
   assert.match(css, /@media \(max-width:\s*320px\)/);
-  assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(consoleCss, /@media \(max-width:\s*900px\)/);
+  assert.match(consoleCss, /@media \(max-width:\s*640px\)/);
+  assert.match(consoleCss, /@media \(max-width:\s*420px\)/);
+  assert.match(consoleCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(triangleCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
   assert.match(css, /overflow:\s*clip/);
-  assert.match(clientSource, /"Not executed"/);
-  assert.match(clientSource, /"Unsubmitted input"/);
-  assert.match(clientSource, /"Acquired position"/);
-  assert.match(clientSource, /"Fee unknown"/);
-  assert.doesNotMatch(clientSource, /maximumLegAmount|leg\.inputAmount\s*\/\s*maximum/);
-  assert.match(css, /\.waterfallTrack i[^}]+width:\s*100%/);
+  assert.match(clientSource, /No order submitted/);
+  assert.match(clientSource, /display-only simulation/);
+  assert.match(clientSource, /fetchArbitrageUniverse/);
+  assert.doesNotMatch(clientSource, /wss:\/\/|api\.upbit\.com/);
+});
+
+test("copies the verified local universe artifact without embedding it in page HTML", async () => {
+  const artifact = new URL("data/arbitrage-universe.v1.json", outputRoot);
+  await access(artifact);
+  const [html, artifactStat] = await Promise.all([
+    routeHtml(arbitrageRoute),
+    import("node:fs/promises").then(({ stat }) => stat(artifact)),
+  ]);
+  assert.ok(artifactStat.size > 1_000_000);
+  assert.ok(html.length < 1_000_000, `arbitrage page HTML is unexpectedly large: ${html.length}`);
+  assert.ok(html.includes(universeManifest.coreFingerprint.slice(0, 16)) || html.includes(String(universeManifest.routeCount)));
 });
 
 test("ships official employer assets locally", async () => {

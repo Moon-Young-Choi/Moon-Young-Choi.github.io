@@ -3,6 +3,7 @@
 import { useMemo, useState, type CSSProperties } from "react";
 import type { ArbitrageShowcaseV1, ShowcaseRow } from "@/app/lib/arbitrageShowcase";
 import { formatAsset, formatRate } from "@/app/lib/arbitrageShowcase";
+import { TriangleRouteGraphic } from "@/app/components/TriangleRouteGraphic";
 import styles from "@/app/components/ArbitrageLab.module.css";
 
 const scenarioControlLabels: Record<string, string> = {
@@ -139,13 +140,8 @@ export function ArbitrageRouteLab({ showcase }: { showcase: ArbitrageShowcaseV1 
 
       <figure className={styles.routeFigure}>
         <figcaption>Selected three-leg route</figcaption>
-        <div className={`${styles.routeMap} ${row.direction === "reverse" ? styles.routeReverse : ""}`}>
-          <div className={styles.routeNodeA}><span>Start / finish</span><strong>{row.route[0]}</strong></div>
-          <div className={styles.routeNodeB}><span>Leg 1</span><strong>{row.route[1]}</strong></div>
-          <div className={styles.routeNodeC}><span>Leg 2</span><strong>{row.route[2]}</strong></div>
-          <i className={styles.routeLineA}><b /></i>
-          <i className={styles.routeLineB}><b /></i>
-          <i className={styles.routeLineC}><b /></i>
+        <div className={styles.routeMap}>
+          <TriangleRouteGraphic assets={row.route} direction={row.direction} variant="lab" />
         </div>
         <ol className={styles.routeSteps}>
           {row.legs.length === 0 && <li className={styles.noLegs}><span>00 / blocked</span><strong>No leg submitted</strong><small>{row.reason}</small></li>}
