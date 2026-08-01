@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ProjectShape } from "@/app/components/ProjectShape";
 import { WorkCardVisual } from "@/app/components/WorkCardVisual";
+import { ArbitrageProjectPanel } from "@/app/components/ArbitrageProjectPanel";
 import { education, projectStudies, workStudies } from "@/app/content";
 
 export default function Home() {
@@ -97,7 +98,7 @@ export default function Home() {
                 <span>{study.number}</span>
                 <span>{study.github ? "Study + source" : "Case study"} <i aria-hidden="true">↗</i></span>
               </div>
-              <ProjectShape type={study.shape} />
+              {study.presentation === "arbitrage-lab" ? <ArbitrageProjectPanel /> : <ProjectShape type={study.shape} />}
               <div className="card-copy">
                 <h3>{study.title}</h3>
                 <p>{study.summary}</p>

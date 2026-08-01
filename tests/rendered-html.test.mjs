@@ -3,6 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 const outputRoot = new URL("../dist/client/", import.meta.url);
+const showcase = JSON.parse(await readFile(new URL("../app/data/arbitrage-showcase.json", import.meta.url), "utf8"));
 const routes = [
   "experience/avikus-simulation-perception",
   "experience/finburh-document-automation",
@@ -13,6 +14,8 @@ const routes = [
   "projects/triangular-arbitrage-detector",
   "projects/eventedge-derivatives",
 ];
+const arbitrageRoute = "projects/triangular-arbitrage-detector";
+const standardRoutes = routes.filter((route) => route !== arbitrageRoute);
 const expectedStack = {
   "experience/avikus-simulation-perception": ["C++", "CUDA", "OpenCV", "OpenMP", "Homography", "Synthetic signal generation"],
   "experience/finburh-document-automation": ["Python", "MCP", "Multi-agent orchestration", "DART", "KRX", "Embedding & retrieval", "Spreadsheet and presentation generation"],
@@ -54,8 +57,8 @@ test("renders the revised home information architecture", async () => {
   assert.doesNotMatch(html, /date of birth|\bage\b/i);
 });
 
-test("places the technology stack between method and validation on every case study", async () => {
-  for (const route of routes) {
+test("keeps the standard case-study contract on the other seven pages", async () => {
+  for (const route of standardRoutes) {
     const html = await routeHtml(route);
     const method = html.indexOf("02 / Method");
     const stack = html.indexOf("03 / Technology stack");
@@ -70,6 +73,51 @@ test("places the technology stack between method and validation on every case st
       assert.ok(html.includes(renderedItem), `${route} is missing ${item}`);
     }
   }
+});
+
+test("renders the dedicated arbitrage lab and its precomputed controls", async () => {
+  const [html, home, css, clientSource] = await Promise.all([
+    routeHtml(arbitrageRoute),
+    routeHtml(),
+    readFile(new URL("../app/components/ArbitrageLab.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ArbitrageRouteLab.tsx", import.meta.url), "utf8"),
+  ]);
+
+  for (const marker of [
+    "Live trading disabled",
+    "Inspect a precomputed route.",
+    "Executable book, not midpoint",
+    "Amount &amp; fee waterfall",
+    "Baseline guarded-mode requirements",
+    "One valuation path, four permissions.",
+    "Core SHA-256",
+    "What this evidence does not claim.",
+  ]) assert.ok(html.includes(marker), `arbitrage lab is missing ${marker}`);
+
+  for (const option of ["Forward", "Reverse", "0 bp", "5 bp", "10 bp", "Normal", "Stale book", "Shallow depth", "Partial fill"]) {
+    assert.ok(html.includes(`>${option}<`), `arbitrage lab is missing control ${option}`);
+  }
+
+  for (const item of expectedStack[arbitrageRoute]) {
+    assert.ok(html.includes(item), `arbitrage lab is missing ${item}`);
+  }
+
+  assert.match(html, /<table[^>]*>.*?<caption>/s);
+  assert.match(html, /aria-live="polite"/);
+  assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
+  assert.match(home, new RegExp(`>${showcase.verification.passedTests}<.*?> tests passing.*?baseline gates.*?live trading`, "s"));
+  assert.match(css, /@media \(max-width:\s*900px\)/);
+  assert.match(css, /@media \(max-width:\s*640px\)/);
+  assert.match(css, /@media \(max-width:\s*420px\)/);
+  assert.match(css, /@media \(max-width:\s*320px\)/);
+  assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(css, /overflow:\s*clip/);
+  assert.match(clientSource, /"Not executed"/);
+  assert.match(clientSource, /"Unsubmitted input"/);
+  assert.match(clientSource, /"Acquired position"/);
+  assert.match(clientSource, /"Fee unknown"/);
+  assert.doesNotMatch(clientSource, /maximumLegAmount|leg\.inputAmount\s*\/\s*maximum/);
+  assert.match(css, /\.waterfallTrack i[^}]+width:\s*100%/);
 });
 
 test("ships official employer assets locally", async () => {

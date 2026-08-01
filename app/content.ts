@@ -8,6 +8,7 @@ export type Formula = {
 
 export type CaseStudy = {
   kind: "work" | "project";
+  presentation: "standard" | "arbitrage-lab";
   number: string;
   slug: string;
   title: string;
@@ -47,6 +48,7 @@ export const education = [
 export const workStudies: CaseStudy[] = [
   {
     kind: "work",
+    presentation: "standard",
     number: "01",
     slug: "avikus-simulation-perception",
     title: "Simulation & Perception Systems",
@@ -109,6 +111,7 @@ export const workStudies: CaseStudy[] = [
   },
   {
     kind: "work",
+    presentation: "standard",
     number: "02",
     slug: "finburh-document-automation",
     title: "Financial Document Automation",
@@ -175,6 +178,7 @@ export const workStudies: CaseStudy[] = [
 export const projectStudies: CaseStudy[] = [
   {
     kind: "project",
+    presentation: "standard",
     number: "01",
     slug: "pwr-scan",
     title: "PWR-Scan",
@@ -236,6 +240,7 @@ export const projectStudies: CaseStudy[] = [
   },
   {
     kind: "project",
+    presentation: "standard",
     number: "02",
     slug: "pwr-scan-validation",
     title: "PWR-Scan Validation",
@@ -297,6 +302,7 @@ export const projectStudies: CaseStudy[] = [
   },
   {
     kind: "project",
+    presentation: "standard",
     number: "03",
     slug: "open-source-intelligence",
     title: "Open Source Intelligence",
@@ -359,6 +365,7 @@ export const projectStudies: CaseStudy[] = [
   },
   {
     kind: "project",
+    presentation: "standard",
     number: "04",
     slug: "bayesian-ad-targeting",
     title: "Bayesian Ad Targeting",
@@ -419,6 +426,7 @@ export const projectStudies: CaseStudy[] = [
   },
   {
     kind: "project",
+    presentation: "arbitrage-lab",
     number: "05",
     slug: "triangular-arbitrage-detector",
     title: "Triangular Arbitrage Detector",
@@ -480,6 +488,7 @@ export const projectStudies: CaseStudy[] = [
   },
   {
     kind: "project",
+    presentation: "standard",
     number: "06",
     slug: "eventedge-derivatives",
     title: "EventEdge Derivatives",
