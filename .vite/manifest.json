@@ -15,7 +15,7 @@
     "name": "rolldown-runtime"
   },
   "app/components/ArbitrageMarketConsole.tsx": {
-    "file": "assets/ArbitrageMarketConsole-Bx4A4eQm.js",
+    "file": "assets/ArbitrageMarketConsole-BoMqu7Xd.js",
     "name": "ArbitrageMarketConsole",
     "src": "app/components/ArbitrageMarketConsole.tsx",
     "isDynamicEntry": true,
@@ -24,11 +24,11 @@
       "_framework-CXnKph_e.js"
     ],
     "css": [
-      "assets/ArbitrageMarketConsole-Bkl4XUCY.css"
+      "assets/ArbitrageMarketConsole-CS3tR4Wf.css"
     ]
   },
   "node_modules/vinext/dist/shims/layout-segment-context.js": {
-    "file": "assets/layout-segment-context-TUrmwuRU.js",
+    "file": "assets/layout-segment-context-B8CnK4Es.js",
     "name": "layout-segment-context",
     "src": "node_modules/vinext/dist/shims/layout-segment-context.js",
     "isDynamicEntry": true,
@@ -39,7 +39,7 @@
     ]
   },
   "node_modules/vinext/dist/shims/link.js": {
-    "file": "assets/link-DG0E8twQ.js",
+    "file": "assets/link-DrkE6i1C.js",
     "name": "link",
     "src": "node_modules/vinext/dist/shims/link.js",
     "isDynamicEntry": true,
@@ -54,7 +54,7 @@
     ]
   },
   "node_modules/vinext/dist/shims/router.js": {
-    "file": "assets/router-DnqTxgkV.js",
+    "file": "assets/router-DQg7fuPh.js",
     "name": "router",
     "src": "node_modules/vinext/dist/shims/router.js",
     "isDynamicEntry": true,
@@ -69,7 +69,7 @@
     ]
   },
   "virtual:vinext-app-browser-entry": {
-    "file": "assets/index-Dbh-6jTu.js",
+    "file": "assets/index-CXu0Lvu9.js",
     "name": "index",
     "src": "virtual:vinext-app-browser-entry",
     "isEntry": true,
