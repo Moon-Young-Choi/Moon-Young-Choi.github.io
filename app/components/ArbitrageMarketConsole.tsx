@@ -99,6 +99,12 @@ function formatAsset(value: number, asset: string) {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 8 }).format(value);
 }
 
+function feedStateLabel(state: ArbitrageUniverseSnapshot["connection"]["state"]) {
+  if (state === "SIMULATED") return "Simulated feed";
+  if (state === "LIVE") return "Live feed";
+  return state.charAt(0) + state.slice(1).toLocaleLowerCase("en-US");
+}
+
 function routeLabel(route: UniverseRoute) {
   return route.route.join(" → ");
 }
@@ -356,10 +362,13 @@ function MarketPlot({
   const breakEvenY = yPosition(1);
   const guardedY = yPosition(1.001);
   const liquidityValues = records.map((record) => record.value.liquidityKrw).filter((value) => value > 0);
-  const minLiquidity = Math.max(1, Math.min(...liquidityValues, 1));
-  const maxLiquidity = Math.max(minLiquidity * 1.01, ...liquidityValues);
-  const logMin = Math.log10(minLiquidity);
-  const logMax = Math.log10(maxLiquidity);
+  const observedMinLiquidity = liquidityValues.length > 0 ? Math.min(...liquidityValues) : 1;
+  const observedMaxLiquidity = liquidityValues.length > 0 ? Math.max(...liquidityValues) : observedMinLiquidity;
+  const observedLogMin = Math.log10(Math.max(1, observedMinLiquidity));
+  const observedLogMax = Math.log10(Math.max(1, observedMaxLiquidity));
+  const logSpan = Math.max(observedLogMax - observedLogMin, 0.1);
+  const logMin = observedLogMin - logSpan * 0.06;
+  const logMax = observedLogMax + logSpan * 0.06;
   const selectedRouteIsVisible = records.some((record) => record.route.id === selectedRouteId);
 
   function recordX(record: PlotRecord) {
@@ -546,7 +555,7 @@ function RouteDetail({
         </div>
       </div>
 
-      <div className={styles.detailReadout} aria-live="polite">
+      <div className={styles.detailReadout} data-route-readout>
         <div><span>Current demo multiplier</span><strong>{formatMultiplier(multiplier)}</strong><small>{formatPercentFromMultiplier(multiplier)}</small></div>
         <div><span>Snapshot output</span><strong>{formatAsset(row.outputAmount, route.startAsset)}</strong><small>{route.startAsset}</small></div>
         <div><span>Executable notional</span><strong>{formatCompactKrw(row.liquidityKrw)}</strong><small>KRW equivalent</small></div>
@@ -761,7 +770,7 @@ function ArbitrageMarketConsoleLoaded({
             <h2 id="market-universe-title">All valid listed triangles, one plane.</h2>
           </div>
           <div className={styles.feedBoundary}>
-            <strong><i /> Simulated feed</strong>
+            <strong data-feed-state={feed.connection.state}><i /> {feedStateLabel(feed.connection.state)}</strong>
             <strong><i /> Trading off</strong>
           </div>
         </div>
@@ -776,7 +785,7 @@ function ArbitrageMarketConsoleLoaded({
 
         <div className={styles.feedBar}>
           <div><span>Demo clock</span><strong data-demo-clock>T+{String(feed.frame.offsetMs / 1000).padStart(2, "0")}s</strong></div>
-          <div><span>Last tick</span><strong>{feed.frame.at.slice(11, 19)} UTC</strong></div>
+          <div><span>Last tick</span><strong>{feed.connection.marketDataTime.slice(11, 19)} UTC</strong></div>
           <div><span>Listed pairs</span><strong>{universe.summary.marketCount.toLocaleString("en-US")}</strong></div>
           <div><span>Triangle sets</span><strong>{universe.summary.triangleSetCount.toLocaleString("en-US")}</strong></div>
           <div><span>Plotted routes</span><strong>{records.length.toLocaleString("en-US")}</strong></div>

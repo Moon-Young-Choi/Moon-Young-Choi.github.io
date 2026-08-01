@@ -1,10 +1,27 @@
 import type { ArbitrageUniverseV1, UniverseFrame } from "./arbitrageUniverse";
 
+export type ArbitrageUniverseFeedState =
+  | "SIMULATED"
+  | "LIVE"
+  | "STALE"
+  | "RECONNECTING"
+  | "UNAVAILABLE";
+
+export type ArbitrageUniverseConnection = Readonly<{
+  source: "simulation" | "live";
+  state: ArbitrageUniverseFeedState;
+  streamId: string;
+  sequence: number;
+  serverTime: string;
+  marketDataTime: string;
+}>;
+
 export type ArbitrageUniverseSnapshot = Readonly<{
   universe: ArbitrageUniverseV1;
   frame: UniverseFrame;
   frameIndex: number;
   playing: boolean;
+  connection: ArbitrageUniverseConnection;
 }>;
 
 export type ArbitrageUniverseSubscriber = (snapshot: ArbitrageUniverseSnapshot) => void;
@@ -133,6 +150,14 @@ export class SimulatedUniverseSource implements ArbitrageUniverseDataSource {
       frame,
       frameIndex: this.frameIndex,
       playing: this.playing,
+      connection: Object.freeze({
+        source: "simulation" as const,
+        state: "SIMULATED" as const,
+        streamId: frame.streamId,
+        sequence: frame.sequence,
+        serverTime: frame.demoTime,
+        marketDataTime: frame.marketDataTime,
+      }),
     });
   }
 

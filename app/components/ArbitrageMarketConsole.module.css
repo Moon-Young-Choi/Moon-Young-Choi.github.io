@@ -71,6 +71,9 @@
 }
 
 .feedBoundary strong:first-child { background: var(--lime); }
+.feedBoundary strong[data-feed-state="STALE"],
+.feedBoundary strong[data-feed-state="RECONNECTING"],
+.feedBoundary strong[data-feed-state="UNAVAILABLE"] { background: var(--coral); }
 .feedBoundary strong:last-child { background: var(--coral); }
 .feedBoundary i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 

@@ -65,6 +65,22 @@ test("search, filters, plot roving focus, tabs and timeline table stay operable"
   await expect(tableDisclosure.locator("tbody tr")).toHaveCount(60);
 });
 
+test("live announcements stay user-driven and liquidity uses its observed log range", async ({ page }) => {
+  await page.goto(DETAIL_PATH);
+  await page.waitForSelector("[data-route-readout]");
+
+  await expect(page.locator("[data-route-readout]")).not.toHaveAttribute("aria-live");
+  await expect(page.locator("[data-feed-state]")).toHaveAttribute("data-feed-state", "SIMULATED");
+  await expect(page.locator("#market-universe [aria-live='polite']")).toHaveCount(1);
+
+  await page.getByRole("tab", { name: /Liquidity/ }).click();
+  const xPositions = await page.locator("[data-plot-route-index]").evaluateAll((points) => points.map((point) => (
+    Number.parseFloat((point).style.getPropertyValue("--x"))
+  )));
+  expect(Math.min(...xPositions)).toBeLessThan(10);
+  expect(Math.max(...xPositions)).toBeGreaterThan(90);
+});
+
 test("the deterministic 1 Hz source pauses and resumes without ticking while paused", async ({ page }) => {
   await openConsole(page);
   const clock = page.locator("[data-demo-clock]");

@@ -51,7 +51,7 @@ export function ArbitrageStatusDock({
       </div>
 
       <dl className={styles.statusDock} aria-label="Arbitrage lab status">
-        <div data-tone="lime"><dt>Market feed</dt><dd>Simulated</dd></div>
+        <div data-tone="lime"><dt>Evidence feed</dt><dd>Simulated</dd></div>
         <div data-tone="coral"><dt>Trading</dt><dd>Off</dd></div>
         <div><dt>Engine tests</dt><dd>{showcase.verification.passedTests}/{showcase.verification.totalTests}</dd></div>
         <div><dt>Triangle sets</dt><dd>{triangleCount.toLocaleString("en-US")}</dd></div>
@@ -157,7 +157,7 @@ export function ArbitrageStatusDock({
         <details id="feed-seam">
           <summary><span>05</span><strong>Public feed seam</strong><small>SSE identity, sequence and fail-closed states</small></summary>
           <div className={styles.drawerBody}>
-            <p className={styles.boundaryStatement}>A future <code>LiveUniverseSource</code> may consume a public SSE service using <code>streamId</code> and monotonic <code>sequence</code> values. The browser will not call Upbit directly or receive exchange API keys.</p>
+            <p className={styles.boundaryStatement}>A future <code>LiveUniverseSource</code> may consume a public SSE service using <code>streamId</code> and monotonic <code>sequence</code> values. Its shared snapshot contract already exposes source, state, server time and market-data time. The browser will not call Upbit directly or receive exchange API keys.</p>
             <ul className={styles.boundaryList}>
               <li><span>Transport</span><strong>SSE</strong></li>
               <li><span>Integrity</span><strong>Stream + seq</strong></li>

@@ -175,6 +175,14 @@ test("simulated source advances deterministically at 1 Hz and emits state transi
     frame: universe.frames[0],
     frameIndex: 0,
     playing: true,
+    connection: {
+      source: "simulation",
+      state: "SIMULATED",
+      streamId: universe.frames[0].streamId,
+      sequence: universe.frames[0].sequence,
+      serverTime: universe.frames[0].demoTime,
+      marketDataTime: universe.frames[0].marketDataTime,
+    },
   });
 
   const unsubscribe = source.subscribe((snapshot) => snapshots.push(snapshot));
@@ -183,6 +191,10 @@ test("simulated source advances deterministically at 1 Hz and emits state transi
 
   scheduler.tick();
   assert.deepEqual([snapshots.at(-1).frameIndex, snapshots.at(-1).playing], [1, true]);
+  assert.deepEqual(
+    [snapshots.at(-1).connection.state, snapshots.at(-1).connection.sequence],
+    ["SIMULATED", universe.frames[1].sequence],
+  );
 
   source.pause();
   assert.deepEqual([snapshots.at(-1).frameIndex, snapshots.at(-1).playing], [1, false]);
