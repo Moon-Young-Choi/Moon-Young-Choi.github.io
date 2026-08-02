@@ -85,6 +85,8 @@ test("Quant homepage cover renders a fitted joint-distribution mesh", async () =
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
   assert.match(css, /\.surfaceCell\[data-tone="4"\]/);
   assert.match(css, /@keyframes quant-mesh-breathe/);
+  assert.match(css, /quant-mesh-breathe 4\.2s/);
+  assert.match(css, /rotateX\(8deg\)[\s\S]*scaleY\(\.86\)/);
   assert.match(css, /@keyframes quant-color-drift/);
   assert.match(css, /@keyframes quant-wire-drift/);
   assert.match(css, /@keyframes quant-peak-pulse/);
