@@ -220,11 +220,11 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(0).locator('img[src="/brand/avikus.png"]')).toHaveCount(1);
   await expect(workCards.nth(1).getByText("MainGate", { exact: true })).toBeVisible();
   await expect(workCards.nth(1).getByText("Partners Inc.", { exact: true })).toBeVisible();
-  await expect(workCards.nth(0).locator('[class*="opticalField"]')).toHaveCount(1);
-  await expect(workCards.nth(0).locator('[class*="aperture"]')).toHaveCount(2);
-  await expect(workCards.nth(0).locator('[class*="refractiveLens"]')).toHaveCount(1);
-  await expect(workCards.nth(0).locator('[class*="refractedBands"]')).toHaveCount(1);
-  await expect(workCards.nth(0).locator('[class*="caustic"]')).toHaveCount(1);
+  await expect(workCards.nth(0).locator('[class*="signalField"]')).toHaveCount(1);
+  await expect(workCards.nth(0).locator('[class*="signalTarget"]')).toHaveCount(7);
+  await expect(workCards.nth(0).locator('[class*="targetPoint"]')).toHaveCount(7);
+  await expect(workCards.nth(0).locator('[class*="signalWave"]')).toHaveCount(7);
+  await expect(workCards.nth(0).locator('[class*="ownShip"]')).toHaveCount(1);
   await expect(workCards.nth(0).locator('[class*="correspondenceLinks"], [class*="imagePlane"]')).toHaveCount(0);
   await expect(workCards.nth(1).locator('[class*="commandRoutes"]')).toHaveCount(1);
   await expect(workCards.nth(1).locator('[class*="conversationAgent"]')).toHaveCount(1);
@@ -233,10 +233,19 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(1).locator('[class*="researchAgent"]')).toHaveCount(1);
   await expect(workCards.locator("svg, canvas, pre, code")).toHaveCount(0);
 
-  const homographyAnimation = await workCards.nth(0).locator('[class*="refractiveLens"]').evaluate((node) => getComputedStyle(node).animationName);
+  const homographyAnimation = await workCards.nth(0).locator('[class*="signalWave"]').first().evaluate((node) => getComputedStyle(node).animationName);
   const commandAnimation = await workCards.nth(1).locator('[class*="commandRoutes"] i').first().evaluate((node) => getComputedStyle(node).animationName);
   expect(homographyAnimation).not.toBe("none");
   expect(commandAnimation).not.toBe("none");
+
+  const signalDelays = await workCards.nth(0).locator('[class*="signalWave"]').evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).animationDelay));
+  expect(new Set(signalDelays).size).toBe(7);
+  const ownShipStyles = await workCards.nth(0).locator('[class*="ownShip"]').evaluate((node) => ({
+    borderWidth: getComputedStyle(node).borderTopWidth,
+    receiveBorderWidth: getComputedStyle(node, "::after").borderTopWidth,
+    receiveAnimation: getComputedStyle(node, "::after").animationName,
+  }));
+  expect(ownShipStyles).toEqual({ borderWidth: "0px", receiveBorderWidth: "2px", receiveAnimation: expect.stringContaining("ownship-receive") });
 
   const agentNodes = [
     workCards.nth(1).locator('[class*="conversationAgent"]'),
@@ -274,7 +283,7 @@ test("dedicated work pages expose public-safe evidence and table alternatives", 
 test("reduced-motion preference freezes both work-card graphic systems", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  const movingNodes = page.locator('.experience-grid [class*="wavefrontField"], .experience-grid [class*="aperture"], .experience-grid [class*="refractiveLens"], .experience-grid [class*="refractedBands"], .experience-grid [class*="caustic"], .experience-grid [class*="commandRoutes"] i, .experience-grid [class*="conversationAgent"], .experience-grid [class*="taskAgent"]');
+  const movingNodes = page.locator('.experience-grid [class*="targetPoint"], .experience-grid [class*="signalWave"], .experience-grid [class*="commandRoutes"] i, .experience-grid [class*="conversationAgent"], .experience-grid [class*="taskAgent"]');
   const count = await movingNodes.count();
   expect(count).toBeGreaterThan(0);
   for (let index = 0; index < count; index += 1) {

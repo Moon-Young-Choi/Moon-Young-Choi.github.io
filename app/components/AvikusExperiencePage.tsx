@@ -45,7 +45,7 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             </div>
             <figure className={styles.heroFigure} aria-labelledby="avikus-field-caption">
               <AvikusProjectiveField variant="hero" />
-              <figcaption id="avikus-field-caption">Two offset optical fields converge around a shared axis; the overlap magnifies and bends the wavefront into one stable refractive aperture.</figcaption>
+              <figcaption id="avikus-field-caption">Seven target points transmit one at a time; each coral circular wave disappears when it reaches the central blue own-ship receiver.</figcaption>
             </figure>
           </div>
           <div className={styles.factDock}>
@@ -85,14 +85,14 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
           </section>
 
           <section className={styles.section} id="alignment" aria-labelledby="alignment-title">
-            <div className={styles.sectionLabel}>02 / Alignment path</div>
+            <div className={styles.sectionLabel}>02 / Perception path</div>
             <div className={styles.sectionBody}>
               <span className={styles.reconstruction}>Architecture reconstruction · no internal imagery</span>
-              <h2 id="alignment-title">Two optical fields. One aligned aperture. A stable panorama.</h2>
+              <h2 id="alignment-title">Sequential targets. Distance-scaled wavefronts. One receiver.</h2>
               <div className={styles.splitFeature}>
                 <figure className={styles.featureFigure} aria-labelledby="alignment-caption">
                   <AvikusProjectiveField variant="hero" />
-                  <figcaption id="alignment-caption">As the optical axes converge, straight wavefronts become enlarged curved bands inside the shared lens and resolve around a narrow caustic.</figcaption>
+                  <figcaption id="alignment-caption">Each target turns coral only while transmitting. Its circle expands by the exact target-to-own-ship distance and vanishes on receipt.</figcaption>
                 </figure>
                 <div>
                   <div className={styles.formula}>

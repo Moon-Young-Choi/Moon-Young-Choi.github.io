@@ -1,20 +1,47 @@
 import styles from "@/app/components/WorkExperienceGraphic.module.css";
+import type { CSSProperties } from "react";
 
 type GraphicProps = {
   variant?: "panel" | "hero";
 };
 
+const signalTargets = [
+  { x: 24, y: 31 },
+  { x: 48, y: 20 },
+  { x: 73, y: 28 },
+  { x: 78, y: 53 },
+  { x: 67, y: 77 },
+  { x: 35, y: 75 },
+  { x: 22, y: 58 },
+];
+
+const signalCycleSeconds = 7.7;
+const signalSlotSeconds = signalCycleSeconds / signalTargets.length;
+type SignalTargetStyle = CSSProperties & Record<`--${string}`, string>;
+
 export function AvikusProjectiveField({ variant = "panel" }: GraphicProps) {
   return (
     <div className={`${styles.graphic} ${variant === "hero" ? styles.hero : ""}`}>
-      <div className={styles.opticalField} aria-hidden="true">
-        <i className={styles.wavefrontField} />
-        <i className={`${styles.aperture} ${styles.apertureOne}`} />
-        <i className={`${styles.aperture} ${styles.apertureTwo}`} />
-        <div className={styles.refractiveLens}>
-          <i className={styles.refractedBands} />
-          <i className={styles.caustic} />
-        </div>
+      <div className={styles.signalField} aria-hidden="true">
+        {signalTargets.map((target, index) => {
+          const reach = Math.hypot(target.x - 50, target.y - 50);
+          return (
+            <span
+              className={styles.signalTarget}
+              key={`${target.x}-${target.y}`}
+              style={{
+                "--target-x": `${target.x}%`,
+                "--target-y": `${target.y}%`,
+                "--wave-diameter": `${reach * 2}%`,
+                "--signal-delay": `${index * signalSlotSeconds}s`,
+              } as SignalTargetStyle}
+            >
+              <i className={styles.targetPoint} />
+              <i className={styles.signalWave} />
+            </span>
+          );
+        })}
+        <i className={styles.ownShip} />
       </div>
     </div>
   );
