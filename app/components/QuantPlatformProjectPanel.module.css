@@ -22,261 +22,148 @@
   pointer-events: none;
 }
 
-.diagram {
+.scene {
   position: relative;
-  width: min(96%, 660px);
-  height: 238px;
+  width: min(94%, 630px);
+  height: 248px;
+  perspective: 720px;
 }
 
-.cutoff {
+.plane {
   position: absolute;
-  left: 4%;
-  top: 9%;
-  width: 9%;
-  height: 82%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.cutoff::before {
-  content: "";
-  position: absolute;
-  left: calc(50% - .5px);
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: currentColor;
-}
-
-.cutoff::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: calc(50% - .5px);
-  width: 92%;
-  height: 1px;
-  background: currentColor;
-}
-
-.cutoff i {
-  position: relative;
-  z-index: 1;
-  width: 11px;
-  height: 11px;
-  display: block;
+  left: 14%;
+  right: 9%;
+  top: 23%;
+  bottom: 7%;
   border: 1px solid currentColor;
-  border-radius: 50%;
-  background: var(--lime);
+  background-image:
+    linear-gradient(color-mix(in srgb, currentColor 45%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, currentColor 45%, transparent) 1px, transparent 1px);
+  background-size: 12.5% 16.66%;
+  transform: rotateX(62deg) rotateZ(-24deg);
+  transform-origin: 50% 70%;
 }
 
-.cutoff i:nth-child(3) {
-  width: 18px;
-  height: 18px;
-  background: currentColor;
-}
-
-.cutoff span {
+.axes {
   position: absolute;
-  z-index: 2;
-  left: calc(50% - 4px);
-  top: calc(50% - 4px);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--lime);
+  inset: 0;
 }
 
-.evidenceRail {
+.axes i {
   position: absolute;
   left: 17%;
-  width: 41%;
-  height: 52px;
-  display: grid;
-  grid-template-columns: 38px 1fr;
-  align-items: center;
-  gap: 10px;
-}
-
-.evidenceRail[data-rail="a"] { top: 25%; }
-.evidenceRail[data-rail="b"] { bottom: 25%; }
-
-.evidenceRail::before,
-.evidenceRail::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  height: 1px;
-  background: currentColor;
-}
-
-.evidenceRail::before { left: -10%; right: 0; top: 50%; }
-.evidenceRail::after { left: 100%; top: 50%; width: 20%; }
-
-.evidenceRail b {
-  position: relative;
-  z-index: 2;
-  width: 38px;
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  background: var(--lime);
-  font: 600 10px/1 var(--font-mono);
-  text-transform: uppercase;
-}
-
-.evidenceRail[data-rail="a"] b { background: var(--blue); color: #fff; border-color: var(--blue); }
-.evidenceRail[data-rail="b"] b { background: var(--coral); border-color: currentColor; }
-
-.evidenceRail > div {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  align-items: center;
-  gap: clamp(5px, 1vw, 11px);
-}
-
-.evidenceRail > div i {
-  aspect-ratio: 1;
-  display: block;
-  border: 1px solid currentColor;
-  background: var(--lime);
-}
-
-.evidenceRail[data-rail="a"] > div i:nth-child(2),
-.evidenceRail[data-rail="a"] > div i:nth-child(4) { background: var(--blue); border-color: var(--blue); }
-.evidenceRail[data-rail="b"] > div i:nth-child(1),
-.evidenceRail[data-rail="b"] > div i:nth-child(5) { background: var(--coral); }
-
-.calibrationGate {
-  position: absolute;
-  z-index: 3;
-  left: 65%;
-  top: 50%;
-  width: 82px;
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  background: var(--lime);
-}
-
-.calibrationGate::after {
-  content: "";
-  position: absolute;
-  left: 100%;
-  top: calc(50% - .5px);
-  width: 125%;
-  height: 1px;
-  background: currentColor;
-}
-
-.calibrationGate span {
-  position: absolute;
-  width: 58%;
-  aspect-ratio: 1;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-}
-
-.calibrationGate i {
-  width: 23%;
-  aspect-ratio: 1;
+  bottom: 18%;
   display: block;
   background: currentColor;
+  transform-origin: left center;
+}
+
+.axes i:nth-child(1) { width: 74%; height: 2px; transform: rotate(-13deg); }
+.axes i:nth-child(2) { width: 53%; height: 2px; transform: rotate(-49deg); }
+.axes i:nth-child(3) { width: 2px; height: 69%; transform: none; transform-origin: center bottom; }
+
+.axes i::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
   transform: rotate(45deg);
-  animation: quant-gate-turn 8s linear infinite;
 }
 
-.allocation {
+.axes i:nth-child(3)::after {
+  right: -3px;
+  top: -1px;
+  transform: rotate(-45deg);
+}
+
+.surface {
   position: absolute;
   z-index: 2;
-  right: 3%;
-  top: 26%;
-  width: 19%;
-  height: 50%;
-  display: flex;
-  align-items: flex-end;
-  gap: clamp(4px, .7vw, 8px);
-  border-bottom: 1px solid currentColor;
+  left: 32%;
+  top: 5%;
+  width: 50%;
+  height: 76%;
+  transform: rotate(-8deg) skewX(-7deg);
+  transform-origin: center bottom;
+  animation: quant-surface-breathe 7s ease-in-out infinite alternate;
 }
 
-.allocation i {
-  flex: 1;
-  min-width: 0;
+.contour {
+  position: absolute;
+  left: 50%;
   display: block;
-  border: 1px solid currentColor;
-  border-bottom: 0;
-  background: var(--lime);
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: color-mix(in srgb, var(--violet) 12%, transparent);
 }
 
-.allocation i[data-active="true"] { background: var(--violet); }
+.contour:nth-child(1),
+.contour:nth-child(2) { border-color: var(--blue); }
+.contour:nth-child(3),
+.contour:nth-child(4),
+.contour:nth-child(5) { border-color: var(--violet); }
+.contour:nth-child(6),
+.contour:nth-child(7),
+.contour:nth-child(8) { border-color: currentColor; }
+
+.surface::before,
+.surface::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: 5%;
+  width: 1px;
+  height: 88%;
+  background: color-mix(in srgb, currentColor 55%, transparent);
+  transform-origin: center bottom;
+}
+
+.surface::before { transform: rotate(-24deg); }
+.surface::after { transform: rotate(24deg); }
 
 .panelSignal {
   position: absolute;
   z-index: 4;
-  left: 10%;
-  top: calc(50% - 4px);
-  width: 8px;
-  height: 8px;
+  left: calc(50% - 7px);
+  top: 5%;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: currentColor;
-  animation: quant-rail-flow 6.8s ease-in-out infinite;
+  animation: quant-peak-pulse 4.8s ease-in-out infinite alternate;
 }
 
-.evidenceRail[data-rail="a"] .panelSignal { background: var(--blue); }
-.evidenceRail[data-rail="b"] .panelSignal { background: var(--coral); animation-delay: -3.4s; }
-
-.outputSignal {
-  left: 70%;
-  top: calc(50% - 5px);
-  width: 10px;
-  height: 10px;
-  background: var(--violet);
-  animation: quant-output-flow 5.2s ease-in-out infinite;
+@keyframes quant-surface-breathe {
+  to { transform: rotate(-5deg) skewX(-5deg) scaleY(.92) scaleX(1.03); }
 }
 
-@keyframes quant-rail-flow {
-  0%, 12% { left: 8%; transform: scale(.7); }
-  76%, 100% { left: 108%; transform: scale(1.25); }
-}
-
-@keyframes quant-output-flow {
-  0%, 16% { left: 70%; transform: scale(.7); }
-  78%, 100% { left: 93%; transform: scale(1.2); }
-}
-
-@keyframes quant-gate-turn {
-  to { transform: rotate(405deg); }
+@keyframes quant-peak-pulse {
+  to { transform: scale(.58); background: var(--blue); }
 }
 
 @media (max-width: 900px) {
   .panel { position: relative; inset: auto; flex: 0 0 260px; height: 260px; margin: 12px 0 30px; }
-  .diagram { width: min(96%, 640px); height: 226px; }
+  .scene { width: min(94%, 600px); height: 228px; }
 }
 
 @media (max-width: 640px) {
   .panel { flex-basis: 236px; height: 236px; margin: 10px 0 22px; }
-  .diagram { height: 210px; }
-  .evidenceRail { grid-template-columns: 32px 1fr; gap: 7px; }
-  .evidenceRail b { width: 32px; }
-  .calibrationGate { width: 68px; }
+  .scene { height: 210px; }
+  .surface { left: 30%; width: 53%; }
 }
 
 @media (max-width: 420px) {
   .panel { flex-basis: 216px; height: 216px; }
-  .diagram { width: 100%; height: 194px; transform: scale(.97); }
-  .evidenceRail { left: 16%; width: 42%; height: 40px; grid-template-columns: 27px 1fr; gap: 5px; }
-  .evidenceRail b { width: 27px; font-size: 8px; }
-  .evidenceRail > div { gap: 4px; }
-  .calibrationGate { left: 65%; width: 58px; }
-  .allocation { right: 1%; width: 18%; }
+  .scene { width: 100%; height: 194px; transform: scale(.96); }
+  .plane { left: 11%; right: 5%; }
+  .axes i { left: 14%; }
+  .surface { left: 28%; width: 57%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

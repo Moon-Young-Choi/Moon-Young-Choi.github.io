@@ -22,299 +22,171 @@
   pointer-events: none;
 }
 
-.diagram {
+.market {
   position: relative;
   width: min(96%, 680px);
   height: 246px;
-}
-
-.statePlane {
-  position: absolute;
-  left: 3%;
-  top: 5%;
-  height: 90%;
-  aspect-ratio: 1;
-  border: 1px solid currentColor;
-  transform: rotate(-2deg);
-}
-
-.statePlane::before,
-.statePlane::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  background: currentColor;
-  opacity: .55;
-}
-
-.statePlane::before { left: 50%; top: 0; bottom: 0; width: 1px; }
-.statePlane::after { left: 0; right: 0; top: 50%; height: 1px; }
-
-.terminalState {
-  position: absolute;
-  z-index: 2;
-  width: 48px;
-  height: 48px;
   display: grid;
-  place-items: center;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  background: var(--coral);
-  font: 600 8px/1 var(--font-mono);
+  grid-template-columns: minmax(0, 1.65fr) minmax(150px, .8fr);
+  gap: clamp(24px, 5vw, 62px);
+  align-items: center;
 }
 
-.terminalState[data-state="1"] { left: 12%; top: 12%; background: var(--lime); }
-.terminalState[data-state="2"] { right: 12%; top: 12%; background: var(--paper); }
-.terminalState[data-state="3"] { left: 12%; bottom: 12%; background: var(--blue); color: #fff; border-color: var(--blue); }
-.terminalState[data-state="4"] { right: 12%; bottom: 12%; background: var(--ink); color: var(--paper); }
+.chart {
+  position: relative;
+  height: 82%;
+  border-left: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  background-image:
+    linear-gradient(color-mix(in srgb, currentColor 28%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, currentColor 28%, transparent) 1px, transparent 1px);
+  background-size: 20% 25%;
+}
 
-.hiddenState {
+.pricePath {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  clip-path: inset(0 0 0 0);
+  animation: eventedge-chart-draw 7s ease-in-out infinite;
+}
+
+.pricePath i {
+  position: absolute;
+  display: block;
+  height: 3px;
+  background: currentColor;
+  transform: rotate(var(--angle));
+  transform-origin: left center;
+}
+
+.pricePath i:nth-child(3),
+.pricePath i:nth-child(5),
+.pricePath i:nth-child(7) { background: var(--blue); }
+
+.ticker {
   position: absolute;
   z-index: 3;
-  left: 50%;
-  top: 50%;
-  width: 50px;
-  height: 50px;
-  transform: translate(-50%, -50%) rotate(45deg);
-  display: grid;
-  place-items: center;
-  border: 1px solid currentColor;
-  background: var(--coral);
-}
-
-.hiddenState::before,
-.hiddenState::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  width: 150px;
-  height: 1px;
-  background: currentColor;
-}
-
-.hiddenState::before { transform: rotate(45deg); }
-.hiddenState::after { transform: rotate(-45deg); }
-
-.hiddenState i {
-  width: 18px;
-  height: 18px;
-  display: block;
+  left: 5%;
+  top: 78%;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--coral);
   border-radius: 50%;
-  background: currentColor;
-  transform: rotate(-45deg);
-  animation: eventedge-hidden-pulse 5s ease-in-out infinite alternate;
+  background: var(--lime);
+  animation: eventedge-ticker 7s ease-in-out infinite;
 }
 
-.package {
-  position: absolute;
-  left: 43%;
-  right: 3%;
-  top: 8%;
-  bottom: 8%;
-}
-
-.package::before {
-  content: "";
-  position: absolute;
-  left: -10%;
-  top: 50%;
-  width: 12%;
-  height: 1px;
-  background: currentColor;
-}
-
-.orderRail {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 58px;
+.orderBook {
+  position: relative;
+  height: 78%;
   display: grid;
-  grid-template-columns: 44px 1fr 24px;
+  grid-template-rows: repeat(7, 1fr);
   align-items: center;
-  gap: 10px;
 }
 
-.orderRail[data-contract="WA"] { top: 10%; }
-.orderRail[data-contract="WB"] { bottom: 10%; }
-
-.orderRail::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  left: 22px;
-  right: 0;
-  top: calc(50% - .5px);
-  height: 1px;
-  background: currentColor;
-}
-
-.orderRail > b {
-  position: relative;
-  z-index: 2;
-  width: 44px;
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  background: var(--coral);
-  font: 600 8px/1 var(--font-mono);
-}
-
-.orderRail[data-contract="WA"] > b { background: var(--blue); color: #fff; border-color: var(--blue); }
-.orderRail[data-contract="WB"] > b { background: var(--lime); }
-
-.orderRail > div {
-  position: relative;
-  z-index: 1;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  gap: clamp(4px, .75vw, 8px);
-}
-
-.orderRail > div i {
-  flex: 1;
-  min-width: 0;
-  display: block;
-  border: 1px solid currentColor;
-  background: var(--coral);
-}
-
-.orderRail > div i:nth-child(1),
-.orderRail > div i:nth-child(7) { height: 18%; }
-.orderRail > div i:nth-child(2),
-.orderRail > div i:nth-child(6) { height: 35%; }
-.orderRail > div i:nth-child(3),
-.orderRail > div i:nth-child(5) { height: 58%; }
-.orderRail > div i:nth-child(4) { height: 82%; background: currentColor; }
-.orderRail[data-contract="WB"] > div { transform: scaleY(-1); }
-.orderRail[data-contract="WB"] > div i:nth-child(4) { background: var(--lime); }
-
-.orderRail > span {
-  position: relative;
-  z-index: 2;
-  width: 17px;
-  height: 17px;
-  display: block;
-  border: 1px solid currentColor;
-  transform: rotate(45deg);
-  background: var(--coral);
-}
-
-.fillGate {
-  position: absolute;
-  z-index: 4;
-  right: 14%;
-  top: 50%;
-  width: 58px;
-  height: 58px;
-  transform: translateY(-50%);
-  display: grid;
-  place-items: center;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  background: var(--coral);
-}
-
-.fillGate::before {
+.orderBook::before {
   content: "";
   position: absolute;
   left: 50%;
-  top: -70px;
-  bottom: -70px;
+  top: -7%;
+  bottom: -7%;
   width: 1px;
   background: currentColor;
-  z-index: -1;
 }
 
-.fillGate span { font: 400 20px/1 var(--font-display); }
-.fillGate b { position: absolute; bottom: 8px; font: 500 6px/1 var(--font-mono); }
-
-.packageSignal {
-  position: absolute;
-  z-index: 5;
-  left: 17%;
-  top: 0;
-  bottom: 0;
-  width: 10px;
-  animation: eventedge-package-flow 6.4s ease-in-out infinite;
+.depthLevel {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 10px 1fr;
+  align-items: center;
+  gap: 5px;
 }
 
-.packageSignal i {
-  position: absolute;
-  left: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+.depthLevel i {
+  display: block;
+  height: 8px;
+  animation: eventedge-depth 2.8s ease-in-out infinite alternate;
+  animation-delay: var(--delay);
 }
 
-.packageSignal i:first-child { top: calc(24% - 5px); background: var(--blue); }
-.packageSignal i:last-child { bottom: calc(24% - 5px); background: var(--lime); }
-
-.settlement {
-  position: absolute;
-  right: -1px;
-  top: 20%;
-  bottom: 20%;
-  width: 16px;
-  border-right: 1px solid currentColor;
-}
-
-.settlement i {
-  position: absolute;
-  right: -5px;
-  width: 10px;
-  height: 10px;
+.depthLevel span {
+  width: 6px;
+  height: 6px;
   display: block;
   border-radius: 50%;
   background: currentColor;
 }
 
-.settlement i:first-child { top: -5px; }
-.settlement i:last-child { bottom: -5px; }
-
-@keyframes eventedge-hidden-pulse {
-  to { transform: rotate(-45deg) scale(.62); }
+.bid {
+  justify-self: end;
+  transform-origin: right center;
+  background: var(--blue);
 }
 
-@keyframes eventedge-package-flow {
-  0%, 12% { left: 17%; transform: scale(.75); }
-  76%, 100% { left: 91%; transform: scale(1.2); }
+.ask {
+  justify-self: start;
+  transform-origin: left center;
+  border: 1px solid currentColor;
+  background: var(--paper);
+}
+
+.orderBook > b {
+  position: absolute;
+  z-index: 3;
+  left: calc(50% - 5px);
+  top: -2%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--lime);
+  animation: eventedge-book-tick 5.2s ease-in-out infinite;
+}
+
+@keyframes eventedge-chart-draw {
+  0%, 8% { clip-path: inset(0 100% 0 0); }
+  62%, 100% { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes eventedge-ticker {
+  0%, 8% { left: 5%; top: 78%; }
+  19% { left: 18%; top: 61%; }
+  27% { left: 31%; top: 70%; }
+  36% { left: 44%; top: 42%; }
+  45% { left: 57%; top: 49%; }
+  54% { left: 70%; top: 25%; }
+  62%, 100% { left: 96%; top: 15%; }
+}
+
+@keyframes eventedge-depth {
+  0% { transform: scaleX(.64); opacity: .62; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes eventedge-book-tick {
+  0%, 12% { top: -2%; }
+  88%, 100% { top: 98%; }
 }
 
 @media (max-width: 900px) {
   .panel { position: relative; inset: auto; flex: 0 0 260px; height: 260px; margin: 12px 0 30px; }
-  .diagram { width: min(96%, 650px); height: 228px; }
+  .market { width: min(96%, 650px); height: 228px; }
 }
 
 @media (max-width: 640px) {
   .panel { flex-basis: 236px; height: 236px; margin: 10px 0 22px; }
-  .diagram { height: 210px; }
-  .terminalState { width: 40px; height: 40px; }
-  .hiddenState { width: 42px; height: 42px; }
-  .orderRail { grid-template-columns: 36px 1fr 18px; gap: 6px; }
-  .orderRail > b { width: 36px; }
-  .fillGate { right: 12%; width: 48px; height: 48px; }
+  .market { height: 210px; grid-template-columns: minmax(0, 1.5fr) minmax(125px, .8fr); gap: 22px; }
+  .depthLevel { grid-template-columns: 1fr 8px 1fr; gap: 3px; }
+  .depthLevel i { height: 7px; }
 }
 
 @media (max-width: 420px) {
   .panel { flex-basis: 216px; height: 216px; }
-  .diagram { width: 100%; height: 194px; transform: scale(.97); }
-  .statePlane { left: 1%; height: 84%; top: 8%; }
-  .terminalState { width: 34px; height: 34px; font-size: 7px; }
-  .hiddenState { width: 36px; height: 36px; }
-  .hiddenState::before, .hiddenState::after { width: 112px; }
-  .package { left: 43%; right: 1%; }
-  .orderRail { grid-template-columns: 29px 1fr 14px; gap: 4px; }
-  .orderRail > b { width: 29px; font-size: 7px; }
-  .orderRail > div { gap: 3px; }
-  .orderRail > span { width: 12px; height: 12px; }
-  .fillGate { right: 10%; width: 40px; height: 40px; }
-  .fillGate span { font-size: 16px; }
-  .fillGate b { bottom: 5px; font-size: 5px; }
-  .packageSignal { width: 7px; }
-  .packageSignal i { width: 7px; height: 7px; }
+  .market { width: 100%; height: 194px; grid-template-columns: minmax(0, 1.35fr) minmax(102px, .75fr); gap: 16px; transform: scale(.97); }
+  .chart { height: 76%; }
+  .orderBook { height: 72%; }
+  .depthLevel i { height: 6px; }
+  .ticker { width: 9px; height: 9px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

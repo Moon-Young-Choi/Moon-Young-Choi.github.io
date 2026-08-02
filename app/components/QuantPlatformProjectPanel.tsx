@@ -3,35 +3,24 @@ import styles from "@/app/components/QuantPlatformProjectPanel.module.css";
 export function QuantPlatformProjectPanel() {
   return (
     <figure className={styles.panel} aria-labelledby="quant-panel-caption">
-      <div className={styles.diagram} aria-hidden="true">
-        <div className={styles.cutoff}>
-          {Array.from({ length: 5 }, (_, index) => <i key={index} />)}
-          <span />
-        </div>
-
-        {(["a", "b"] as const).map((rail) => (
-          <div className={styles.evidenceRail} data-rail={rail} key={rail}>
-            <b>{rail}</b>
-            <div>{Array.from({ length: 5 }, (_, index) => <i key={index} />)}</div>
-            <span className={styles.panelSignal} />
-          </div>
-        ))}
-
-        <div className={styles.calibrationGate}>
-          <span />
-          <i />
-        </div>
-
-        <div className={styles.allocation}>
-          {[38, 72, 52, 88, 30].map((height, index) => (
-            <i data-active={index === 1 || index === 3} key={index} style={{ height: `${height}%` }} />
+      <div className={styles.scene} aria-hidden="true">
+        <div className={styles.plane} />
+        <div className={styles.axes}><i /><i /><i /></div>
+        <div className={styles.surface}>
+          {Array.from({ length: 8 }, (_, index) => (
+            <i className={styles.contour} key={index} style={{
+              width: `${100 - index * 10}%`,
+              height: `${34 - index * 2}%`,
+              bottom: `${index * 8}%`,
+              opacity: 0.44 + index * 0.07,
+            }} />
           ))}
+          <span className={styles.panelSignal} />
         </div>
-        <span className={`${styles.panelSignal} ${styles.outputSignal}`} />
       </div>
 
       <figcaption className={styles.visuallyHidden} id="quant-panel-caption">
-        A geometric view of the Quant Platform: one point-in-time cutoff feeds isolated A and B evidence rails, a central calibration gate, and a constrained portfolio allocation vector.
+        A three-dimensional probability surface over a coordinate plane, representing the Quant Platform&apos;s combined forecast distribution.
       </figcaption>
     </figure>
   );

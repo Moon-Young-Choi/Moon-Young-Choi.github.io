@@ -72,18 +72,18 @@ test("Quant architecture snapshot is sanitized and accepted by the offline sync 
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
 });
 
-test("Quant homepage cover expresses the point-in-time architecture as geometric evidence flow", async () => {
+test("Quant homepage cover renders one three-dimensional joint-distribution surface", async () => {
   const [panel, css] = await Promise.all([
     readFile(new URL("../app/components/QuantPlatformProjectPanel.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/QuantPlatformProjectPanel.module.css", import.meta.url), "utf8"),
   ]);
 
-  for (const marker of ["styles.cutoff", "styles.evidenceRail", "styles.calibrationGate", "styles.allocation", "styles.panelSignal"]) {
-    assert.ok(panel.includes(marker), `Quant geometric cover is missing ${marker}`);
+  for (const marker of ["styles.scene", "styles.plane", "styles.axes", "styles.surface", "styles.contour", "styles.panelSignal"]) {
+    assert.ok(panel.includes(marker), `Quant probability-surface cover is missing ${marker}`);
   }
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
-  assert.match(css, /@keyframes quant-rail-flow/);
-  assert.match(css, /@keyframes quant-output-flow/);
-  assert.match(css, /@keyframes quant-gate-turn/);
+  assert.match(css, /perspective:\s*720px/);
+  assert.match(css, /@keyframes quant-surface-breathe/);
+  assert.match(css, /@keyframes quant-peak-pulse/);
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.panel/);
 });

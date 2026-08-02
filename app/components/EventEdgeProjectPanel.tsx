@@ -1,34 +1,58 @@
+import type { CSSProperties } from "react";
 import styles from "@/app/components/EventEdgeProjectPanel.module.css";
 
-const terminalStates = ["S1", "S2", "S3", "S4"];
+const priceSegments = [
+  { left: "5%", top: "78%", width: "16%", angle: "-35deg" },
+  { left: "18%", top: "61%", width: "14%", angle: "20deg" },
+  { left: "31%", top: "70%", width: "20%", angle: "-50deg" },
+  { left: "44%", top: "42%", width: "14%", angle: "16deg" },
+  { left: "57%", top: "49%", width: "18%", angle: "-43deg" },
+  { left: "70%", top: "25%", width: "14.5%", angle: "24deg" },
+  { left: "83%", top: "36%", width: "16%", angle: "-43deg" },
+];
+
+const depth = [
+  [42, 66],
+  [58, 82],
+  [76, 96],
+  [94, 88],
+  [69, 72],
+  [51, 54],
+  [34, 39],
+];
 
 export function EventEdgeProjectPanel() {
   return (
     <figure className={styles.panel} aria-labelledby="eventedge-panel-caption">
-      <div className={styles.diagram} aria-hidden="true">
-        <div className={styles.statePlane}>
-          {terminalStates.map((state, index) => (
-            <span className={styles.terminalState} data-state={index + 1} key={state}><b>{state}</b></span>
-          ))}
-          <div className={styles.hiddenState}><i /></div>
+      <div className={styles.market} aria-hidden="true">
+        <div className={styles.chart}>
+          <div className={styles.pricePath}>
+            {priceSegments.map((segment, index) => (
+              <i key={index} style={{
+                left: segment.left,
+                top: segment.top,
+                width: segment.width,
+                "--angle": segment.angle,
+              } as CSSProperties} />
+            ))}
+          </div>
+          <span className={styles.ticker} />
         </div>
 
-        <div className={styles.package}>
-          {(["WA", "WB"] as const).map((contract) => (
-            <div className={styles.orderRail} data-contract={contract} key={contract}>
-              <b>{contract}</b>
-              <div>{Array.from({ length: 7 }, (_, index) => <i key={index} />)}</div>
+        <div className={styles.orderBook}>
+          {depth.map(([bid, ask], index) => (
+            <div className={styles.depthLevel} key={index} style={{ "--delay": `${index * -0.23}s` } as CSSProperties}>
+              <i className={styles.bid} style={{ width: `${bid}%` }} />
               <span />
+              <i className={styles.ask} style={{ width: `${ask}%` }} />
             </div>
           ))}
-          <div className={styles.fillGate}><span>φ</span><b>.50</b></div>
-          <div className={styles.packageSignal} data-eventedge-signal><i /><i /></div>
-          <div className={styles.settlement}><i /><i /></div>
+          <b data-eventedge-signal />
         </div>
       </div>
 
       <figcaption className={styles.visuallyHidden} id="eventedge-panel-caption">
-        A geometric view of EventEdge: four terminal payoff states surround hidden game state, while two derivative order-book legs share one risk gate and atomic fill ratio before settlement.
+        An animated derivatives price path beside a moving bid and ask order book.
       </figcaption>
     </figure>
   );
