@@ -8,7 +8,7 @@ export type Formula = {
 
 export type CaseStudy = {
   kind: "work" | "project";
-  presentation: "standard" | "quant-platform" | "pwr-theory" | "arbitrage-lab";
+  presentation: "standard" | "quant-platform" | "pwr-theory" | "arbitrage-lab" | "eventedge-market";
   number: string;
   slug: string;
   title: string;
@@ -365,64 +365,65 @@ export const projectStudies: CaseStudy[] = [
   },
   {
     kind: "project",
-    presentation: "standard",
+    presentation: "eventedge-market",
     number: "04",
-    slug: "bayesian-ad-targeting",
-    title: "Bayesian Ad Targeting",
+    slug: "eventedge-derivatives",
+    title: "EventEdge Derivatives",
     accent: "coral",
-    shape: "bayes",
-    eyebrow: "Offline incremental-effect allocation",
+    shape: "derivatives",
+    eyebrow: "Incomplete-information market simulator",
     summary:
-      "A compact decision system that estimates treatment uplift and allocates a limited budget by sampled net incremental value.",
-    tags: ["Python", "Bayesian inference", "Policy simulation"],
+      "A multi-game derivatives market where public game states generate joint payoff scenarios, quotes, package orders, and portfolio risk.",
+    tags: ["C++", "Monte Carlo", "CVaR", "Market making"],
     stack: [
-      { group: "Core", items: ["Python", "NumPy", "pandas"] },
-      { group: "Inference & policy", items: ["Beta–Bernoulli inference", "Thompson Sampling"] },
+      { group: "Core", items: ["C++", "Linux CLI"] },
+      { group: "Risk & simulation", items: ["Monte Carlo simulation", "CVaR"] },
+      { group: "Market model", items: ["order-book simulation"] },
+      { group: "Verification", items: ["exact-enumeration/CFR validation"] },
     ],
     facts: [
-      ["Evidence", "Randomized treatment logs"],
-      ["Model", "Beta–Bernoulli"],
-      ["Policy", "Thompson allocation"],
-      ["Mode", "Offline CLI"],
+      ["Underlyings", "Kuhn · Leduc games"],
+      ["Contracts", "Futures · options · swaps"],
+      ["Market", "20-level order books"],
+      ["Source", "Private research artifact"],
     ],
-    flow: ["Randomized log", "Segment posteriors", "Budget policy", "Independent holdout"],
+    flow: ["Public game state", "Joint scenarios", "Payoff matrix", "Quotes · package risk"],
     formulas: [
       {
-        label: "Segment uplift posterior",
-        expression: String.raw`\theta_{\ell,z}\mid D\sim\operatorname{Beta}(\alpha_{\ell,z}+r_{\ell,z},\ \beta_{\ell,z}+q_{\ell,z}),\qquad \Delta_\ell=\theta_{\ell,1}-\theta_{\ell,0}`,
-        note: "Treatment and control response rates are updated separately; the decision object is their difference.",
+        label: "Scenario payoff map",
+        expression: String.raw`A=[\mathbf y_1\;\cdots\;\mathbf y_K],\qquad \Pi^{(n)}=\mathbf a_n^{\mathsf T}(\mathbf q+\Delta\mathbf q)-C^{(n)}`,
+        note: "A joint scenario row values every contract, preserving cross-game and cross-contract dependence in one portfolio cash flow.",
       },
       {
-        label: "Economic decision gate",
-        expression: String.raw`\Pr\!\left(\Delta_\ell>\frac{c}{v}\mid D\right)\ge\tau,\qquad \sum_\ell x_\ell\le B`,
-        note: "A segment must clear break-even uplift under posterior uncertainty and the global allocation budget.",
+        label: "Tail-risk objective",
+        expression: String.raw`\operatorname{CVaR}_\alpha(L)=\min_\zeta\left[\zeta+\frac{1}{(1-\alpha)N}\sum_{n=1}^{N}(L_n-\zeta)_+\right]`,
+        note: "Candidate packages are evaluated against the existing portfolio rather than as isolated trades.",
       },
     ],
     sections: [
       {
-        title: "From response to incrementality",
+        title: "A market over uncertain events",
         paragraphs: [
-          "The system uses randomized treatment and control evidence from the Criteo Uplift Prediction Dataset. An adaptive feature tree defines policy segments; empirical-Bayes root priors stabilize sparse leaves, and sufficient statistics may be discounted for sequential replay.",
-          "Thompson samples turn posterior uncertainty into exploration and exploitation. Exposure cost divided by normalized conversion value defines the break-even uplift, so a high response rate alone cannot authorize allocation.",
+          "Up to twenty simultaneous Kuhn or Leduc games act as small incomplete-information event processes. Underlying players follow equilibrium policies; the market maker and user agent observe only public state. Futures, options, and variance swaps translate game outcomes and probability changes into scenario-dependent cash flows.",
+          "Different agent beliefs are represented as disciplined tilts of a common reference distribution. Joint Monte Carlo scenarios produce a single payoff matrix, so a package can hedge one game with another without discarding dependence.",
         ],
       },
       {
-        title: "Independent policy evidence",
+        title: "Quotes, packages, and invariants",
         paragraphs: [
-          "Development, replay, and test partitions have separate roles. The policy is learned and replayed before the untouched test split evaluates incremental conversion and normalized net value. A reusable case is retained only when both the posterior gate and positive holdout uplift agree.",
-          "The public benchmark is one reproducible offline split, not a production advertising claim. The dataset has anonymized features and lacks user identity, campaign cost, and timestamp fields, so frequency control is represented only by a segment-level allocation cap.",
+          "The market maker converts scenario value and inventory covariance into reservation prices, bid–ask spreads, and depth. The user evaluates expected P&L, CVaR, worst-case loss, leverage, margin, and concentration for the combined portfolio.",
+          "Multi-leg packages share one fill ratio and commit atomically. If any leg violates available depth or a risk gate, the state rolls back; after a successful commit, buyer and seller position changes must still sum to zero contract by contract.",
         ],
       },
     ],
     validation: [
-      "Preserve randomized treatment/control balance while sampling the source file.",
-      "Fit priors and segment structure without access to the independent test split.",
-      "Report credible intervals and posterior probability above break-even.",
-      "Retain cases only after an independent positive-uplift check.",
+      "Compare small games with exact enumeration before using Monte Carlo scenarios.",
+      "Measure equilibrium-policy exploitability and public-belief calibration.",
+      "Check cash, position, fill-ratio, and atomic rollback invariants.",
+      "Evaluate net P&L after spread, slippage, fees, and portfolio tail risk.",
     ],
     boundary:
-      "This is an offline research simulator on a public randomized dataset, not a deployed ad platform or evidence of production lift.",
-    github: "https://github.com/Moon-Young-Choi/bayesian-ad-targeting",
+      "This is a research specification and simulator, not a poker agent, exchange, live trading system, or observed performance study. Source code is not public.",
   },
   {
     kind: "project",
@@ -490,63 +491,62 @@ export const projectStudies: CaseStudy[] = [
     kind: "project",
     presentation: "standard",
     number: "06",
-    slug: "eventedge-derivatives",
-    title: "EventEdge Derivatives",
+    slug: "bayesian-ad-targeting",
+    title: "Bayesian Ad Targeting",
     accent: "paper",
-    shape: "derivatives",
-    eyebrow: "Incomplete-information market simulator",
+    shape: "bayes",
+    eyebrow: "Offline incremental-effect allocation",
     summary:
-      "A multi-game derivatives market where public game states generate joint payoff scenarios, quotes, package orders, and portfolio risk.",
-    tags: ["C++", "Monte Carlo", "CVaR", "Market making"],
+      "A compact decision system that estimates treatment uplift and allocates a limited budget by sampled net incremental value.",
+    tags: ["Python", "Bayesian inference", "Policy simulation"],
     stack: [
-      { group: "Core", items: ["C++", "Linux CLI"] },
-      { group: "Risk & simulation", items: ["Monte Carlo simulation", "CVaR"] },
-      { group: "Market model", items: ["order-book simulation"] },
-      { group: "Verification", items: ["exact-enumeration/CFR validation"] },
+      { group: "Core", items: ["Python", "NumPy", "pandas"] },
+      { group: "Inference & policy", items: ["Beta–Bernoulli inference", "Thompson Sampling"] },
     ],
     facts: [
-      ["Underlyings", "Kuhn · Leduc games"],
-      ["Contracts", "Futures · options · swaps"],
-      ["Market", "20-level order books"],
-      ["Source", "Private research artifact"],
+      ["Evidence", "Randomized treatment logs"],
+      ["Model", "Beta–Bernoulli"],
+      ["Policy", "Thompson allocation"],
+      ["Mode", "Offline CLI"],
     ],
-    flow: ["Public game state", "Joint scenarios", "Payoff matrix", "Quotes · package risk"],
+    flow: ["Randomized log", "Segment posteriors", "Budget policy", "Independent holdout"],
     formulas: [
       {
-        label: "Scenario payoff map",
-        expression: String.raw`A=[\mathbf y_1\;\cdots\;\mathbf y_K],\qquad \Pi^{(n)}=\mathbf a_n^{\mathsf T}(\mathbf q+\Delta\mathbf q)-C^{(n)}`,
-        note: "A joint scenario row values every contract, preserving cross-game and cross-contract dependence in one portfolio cash flow.",
+        label: "Segment uplift posterior",
+        expression: String.raw`\theta_{\ell,z}\mid D\sim\operatorname{Beta}(\alpha_{\ell,z}+r_{\ell,z},\ \beta_{\ell,z}+q_{\ell,z}),\qquad \Delta_\ell=\theta_{\ell,1}-\theta_{\ell,0}`,
+        note: "Treatment and control response rates are updated separately; the decision object is their difference.",
       },
       {
-        label: "Tail-risk objective",
-        expression: String.raw`\operatorname{CVaR}_\alpha(L)=\min_\zeta\left[\zeta+\frac{1}{(1-\alpha)N}\sum_{n=1}^{N}(L_n-\zeta)_+\right]`,
-        note: "Candidate packages are evaluated against the existing portfolio rather than as isolated trades.",
+        label: "Economic decision gate",
+        expression: String.raw`\Pr\!\left(\Delta_\ell>\frac{c}{v}\mid D\right)\ge\tau,\qquad \sum_\ell x_\ell\le B`,
+        note: "A segment must clear break-even uplift under posterior uncertainty and the global allocation budget.",
       },
     ],
     sections: [
       {
-        title: "A market over uncertain events",
+        title: "From response to incrementality",
         paragraphs: [
-          "Up to twenty simultaneous Kuhn or Leduc games act as small incomplete-information event processes. Underlying players follow equilibrium policies; the market maker and user agent observe only public state. Futures, options, and variance swaps translate game outcomes and probability changes into scenario-dependent cash flows.",
-          "Different agent beliefs are represented as disciplined tilts of a common reference distribution. Joint Monte Carlo scenarios produce a single payoff matrix, so a package can hedge one game with another without discarding dependence.",
+          "The system uses randomized treatment and control evidence from the Criteo Uplift Prediction Dataset. An adaptive feature tree defines policy segments; empirical-Bayes root priors stabilize sparse leaves, and sufficient statistics may be discounted for sequential replay.",
+          "Thompson samples turn posterior uncertainty into exploration and exploitation. Exposure cost divided by normalized conversion value defines the break-even uplift, so a high response rate alone cannot authorize allocation.",
         ],
       },
       {
-        title: "Quotes, packages, and invariants",
+        title: "Independent policy evidence",
         paragraphs: [
-          "The market maker converts scenario value and inventory covariance into reservation prices, bid–ask spreads, and depth. The user evaluates expected P&L, CVaR, worst-case loss, leverage, margin, and concentration for the combined portfolio.",
-          "Multi-leg packages share one fill ratio and commit atomically. If any leg violates available depth or a risk gate, the state rolls back; after a successful commit, buyer and seller position changes must still sum to zero contract by contract.",
+          "Development, replay, and test partitions have separate roles. The policy is learned and replayed before the untouched test split evaluates incremental conversion and normalized net value. A reusable case is retained only when both the posterior gate and positive holdout uplift agree.",
+          "The public benchmark is one reproducible offline split, not a production advertising claim. The dataset has anonymized features and lacks user identity, campaign cost, and timestamp fields, so frequency control is represented only by a segment-level allocation cap.",
         ],
       },
     ],
     validation: [
-      "Compare small games with exact enumeration before using Monte Carlo scenarios.",
-      "Measure equilibrium-policy exploitability and public-belief calibration.",
-      "Check cash, position, fill-ratio, and atomic rollback invariants.",
-      "Evaluate net P&L after spread, slippage, fees, and portfolio tail risk.",
+      "Preserve randomized treatment/control balance while sampling the source file.",
+      "Fit priors and segment structure without access to the independent test split.",
+      "Report credible intervals and posterior probability above break-even.",
+      "Retain cases only after an independent positive-uplift check.",
     ],
     boundary:
-      "This is a research specification and simulator, not a poker agent, exchange, or live trading system. Source code is not public.",
+      "This is an offline research simulator on a public randomized dataset, not a deployed ad platform or evidence of production lift.",
+    github: "https://github.com/Moon-Young-Choi/bayesian-ad-targeting",
   },
 ];
 

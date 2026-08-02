@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const widths = [1280, 900, 640, 420, 320];
-const routes = ["/", "/projects/quant-platform/", "/projects/pwr-scan/"];
+const routes = ["/", "/projects/quant-platform/", "/projects/pwr-scan/", "/projects/eventedge-derivatives/"];
 
 for (const width of widths) {
   test(`Quant and PWR layouts do not widen the document at ${width}px`, async ({ page }) => {
@@ -110,10 +110,36 @@ test("Quant architecture exposes tables and truthful work-in-progress boundaries
   await expect(page.getByRole("link", { name: /GitHub/i })).toHaveCount(0);
 });
 
+test("EventEdge selects precomputed decisions and keeps terminal truth locked until reveal", async ({ page }) => {
+  await page.goto("/projects/eventedge-derivatives/");
+  await expect(page.getByRole("heading", { name: "One public snapshot. Two decisions. Four terminal states." })).toBeVisible();
+  const live = page.locator('[aria-live="polite"]');
+  await expect(live).toContainText("B · Sell WA + Buy WB");
+  await expect(live).toContainText("50% filled");
+  await expect(page.getByText("LOCKED", { exact: true })).toHaveCount(4);
+  await expect(page.getByText("TRUE STATE LOCKED", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "A · Buy WA", exact: true }).click();
+  await expect(live).toContainText("rejected");
+  await expect(page.getByText("+13.00", { exact: true }).first()).toBeVisible();
+
+  await page.getByRole("button", { name: "B · Sell WA + Buy WB", exact: true }).click();
+  await page.getByRole("button", { name: "Shallow liquidity", exact: true }).click();
+  await page.getByRole("button", { name: "S4", exact: true }).click();
+  await expect(live).toContainText("Shallow liquidity");
+  await page.getByRole("button", { name: "REVEAL & SETTLE", exact: true }).click();
+  await expect(page.getByText("ALL INVARIANTS PASS", { exact: true })).toBeVisible();
+  await expect(page.getByText("TRUE STATE LOCKED", { exact: true })).toHaveCount(0);
+  const benchmarkCells = page.getByRole("table", { name: /Scenario weights/i }).locator("tbody tr td:nth-child(3)");
+  await expect(benchmarkCells).toHaveCount(4);
+  expect(await benchmarkCells.allTextContents()).toEqual(["25%", "25%", "25%", "25%"]);
+  await expect(page.getByRole("table")).toHaveCount(6);
+});
+
 test("reduced-motion preference removes explanatory cover animation", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  const movingNodes = page.locator('[class*="panelSignal"], [class*="coverSignal"]');
+  const movingNodes = page.locator('[class*="panelSignal"], [class*="coverSignal"], [data-eventedge-signal]');
   const count = await movingNodes.count();
   for (let index = 0; index < count; index += 1) {
     const style = await movingNodes.nth(index).evaluate((node) => getComputedStyle(node));

@@ -1,0 +1,6713 @@
+{
+  "schemaVersion": "eventedge-demo.v1",
+  "provenance": {
+    "dataClass": "reconstructed-demo",
+    "seed": "eventedge-reconstructed-market-20260802",
+    "generatorVersion": "eventedge-market-reconstruction/1.0.0",
+    "generatedAt": "2026-08-02T00:00:00.000Z",
+    "sourcePublished": false,
+    "fingerprintAlgorithm": "sha256(stable-json-authenticated-v1)",
+    "fingerprint": "6ff518b3dcb4b1be6f38d8eaee7006d668b0da8a0204e214be2efee422131e75"
+  },
+  "market": {
+    "underlying": {
+      "id": "kuhn-one-game-four-state",
+      "label": "Kuhn poker public-state snapshot",
+      "publicState": [
+        "Pot and ante",
+        "Public action history",
+        "Legal next actions",
+        "Registered contract set"
+      ],
+      "hiddenState": [
+        "Private cards",
+        "Random seed",
+        "Future actions",
+        "Realized terminal state"
+      ],
+      "actionTiming": "Trade after the latest public game action and before the next underlying action."
+    },
+    "states": [
+      {
+        "id": "S1",
+        "label": "A showdown win",
+        "description": "A wins at showdown after a large probability-path move.",
+        "trueWeight": 0.25,
+        "payoffs": {
+          "WA": 100,
+          "WB": 0,
+          "VOL": 100
+        }
+      },
+      {
+        "id": "S2",
+        "label": "B folds to A",
+        "description": "A wins by fold after a smaller public-state move.",
+        "trueWeight": 0.25,
+        "payoffs": {
+          "WA": 100,
+          "WB": 0,
+          "VOL": 0
+        }
+      },
+      {
+        "id": "S3",
+        "label": "B showdown win",
+        "description": "B wins at showdown after a smaller public-state move.",
+        "trueWeight": 0.25,
+        "payoffs": {
+          "WA": 0,
+          "WB": 100,
+          "VOL": 0
+        }
+      },
+      {
+        "id": "S4",
+        "label": "A folds to B",
+        "description": "B wins by fold after a large probability-path move.",
+        "trueWeight": 0.25,
+        "payoffs": {
+          "WA": 0,
+          "WB": 100,
+          "VOL": 100
+        }
+      }
+    ],
+    "perspectives": [
+      {
+        "id": "market-maker",
+        "label": "Market Maker",
+        "weights": {
+          "S1": 0.2,
+          "S2": 0.25,
+          "S3": 0.35,
+          "S4": 0.2
+        },
+        "values": {
+          "WA": 45,
+          "WB": 55,
+          "VOL": 40
+        }
+      },
+      {
+        "id": "user",
+        "label": "User Agent",
+        "weights": {
+          "S1": 0.3,
+          "S2": 0.3,
+          "S3": 0.25,
+          "S4": 0.15
+        },
+        "values": {
+          "WA": 60,
+          "WB": 40,
+          "VOL": 45
+        }
+      }
+    ],
+    "contracts": [
+      {
+        "id": "WA",
+        "label": "A winner",
+        "kind": "binary future",
+        "payoffDescription": "100 when player A wins; otherwise 0."
+      },
+      {
+        "id": "WB",
+        "label": "B winner",
+        "kind": "binary future",
+        "payoffDescription": "100 when player B wins; otherwise 0."
+      },
+      {
+        "id": "VOL",
+        "label": "Path event",
+        "kind": "variance-swap proxy",
+        "payoffDescription": "100 when the public probability path makes a large move; otherwise 0."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "wa-long",
+        "label": "A · Buy WA",
+        "description": "Positive standalone edge that adds to the existing A-win exposure."
+      },
+      {
+        "id": "hedge-package",
+        "label": "B · Sell WA + Buy WB",
+        "description": "Negative standalone edge that can reduce the combined portfolio tail."
+      }
+    ],
+    "profiles": [
+      {
+        "id": "baseline",
+        "label": "Baseline",
+        "description": "Reference two-sided book from the interview mini-market, extended deterministically to 20 levels."
+      },
+      {
+        "id": "shallow",
+        "label": "Shallow liquidity",
+        "description": "Reconstructed stress profile with less best-level capacity and wider spreads."
+      },
+      {
+        "id": "inventory-skewed",
+        "label": "Inventory-skewed",
+        "description": "Reconstructed quote profile for a market maker carrying long WA inventory."
+      }
+    ],
+    "controls": {
+      "perspectiveIds": [
+        "market-maker",
+        "user"
+      ],
+      "candidateIds": [
+        "wa-long",
+        "hedge-package"
+      ],
+      "notionals": [
+        0.5,
+        1
+      ],
+      "profileIds": [
+        "baseline",
+        "shallow",
+        "inventory-skewed"
+      ],
+      "stateIds": [
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ]
+    },
+    "defaultSelection": {
+      "perspectiveId": "user",
+      "candidateId": "hedge-package",
+      "notional": 1,
+      "profileId": "baseline",
+      "stateId": "S1"
+    },
+    "existingPortfolio": {
+      "positions": {
+        "WA": 2,
+        "WB": 0,
+        "VOL": 0
+      },
+      "entryCash": -90,
+      "lossLimit": 100,
+      "riskAversion": 0.5,
+      "objective": "Expected PnL - 0.5 × tail-loss proxy"
+    }
+  },
+  "orderBooks": [
+    {
+      "profileId": "baseline",
+      "contractId": "WA",
+      "levels": [
+        {
+          "level": 0,
+          "bidPrice": 43,
+          "bidQuantity": 0.8,
+          "askPrice": 47,
+          "askQuantity": 1.2
+        },
+        {
+          "level": 1,
+          "bidPrice": 40,
+          "bidQuantity": 1.2,
+          "askPrice": 50,
+          "askQuantity": 1.5
+        },
+        {
+          "level": 2,
+          "bidPrice": 37,
+          "bidQuantity": 1.368,
+          "askPrice": 53,
+          "askQuantity": 1.71
+        },
+        {
+          "level": 3,
+          "bidPrice": 34,
+          "bidQuantity": 1.536,
+          "askPrice": 56,
+          "askQuantity": 1.92
+        },
+        {
+          "level": 4,
+          "bidPrice": 31,
+          "bidQuantity": 1.704,
+          "askPrice": 59,
+          "askQuantity": 2.13
+        },
+        {
+          "level": 5,
+          "bidPrice": 28,
+          "bidQuantity": 1.872,
+          "askPrice": 62,
+          "askQuantity": 2.34
+        },
+        {
+          "level": 6,
+          "bidPrice": 25,
+          "bidQuantity": 2.04,
+          "askPrice": 65,
+          "askQuantity": 2.55
+        },
+        {
+          "level": 7,
+          "bidPrice": 22,
+          "bidQuantity": 2.208,
+          "askPrice": 68,
+          "askQuantity": 2.76
+        },
+        {
+          "level": 8,
+          "bidPrice": 19,
+          "bidQuantity": 2.376,
+          "askPrice": 71,
+          "askQuantity": 2.97
+        },
+        {
+          "level": 9,
+          "bidPrice": 16,
+          "bidQuantity": 2.544,
+          "askPrice": 74,
+          "askQuantity": 3.18
+        },
+        {
+          "level": 10,
+          "bidPrice": 13,
+          "bidQuantity": 2.712,
+          "askPrice": 77,
+          "askQuantity": 3.39
+        },
+        {
+          "level": 11,
+          "bidPrice": 10,
+          "bidQuantity": 2.88,
+          "askPrice": 80,
+          "askQuantity": 3.6
+        },
+        {
+          "level": 12,
+          "bidPrice": 7,
+          "bidQuantity": 3.048,
+          "askPrice": 83,
+          "askQuantity": 3.81
+        },
+        {
+          "level": 13,
+          "bidPrice": 4,
+          "bidQuantity": 3.216,
+          "askPrice": 86,
+          "askQuantity": 4.02
+        },
+        {
+          "level": 14,
+          "bidPrice": 1,
+          "bidQuantity": 3.384,
+          "askPrice": 89,
+          "askQuantity": 4.23
+        },
+        {
+          "level": 15,
+          "bidPrice": -2,
+          "bidQuantity": 3.552,
+          "askPrice": 92,
+          "askQuantity": 4.44
+        },
+        {
+          "level": 16,
+          "bidPrice": -5,
+          "bidQuantity": 3.72,
+          "askPrice": 95,
+          "askQuantity": 4.65
+        },
+        {
+          "level": 17,
+          "bidPrice": -8,
+          "bidQuantity": 3.888,
+          "askPrice": 98,
+          "askQuantity": 4.86
+        },
+        {
+          "level": 18,
+          "bidPrice": -11,
+          "bidQuantity": 4.056,
+          "askPrice": 101,
+          "askQuantity": 5.07
+        },
+        {
+          "level": 19,
+          "bidPrice": -14,
+          "bidQuantity": 4.224,
+          "askPrice": 104,
+          "askQuantity": 5.28
+        }
+      ]
+    },
+    {
+      "profileId": "baseline",
+      "contractId": "WB",
+      "levels": [
+        {
+          "level": 0,
+          "bidPrice": 52,
+          "bidQuantity": 1,
+          "askPrice": 58,
+          "askQuantity": 0.5
+        },
+        {
+          "level": 1,
+          "bidPrice": 49,
+          "bidQuantity": 1.5,
+          "askPrice": 61,
+          "askQuantity": 1.5
+        },
+        {
+          "level": 2,
+          "bidPrice": 46,
+          "bidQuantity": 1.71,
+          "askPrice": 64,
+          "askQuantity": 1.71
+        },
+        {
+          "level": 3,
+          "bidPrice": 43,
+          "bidQuantity": 1.92,
+          "askPrice": 67,
+          "askQuantity": 1.92
+        },
+        {
+          "level": 4,
+          "bidPrice": 40,
+          "bidQuantity": 2.13,
+          "askPrice": 70,
+          "askQuantity": 2.13
+        },
+        {
+          "level": 5,
+          "bidPrice": 37,
+          "bidQuantity": 2.34,
+          "askPrice": 73,
+          "askQuantity": 2.34
+        },
+        {
+          "level": 6,
+          "bidPrice": 34,
+          "bidQuantity": 2.55,
+          "askPrice": 76,
+          "askQuantity": 2.55
+        },
+        {
+          "level": 7,
+          "bidPrice": 31,
+          "bidQuantity": 2.76,
+          "askPrice": 79,
+          "askQuantity": 2.76
+        },
+        {
+          "level": 8,
+          "bidPrice": 28,
+          "bidQuantity": 2.97,
+          "askPrice": 82,
+          "askQuantity": 2.97
+        },
+        {
+          "level": 9,
+          "bidPrice": 25,
+          "bidQuantity": 3.18,
+          "askPrice": 85,
+          "askQuantity": 3.18
+        },
+        {
+          "level": 10,
+          "bidPrice": 22,
+          "bidQuantity": 3.39,
+          "askPrice": 88,
+          "askQuantity": 3.39
+        },
+        {
+          "level": 11,
+          "bidPrice": 19,
+          "bidQuantity": 3.6,
+          "askPrice": 91,
+          "askQuantity": 3.6
+        },
+        {
+          "level": 12,
+          "bidPrice": 16,
+          "bidQuantity": 3.81,
+          "askPrice": 94,
+          "askQuantity": 3.81
+        },
+        {
+          "level": 13,
+          "bidPrice": 13,
+          "bidQuantity": 4.02,
+          "askPrice": 97,
+          "askQuantity": 4.02
+        },
+        {
+          "level": 14,
+          "bidPrice": 10,
+          "bidQuantity": 4.23,
+          "askPrice": 100,
+          "askQuantity": 4.23
+        },
+        {
+          "level": 15,
+          "bidPrice": 7,
+          "bidQuantity": 4.44,
+          "askPrice": 103,
+          "askQuantity": 4.44
+        },
+        {
+          "level": 16,
+          "bidPrice": 4,
+          "bidQuantity": 4.65,
+          "askPrice": 106,
+          "askQuantity": 4.65
+        },
+        {
+          "level": 17,
+          "bidPrice": 1,
+          "bidQuantity": 4.86,
+          "askPrice": 109,
+          "askQuantity": 4.86
+        },
+        {
+          "level": 18,
+          "bidPrice": -2,
+          "bidQuantity": 5.07,
+          "askPrice": 112,
+          "askQuantity": 5.07
+        },
+        {
+          "level": 19,
+          "bidPrice": -5,
+          "bidQuantity": 5.28,
+          "askPrice": 115,
+          "askQuantity": 5.28
+        }
+      ]
+    },
+    {
+      "profileId": "baseline",
+      "contractId": "VOL",
+      "levels": [
+        {
+          "level": 0,
+          "bidPrice": 45,
+          "bidQuantity": 0.7,
+          "askPrice": 55,
+          "askQuantity": 0.7
+        },
+        {
+          "level": 1,
+          "bidPrice": 43,
+          "bidQuantity": 1,
+          "askPrice": 57,
+          "askQuantity": 1
+        },
+        {
+          "level": 2,
+          "bidPrice": 41,
+          "bidQuantity": 1.14,
+          "askPrice": 59,
+          "askQuantity": 1.14
+        },
+        {
+          "level": 3,
+          "bidPrice": 39,
+          "bidQuantity": 1.28,
+          "askPrice": 61,
+          "askQuantity": 1.28
+        },
+        {
+          "level": 4,
+          "bidPrice": 37,
+          "bidQuantity": 1.42,
+          "askPrice": 63,
+          "askQuantity": 1.42
+        },
+        {
+          "level": 5,
+          "bidPrice": 35,
+          "bidQuantity": 1.56,
+          "askPrice": 65,
+          "askQuantity": 1.56
+        },
+        {
+          "level": 6,
+          "bidPrice": 33,
+          "bidQuantity": 1.7,
+          "askPrice": 67,
+          "askQuantity": 1.7
+        },
+        {
+          "level": 7,
+          "bidPrice": 31,
+          "bidQuantity": 1.84,
+          "askPrice": 69,
+          "askQuantity": 1.84
+        },
+        {
+          "level": 8,
+          "bidPrice": 29,
+          "bidQuantity": 1.98,
+          "askPrice": 71,
+          "askQuantity": 1.98
+        },
+        {
+          "level": 9,
+          "bidPrice": 27,
+          "bidQuantity": 2.12,
+          "askPrice": 73,
+          "askQuantity": 2.12
+        },
+        {
+          "level": 10,
+          "bidPrice": 25,
+          "bidQuantity": 2.26,
+          "askPrice": 75,
+          "askQuantity": 2.26
+        },
+        {
+          "level": 11,
+          "bidPrice": 23,
+          "bidQuantity": 2.4,
+          "askPrice": 77,
+          "askQuantity": 2.4
+        },
+        {
+          "level": 12,
+          "bidPrice": 21,
+          "bidQuantity": 2.54,
+          "askPrice": 79,
+          "askQuantity": 2.54
+        },
+        {
+          "level": 13,
+          "bidPrice": 19,
+          "bidQuantity": 2.68,
+          "askPrice": 81,
+          "askQuantity": 2.68
+        },
+        {
+          "level": 14,
+          "bidPrice": 17,
+          "bidQuantity": 2.82,
+          "askPrice": 83,
+          "askQuantity": 2.82
+        },
+        {
+          "level": 15,
+          "bidPrice": 15,
+          "bidQuantity": 2.96,
+          "askPrice": 85,
+          "askQuantity": 2.96
+        },
+        {
+          "level": 16,
+          "bidPrice": 13,
+          "bidQuantity": 3.1,
+          "askPrice": 87,
+          "askQuantity": 3.1
+        },
+        {
+          "level": 17,
+          "bidPrice": 11,
+          "bidQuantity": 3.24,
+          "askPrice": 89,
+          "askQuantity": 3.24
+        },
+        {
+          "level": 18,
+          "bidPrice": 9,
+          "bidQuantity": 3.38,
+          "askPrice": 91,
+          "askQuantity": 3.38
+        },
+        {
+          "level": 19,
+          "bidPrice": 7,
+          "bidQuantity": 3.52,
+          "askPrice": 93,
+          "askQuantity": 3.52
+        }
+      ]
+    },
+    {
+      "profileId": "shallow",
+      "contractId": "WA",
+      "levels": [
+        {
+          "level": 0,
+          "bidPrice": 42,
+          "bidQuantity": 0.35,
+          "askPrice": 48,
+          "askQuantity": 0.45
+        },
+        {
+          "level": 1,
+          "bidPrice": 39,
+          "bidQuantity": 0.55,
+          "askPrice": 51,
+          "askQuantity": 0.65
+        },
+        {
+          "level": 2,
+          "bidPrice": 36,
+          "bidQuantity": 0.627,
+          "askPrice": 54,
+          "askQuantity": 0.741
+        },
+        {
+          "level": 3,
+          "bidPrice": 33,
+          "bidQuantity": 0.704,
+          "askPrice": 57,
+          "askQuantity": 0.832
+        },
+        {
+          "level": 4,
+          "bidPrice": 30,
+          "bidQuantity": 0.781,
+          "askPrice": 60,
+          "askQuantity": 0.923
+        },
+        {
+          "level": 5,
+          "bidPrice": 27,
+          "bidQuantity": 0.858,
+          "askPrice": 63,
+          "askQuantity": 1.014
+        },
+        {
+          "level": 6,
+          "bidPrice": 24,
+          "bidQuantity": 0.935,
+          "askPrice": 66,
+          "askQuantity": 1.105
+        },
+        {
+          "level": 7,
+          "bidPrice": 21,
+          "bidQuantity": 1.012,
+          "askPrice": 69,
+          "askQuantity": 1.196
+        },
+        {
+          "level": 8,
+          "bidPrice": 18,
+          "bidQuantity": 1.089,
+          "askPrice": 72,
+          "askQuantity": 1.287
+        },
+        {
+          "level": 9,
+          "bidPrice": 15,
+          "bidQuantity": 1.166,
+          "askPrice": 75,
+          "askQuantity": 1.378
+        },
+        {
+          "level": 10,
+          "bidPrice": 12,
+          "bidQuantity": 1.243,
+          "askPrice": 78,
+          "askQuantity": 1.469
+        },
+        {
+          "level": 11,
+          "bidPrice": 9,
+          "bidQuantity": 1.32,
+          "askPrice": 81,
+          "askQuantity": 1.56
+        },
+        {
+          "level": 12,
+          "bidPrice": 6,
+          "bidQuantity": 1.397,
+          "askPrice": 84,
+          "askQuantity": 1.651
+        },
+        {
+          "level": 13,
+          "bidPrice": 3,
+          "bidQuantity": 1.474,
+          "askPrice": 87,
+          "askQuantity": 1.742
+        },
+        {
+          "level": 14,
+          "bidPrice": 0,
+          "bidQuantity": 1.551,
+          "askPrice": 90,
+          "askQuantity": 1.833
+        },
+        {
+          "level": 15,
+          "bidPrice": -3,
+          "bidQuantity": 1.628,
+          "askPrice": 93,
+          "askQuantity": 1.924
+        },
+        {
+          "level": 16,
+          "bidPrice": -6,
+          "bidQuantity": 1.705,
+          "askPrice": 96,
+          "askQuantity": 2.015
+        },
+        {
+          "level": 17,
+          "bidPrice": -9,
+          "bidQuantity": 1.782,
+          "askPrice": 99,
+          "askQuantity": 2.106
+        },
+        {
+          "level": 18,
+          "bidPrice": -12,
+          "bidQuantity": 1.859,
+          "askPrice": 102,
+          "askQuantity": 2.197
+        },
+        {
+          "level": 19,
+          "bidPrice": -15,
+          "bidQuantity": 1.936,
+          "askPrice": 105,
+          "askQuantity": 2.288
+        }
+      ]
+    },
+    {
+      "profileId": "shallow",
+      "contractId": "WB",
+      "levels": [
+        {
+          "level": 0,
+          "bidPrice": 51,
+          "bidQuantity": 0.3,
+          "askPrice": 60,
+          "askQuantity": 0.25
+        },
+        {
+          "level": 1,
+          "bidPrice": 48,
+          "bidQuantity": 0.5,
+          "askPrice": 63,
+          "askQuantity": 0.45
+        },
+        {
+          "level": 2,
+          "bidPrice": 45,
+          "bidQuantity": 0.57,
+          "askPrice": 66,
+          "askQuantity": 0.513
+        },
+        {
+          "level": 3,
+          "bidPrice": 42,
+          "bidQuantity": 0.64,
+          "askPrice": 69,
+          "askQuantity": 0.576
+        },
+        {
+          "level": 4,
+          "bidPrice": 39,
+          "bidQuantity": 0.71,
+          "askPrice": 72,
+          "askQuantity": 0.639
+        },
+        {
+          "level": 5,
+          "bidPrice": 36,
+          "bidQuantity": 0.78,
+          "askPrice": 75,
+          "askQuantity": 0.702
+        },
+        {
+          "level": 6,
+          "bidPrice": 33,
+          "bidQuantity": 0.85,
+          "askPrice": 78,
+          "askQuantity": 0.765
+        },
+        {
+          "level": 7,
+          "bidPrice": 30,
+          "bidQuantity": 0.92,
+          "askPrice": 81,
+          "askQuantity": 0.828
+        },
+        {
+          "level": 8,
+          "bidPrice": 27,
+          "bidQuantity": 0.99,
+          "askPrice": 84,
+          "askQuantity": 0.891
+        },
+        {
+          "level": 9,
+          "bidPrice": 24,
+          "bidQuantity": 1.06,
+          "askPrice": 87,
+          "askQuantity": 0.954
+        },
+        {
+          "level": 10,
+          "bidPrice": 21,
+          "bidQuantity": 1.13,
+          "askPrice": 90,
+          "askQuantity": 1.017
+        },
+        {
+          "level": 11,
+          "bidPrice": 18,
+          "bidQuantity": 1.2,
+          "askPrice": 93,
+          "askQuantity": 1.08
+        },
+        {
+          "level": 12,
+          "bidPrice": 15,
+          "bidQuantity": 1.27,
+          "askPrice": 96,
+          "askQuantity": 1.143
+        },
+        {
+          "level": 13,
+          "bidPrice": 12,
+          "bidQuantity": 1.34,
+          "askPrice": 99,
+          "askQuantity": 1.206
+        },
+        {
+          "level": 14,
+          "bidPrice": 9,
+          "bidQuantity": 1.41,
+          "askPrice": 102,
+          "askQuantity": 1.269
+        },
+        {
+          "level": 15,
+          "bidPrice": 6,
+          "bidQuantity": 1.48,
+          "askPrice": 105,
+          "askQuantity": 1.332
+        },
+        {
+          "level": 16,
+          "bidPrice": 3,
+          "bidQuantity": 1.55,
+          "askPrice": 108,
+          "askQuantity": 1.395
+        },
+        {
+          "level": 17,
+          "bidPrice": 0,
+          "bidQuantity": 1.62,
+          "askPrice": 111,
+          "askQuantity": 1.458
+        },
+        {
+          "level": 18,
+          "bidPrice": -3,
+          "bidQuantity": 1.69,
+          "askPrice": 114,
+          "askQuantity": 1.521
+        },
+        {
+          "level": 19,
+          "bidPrice": -6,
+          "bidQuantity": 1.76,
+          "askPrice": 117,
+          "askQuantity": 1.584
+        }
+      ]
+    },
+    {
+      "profileId": "shallow",
+      "contractId": "VOL",
+      "levels": [
+        {
+          "level": 0,
+          "bidPrice": 43,
+          "bidQuantity": 0.2,
+          "askPrice": 57,
+          "askQuantity": 0.2
+        },
+        {
+          "level": 1,
+          "bidPrice": 41,
+          "bidQuantity": 0.35,
+          "askPrice": 59,
+          "askQuantity": 0.35
+        },
+        {
+          "level": 2,
+          "bidPrice": 39,
+          "bidQuantity": 0.399,
+          "askPrice": 61,
+          "askQuantity": 0.399
+        },
+        {
+          "level": 3,
+          "bidPrice": 37,
+          "bidQuantity": 0.448,
+          "askPrice": 63,
+          "askQuantity": 0.448
+        },
+        {
+          "level": 4,
+          "bidPrice": 35,
+          "bidQuantity": 0.497,
+          "askPrice": 65,
+          "askQuantity": 0.497
+        },
+        {
+          "level": 5,
+          "bidPrice": 33,
+          "bidQuantity": 0.546,
+          "askPrice": 67,
+          "askQuantity": 0.546
+        },
+        {
+          "level": 6,
+          "bidPrice": 31,
+          "bidQuantity": 0.595,
+          "askPrice": 69,
+          "askQuantity": 0.595
+        },
+        {
+          "level": 7,
+          "bidPrice": 29,
+          "bidQuantity": 0.644,
+          "askPrice": 71,
+          "askQuantity": 0.644
+        },
+        {
+          "level": 8,
+          "bidPrice": 27,
+          "bidQuantity": 0.693,
+          "askPrice": 73,
+          "askQuantity": 0.693
+        },
+        {
+          "level": 9,
+          "bidPrice": 25,
+          "bidQuantity": 0.742,
+          "askPrice": 75,
+          "askQuantity": 0.742
+        },
+        {
+          "level": 10,
+          "bidPrice": 23,
+          "bidQuantity": 0.791,
+          "askPrice": 77,
+          "askQuantity": 0.791
+        },
+        {
+          "level": 11,
+          "bidPrice": 21,
+          "bidQuantity": 0.84,
+          "askPrice": 79,
+          "askQuantity": 0.84
+        },
+        {
+          "level": 12,
+          "bidPrice": 19,
+          "bidQuantity": 0.889,
+          "askPrice": 81,
+          "askQuantity": 0.889
+        },
+        {
+          "level": 13,
+          "bidPrice": 17,
+          "bidQuantity": 0.938,
+          "askPrice": 83,
+          "askQuantity": 0.938
+        },
+        {
+          "level": 14,
+          "bidPrice": 15,
+          "bidQuantity": 0.987,
+          "askPrice": 85,
+          "askQuantity": 0.987
+        },
+        {
+          "level": 15,
+          "bidPrice": 13,
+          "bidQuantity": 1.036,
+          "askPrice": 87,
+          "askQuantity": 1.036
+        },
+        {
+          "level": 16,
+          "bidPrice": 11,
+          "bidQuantity": 1.085,
+          "askPrice": 89,
+          "askQuantity": 1.085
+        },
+        {
+          "level": 17,
+          "bidPrice": 9,
+          "bidQuantity": 1.134,
+          "askPrice": 91,
+          "askQuantity": 1.134
+        },
+        {
+          "level": 18,
+          "bidPrice": 7,
+          "bidQuantity": 1.183,
+          "askPrice": 93,
+          "askQuantity": 1.183
+        },
+        {
+          "level": 19,
+          "bidPrice": 5,
+          "bidQuantity": 1.232,
+          "askPrice": 95,
+          "askQuantity": 1.232
+        }
+      ]
+    },
+    {
+      "profileId": "inventory-skewed",
+      "contractId": "WA",
+      "levels": [
+        {
+          "level": 0,
+          "bidPrice": 39,
+          "bidQuantity": 0.4,
+          "askPrice": 44,
+          "askQuantity": 1.5
+        },
+        {
+          "level": 1,
+          "bidPrice": 36,
+          "bidQuantity": 0.7,
+          "askPrice": 47,
+          "askQuantity": 1.8
+        },
+        {
+          "level": 2,
+          "bidPrice": 33,
+          "bidQuantity": 0.798,
+          "askPrice": 50,
+          "askQuantity": 2.052
+        },
+        {
+          "level": 3,
+          "bidPrice": 30,
+          "bidQuantity": 0.896,
+          "askPrice": 53,
+          "askQuantity": 2.304
+        },
+        {
+          "level": 4,
+          "bidPrice": 27,
+          "bidQuantity": 0.994,
+          "askPrice": 56,
+          "askQuantity": 2.556
+        },
+        {
+          "level": 5,
+          "bidPrice": 24,
+          "bidQuantity": 1.092,
+          "askPrice": 59,
+          "askQuantity": 2.808
+        },
+        {
+          "level": 6,
+          "bidPrice": 21,
+          "bidQuantity": 1.19,
+          "askPrice": 62,
+          "askQuantity": 3.06
+        },
+        {
+          "level": 7,
+          "bidPrice": 18,
+          "bidQuantity": 1.288,
+          "askPrice": 65,
+          "askQuantity": 3.312
+        },
+        {
+          "level": 8,
+          "bidPrice": 15,
+          "bidQuantity": 1.386,
+          "askPrice": 68,
+          "askQuantity": 3.564
+        },
+        {
+          "level": 9,
+          "bidPrice": 12,
+          "bidQuantity": 1.484,
+          "askPrice": 71,
+          "askQuantity": 3.816
+        },
+        {
+          "level": 10,
+          "bidPrice": 9,
+          "bidQuantity": 1.582,
+          "askPrice": 74,
+          "askQuantity": 4.068
+        },
+        {
+          "level": 11,
+          "bidPrice": 6,
+          "bidQuantity": 1.68,
+          "askPrice": 77,
+          "askQuantity": 4.32
+        },
+        {
+          "level": 12,
+          "bidPrice": 3,
+          "bidQuantity": 1.778,
+          "askPrice": 80,
+          "askQuantity": 4.572
+        },
+        {
+          "level": 13,
+          "bidPrice": 0,
+          "bidQuantity": 1.876,
+          "askPrice": 83,
+          "askQuantity": 4.824
+        },
+        {
+          "level": 14,
+          "bidPrice": -3,
+          "bidQuantity": 1.974,
+          "askPrice": 86,
+          "askQuantity": 5.076
+        },
+        {
+          "level": 15,
+          "bidPrice": -6,
+          "bidQuantity": 2.072,
+          "askPrice": 89,
+          "askQuantity": 5.328
+        },
+        {
+          "level": 16,
+          "bidPrice": -9,
+          "bidQuantity": 2.17,
+          "askPrice": 92,
+          "askQuantity": 5.58
+        },
+        {
+          "level": 17,
+          "bidPrice": -12,
+          "bidQuantity": 2.268,
+          "askPrice": 95,
+          "askQuantity": 5.832
+        },
+        {
+          "level": 18,
+          "bidPrice": -15,
+          "bidQuantity": 2.366,
+          "askPrice": 98,
+          "askQuantity": 6.084
+        },
+        {
+          "level": 19,
+          "bidPrice": -18,
+          "bidQuantity": 2.464,
+          "askPrice": 101,
+          "askQuantity": 6.336
+        }
+      ]
+    },
+    {
+      "profileId": "inventory-skewed",
+      "contractId": "WB",
+      "levels": [
+        {
+          "level": 0,
+          "bidPrice": 54,
+          "bidQuantity": 1.2,
+          "askPrice": 60,
+          "askQuantity": 0.6
+        },
+        {
+          "level": 1,
+          "bidPrice": 51,
+          "bidQuantity": 1.5,
+          "askPrice": 63,
+          "askQuantity": 0.9
+        },
+        {
+          "level": 2,
+          "bidPrice": 48,
+          "bidQuantity": 1.71,
+          "askPrice": 66,
+          "askQuantity": 1.026
+        },
+        {
+          "level": 3,
+          "bidPrice": 45,
+          "bidQuantity": 1.92,
+          "askPrice": 69,
+          "askQuantity": 1.152
+        },
+        {
+          "level": 4,
+          "bidPrice": 42,
+          "bidQuantity": 2.13,
+          "askPrice": 72,
+          "askQuantity": 1.278
+        },
+        {
+          "level": 5,
+          "bidPrice": 39,
+          "bidQuantity": 2.34,
+          "askPrice": 75,
+          "askQuantity": 1.404
+        },
+        {
+          "level": 6,
+          "bidPrice": 36,
+          "bidQuantity": 2.55,
+          "askPrice": 78,
+          "askQuantity": 1.53
+        },
+        {
+          "level": 7,
+          "bidPrice": 33,
+          "bidQuantity": 2.76,
+          "askPrice": 81,
+          "askQuantity": 1.656
+        },
+        {
+          "level": 8,
+          "bidPrice": 30,
+          "bidQuantity": 2.97,
+          "askPrice": 84,
+          "askQuantity": 1.782
+        },
+        {
+          "level": 9,
+          "bidPrice": 27,
+          "bidQuantity": 3.18,
+          "askPrice": 87,
+          "askQuantity": 1.908
+        },
+        {
+          "level": 10,
+          "bidPrice": 24,
+          "bidQuantity": 3.39,
+          "askPrice": 90,
+          "askQuantity": 2.034
+        },
+        {
+          "level": 11,
+          "bidPrice": 21,
+          "bidQuantity": 3.6,
+          "askPrice": 93,
+          "askQuantity": 2.16
+        },
+        {
+          "level": 12,
+          "bidPrice": 18,
+          "bidQuantity": 3.81,
+          "askPrice": 96,
+          "askQuantity": 2.286
+        },
+        {
+          "level": 13,
+          "bidPrice": 15,
+          "bidQuantity": 4.02,
+          "askPrice": 99,
+          "askQuantity": 2.412
+        },
+        {
+          "level": 14,
+          "bidPrice": 12,
+          "bidQuantity": 4.23,
+          "askPrice": 102,
+          "askQuantity": 2.538
+        },
+        {
+          "level": 15,
+          "bidPrice": 9,
+          "bidQuantity": 4.44,
+          "askPrice": 105,
+          "askQuantity": 2.664
+        },
+        {
+          "level": 16,
+          "bidPrice": 6,
+          "bidQuantity": 4.65,
+          "askPrice": 108,
+          "askQuantity": 2.79
+        },
+        {
+          "level": 17,
+          "bidPrice": 3,
+          "bidQuantity": 4.86,
+          "askPrice": 111,
+          "askQuantity": 2.916
+        },
+        {
+          "level": 18,
+          "bidPrice": 0,
+          "bidQuantity": 5.07,
+          "askPrice": 114,
+          "askQuantity": 3.042
+        },
+        {
+          "level": 19,
+          "bidPrice": -3,
+          "bidQuantity": 5.28,
+          "askPrice": 117,
+          "askQuantity": 3.168
+        }
+      ]
+    },
+    {
+      "profileId": "inventory-skewed",
+      "contractId": "VOL",
+      "levels": [
+        {
+          "level": 0,
+          "bidPrice": 46,
+          "bidQuantity": 0.55,
+          "askPrice": 56,
+          "askQuantity": 0.45
+        },
+        {
+          "level": 1,
+          "bidPrice": 44,
+          "bidQuantity": 0.8,
+          "askPrice": 58,
+          "askQuantity": 0.7
+        },
+        {
+          "level": 2,
+          "bidPrice": 42,
+          "bidQuantity": 0.912,
+          "askPrice": 60,
+          "askQuantity": 0.798
+        },
+        {
+          "level": 3,
+          "bidPrice": 40,
+          "bidQuantity": 1.024,
+          "askPrice": 62,
+          "askQuantity": 0.896
+        },
+        {
+          "level": 4,
+          "bidPrice": 38,
+          "bidQuantity": 1.136,
+          "askPrice": 64,
+          "askQuantity": 0.994
+        },
+        {
+          "level": 5,
+          "bidPrice": 36,
+          "bidQuantity": 1.248,
+          "askPrice": 66,
+          "askQuantity": 1.092
+        },
+        {
+          "level": 6,
+          "bidPrice": 34,
+          "bidQuantity": 1.36,
+          "askPrice": 68,
+          "askQuantity": 1.19
+        },
+        {
+          "level": 7,
+          "bidPrice": 32,
+          "bidQuantity": 1.472,
+          "askPrice": 70,
+          "askQuantity": 1.288
+        },
+        {
+          "level": 8,
+          "bidPrice": 30,
+          "bidQuantity": 1.584,
+          "askPrice": 72,
+          "askQuantity": 1.386
+        },
+        {
+          "level": 9,
+          "bidPrice": 28,
+          "bidQuantity": 1.696,
+          "askPrice": 74,
+          "askQuantity": 1.484
+        },
+        {
+          "level": 10,
+          "bidPrice": 26,
+          "bidQuantity": 1.808,
+          "askPrice": 76,
+          "askQuantity": 1.582
+        },
+        {
+          "level": 11,
+          "bidPrice": 24,
+          "bidQuantity": 1.92,
+          "askPrice": 78,
+          "askQuantity": 1.68
+        },
+        {
+          "level": 12,
+          "bidPrice": 22,
+          "bidQuantity": 2.032,
+          "askPrice": 80,
+          "askQuantity": 1.778
+        },
+        {
+          "level": 13,
+          "bidPrice": 20,
+          "bidQuantity": 2.144,
+          "askPrice": 82,
+          "askQuantity": 1.876
+        },
+        {
+          "level": 14,
+          "bidPrice": 18,
+          "bidQuantity": 2.256,
+          "askPrice": 84,
+          "askQuantity": 1.974
+        },
+        {
+          "level": 15,
+          "bidPrice": 16,
+          "bidQuantity": 2.368,
+          "askPrice": 86,
+          "askQuantity": 2.072
+        },
+        {
+          "level": 16,
+          "bidPrice": 14,
+          "bidQuantity": 2.48,
+          "askPrice": 88,
+          "askQuantity": 2.17
+        },
+        {
+          "level": 17,
+          "bidPrice": 12,
+          "bidQuantity": 2.592,
+          "askPrice": 90,
+          "askQuantity": 2.268
+        },
+        {
+          "level": 18,
+          "bidPrice": 10,
+          "bidQuantity": 2.704,
+          "askPrice": 92,
+          "askQuantity": 2.366
+        },
+        {
+          "level": 19,
+          "bidPrice": 8,
+          "bidQuantity": 2.816,
+          "askPrice": 94,
+          "askQuantity": 2.464
+        }
+      ]
+    }
+  ],
+  "decisionRows": [
+    {
+      "id": "market-maker:wa-long:q0.5:baseline",
+      "perspectiveId": "market-maker",
+      "candidateId": "wa-long",
+      "notional": 0.5,
+      "profileId": "baseline",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -1,
+      "fillRatio": 1,
+      "filledNotional": 0.5,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -1,
+        "tailLoss": 113.5,
+        "objective": -57.75,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 136.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 136.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -113.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -113.5
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -1,
+        "tailLoss": 113.5,
+        "objective": -57.75,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 136.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 136.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -113.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -113.5
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 1.2,
+          "price": 47,
+          "fillRatio": 1,
+          "filledQuantity": 0.5,
+          "cashFlow": -23.5
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -23.5,
+      "executedCash": -23.5
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:shallow",
+      "perspectiveId": "market-maker",
+      "candidateId": "wa-long",
+      "notional": 0.5,
+      "profileId": "shallow",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -1.5,
+      "fillRatio": 0.9,
+      "filledNotional": 0.45,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -1.5,
+        "tailLoss": 114,
+        "objective": -58.5,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 136
+          },
+          {
+            "stateId": "S2",
+            "pnl": 136
+          },
+          {
+            "stateId": "S3",
+            "pnl": -114
+          },
+          {
+            "stateId": "S4",
+            "pnl": -114
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -1.35,
+        "tailLoss": 111.6,
+        "objective": -57.15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 133.4
+          },
+          {
+            "stateId": "S2",
+            "pnl": 133.4
+          },
+          {
+            "stateId": "S3",
+            "pnl": -111.6
+          },
+          {
+            "stateId": "S4",
+            "pnl": -111.6
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.45,
+          "price": 48,
+          "fillRatio": 0.9,
+          "filledQuantity": 0.45,
+          "cashFlow": -21.6
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 0.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -24,
+      "executedCash": -21.6
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:inventory-skewed",
+      "perspectiveId": "market-maker",
+      "candidateId": "wa-long",
+      "notional": 0.5,
+      "profileId": "inventory-skewed",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": 0.5,
+      "fillRatio": 1,
+      "filledNotional": 0.5,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 0.5,
+        "tailLoss": 112,
+        "objective": -55.5,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 138
+          },
+          {
+            "stateId": "S2",
+            "pnl": 138
+          },
+          {
+            "stateId": "S3",
+            "pnl": -112
+          },
+          {
+            "stateId": "S4",
+            "pnl": -112
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 0.5,
+        "tailLoss": 112,
+        "objective": -55.5,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 138
+          },
+          {
+            "stateId": "S2",
+            "pnl": 138
+          },
+          {
+            "stateId": "S3",
+            "pnl": -112
+          },
+          {
+            "stateId": "S4",
+            "pnl": -112
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 1.5,
+          "price": 44,
+          "fillRatio": 1,
+          "filledQuantity": 0.5,
+          "cashFlow": -22
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -22,
+      "executedCash": -22
+    },
+    {
+      "id": "market-maker:wa-long:q1:baseline",
+      "perspectiveId": "market-maker",
+      "candidateId": "wa-long",
+      "notional": 1,
+      "profileId": "baseline",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -2,
+      "fillRatio": 1,
+      "filledNotional": 1,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -2,
+        "tailLoss": 137,
+        "objective": -70.5,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 163
+          },
+          {
+            "stateId": "S2",
+            "pnl": 163
+          },
+          {
+            "stateId": "S3",
+            "pnl": -137
+          },
+          {
+            "stateId": "S4",
+            "pnl": -137
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -2,
+        "tailLoss": 137,
+        "objective": -70.5,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 163
+          },
+          {
+            "stateId": "S2",
+            "pnl": 163
+          },
+          {
+            "stateId": "S3",
+            "pnl": -137
+          },
+          {
+            "stateId": "S4",
+            "pnl": -137
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 1.2,
+          "price": 47,
+          "fillRatio": 1,
+          "filledQuantity": 1,
+          "cashFlow": -47
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -47,
+      "executedCash": -47
+    },
+    {
+      "id": "market-maker:wa-long:q1:shallow",
+      "perspectiveId": "market-maker",
+      "candidateId": "wa-long",
+      "notional": 1,
+      "profileId": "shallow",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -3,
+      "fillRatio": 0.45,
+      "filledNotional": 0.45,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -3,
+        "tailLoss": 138,
+        "objective": -72,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 162
+          },
+          {
+            "stateId": "S2",
+            "pnl": 162
+          },
+          {
+            "stateId": "S3",
+            "pnl": -138
+          },
+          {
+            "stateId": "S4",
+            "pnl": -138
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -1.35,
+        "tailLoss": 111.6,
+        "objective": -57.15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 133.4
+          },
+          {
+            "stateId": "S2",
+            "pnl": 133.4
+          },
+          {
+            "stateId": "S3",
+            "pnl": -111.6
+          },
+          {
+            "stateId": "S4",
+            "pnl": -111.6
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.45,
+          "price": 48,
+          "fillRatio": 0.45,
+          "filledQuantity": 0.45,
+          "cashFlow": -21.6
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 0.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -48,
+      "executedCash": -21.6
+    },
+    {
+      "id": "market-maker:wa-long:q1:inventory-skewed",
+      "perspectiveId": "market-maker",
+      "candidateId": "wa-long",
+      "notional": 1,
+      "profileId": "inventory-skewed",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": 1,
+      "fillRatio": 1,
+      "filledNotional": 1,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 1,
+        "tailLoss": 134,
+        "objective": -66,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 166
+          },
+          {
+            "stateId": "S2",
+            "pnl": 166
+          },
+          {
+            "stateId": "S3",
+            "pnl": -134
+          },
+          {
+            "stateId": "S4",
+            "pnl": -134
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 1,
+        "tailLoss": 134,
+        "objective": -66,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 166
+          },
+          {
+            "stateId": "S2",
+            "pnl": 166
+          },
+          {
+            "stateId": "S3",
+            "pnl": -134
+          },
+          {
+            "stateId": "S4",
+            "pnl": -134
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 1.5,
+          "price": 44,
+          "fillRatio": 1,
+          "filledQuantity": 1,
+          "cashFlow": -44
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -44,
+      "executedCash": -44
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:baseline",
+      "perspectiveId": "market-maker",
+      "candidateId": "hedge-package",
+      "notional": 0.5,
+      "profileId": "baseline",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -2.5,
+      "fillRatio": 1,
+      "filledNotional": 0.5,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -2.5,
+        "tailLoss": 47.5,
+        "objective": -26.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -47.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -47.5
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -2.5,
+        "tailLoss": 47.5,
+        "objective": -26.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -47.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -47.5
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.8,
+          "price": 43,
+          "fillRatio": 1,
+          "filledQuantity": 0.5,
+          "cashFlow": 21.5
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.5,
+          "price": 58,
+          "fillRatio": 1,
+          "filledQuantity": 0.5,
+          "cashFlow": -29
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "requestedCash": -7.5,
+      "executedCash": -7.5
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:shallow",
+      "perspectiveId": "market-maker",
+      "candidateId": "hedge-package",
+      "notional": 0.5,
+      "profileId": "shallow",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -4,
+      "fillRatio": 0.5,
+      "filledNotional": 0.25,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -4,
+        "tailLoss": 49,
+        "objective": -28.5,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 51
+          },
+          {
+            "stateId": "S2",
+            "pnl": 51
+          },
+          {
+            "stateId": "S3",
+            "pnl": -49
+          },
+          {
+            "stateId": "S4",
+            "pnl": -49
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -2,
+        "tailLoss": 69.5,
+        "objective": -36.75,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 80.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 80.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -69.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -69.5
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.35,
+          "price": 42,
+          "fillRatio": 0.5,
+          "filledQuantity": 0.25,
+          "cashFlow": 10.5
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.25,
+          "price": 60,
+          "fillRatio": 0.5,
+          "filledQuantity": 0.25,
+          "cashFlow": -15
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.25,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "requestedCash": -9,
+      "executedCash": -4.5
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:inventory-skewed",
+      "perspectiveId": "market-maker",
+      "candidateId": "hedge-package",
+      "notional": 0.5,
+      "profileId": "inventory-skewed",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -5.5,
+      "fillRatio": 0.8,
+      "filledNotional": 0.4,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -5.5,
+        "tailLoss": 50.5,
+        "objective": -30.75,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 49.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 49.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -50.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -50.5
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -4.4,
+        "tailLoss": 58.4,
+        "objective": -33.6,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 61.6
+          },
+          {
+            "stateId": "S2",
+            "pnl": 61.6
+          },
+          {
+            "stateId": "S3",
+            "pnl": -58.4
+          },
+          {
+            "stateId": "S4",
+            "pnl": -58.4
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.4,
+          "price": 39,
+          "fillRatio": 0.8,
+          "filledQuantity": 0.4,
+          "cashFlow": 15.6
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.6,
+          "price": 60,
+          "fillRatio": 0.8,
+          "filledQuantity": 0.4,
+          "cashFlow": -24
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.4,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "requestedCash": -10.5,
+      "executedCash": -8.4
+    },
+    {
+      "id": "market-maker:hedge-package:q1:baseline",
+      "perspectiveId": "market-maker",
+      "candidateId": "hedge-package",
+      "notional": 1,
+      "profileId": "baseline",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -5,
+      "fillRatio": 0.5,
+      "filledNotional": 0.5,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -5,
+        "tailLoss": 5,
+        "objective": -7.5,
+        "worstStateId": "S1",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": -5
+          },
+          {
+            "stateId": "S2",
+            "pnl": -5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -5
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -2.5,
+        "tailLoss": 47.5,
+        "objective": -26.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -47.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -47.5
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.8,
+          "price": 43,
+          "fillRatio": 0.5,
+          "filledQuantity": 0.5,
+          "cashFlow": 21.5
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.5,
+          "price": 58,
+          "fillRatio": 0.5,
+          "filledQuantity": 0.5,
+          "cashFlow": -29
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -1,
+        "WB": 1,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "requestedCash": -15,
+      "executedCash": -7.5
+    },
+    {
+      "id": "market-maker:hedge-package:q1:shallow",
+      "perspectiveId": "market-maker",
+      "candidateId": "hedge-package",
+      "notional": 1,
+      "profileId": "shallow",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -8,
+      "fillRatio": 0.25,
+      "filledNotional": 0.25,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -8,
+        "tailLoss": 8,
+        "objective": -12,
+        "worstStateId": "S1",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": -8
+          },
+          {
+            "stateId": "S2",
+            "pnl": -8
+          },
+          {
+            "stateId": "S3",
+            "pnl": -8
+          },
+          {
+            "stateId": "S4",
+            "pnl": -8
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -2,
+        "tailLoss": 69.5,
+        "objective": -36.75,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 80.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 80.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -69.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -69.5
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.35,
+          "price": 42,
+          "fillRatio": 0.25,
+          "filledQuantity": 0.25,
+          "cashFlow": 10.5
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.25,
+          "price": 60,
+          "fillRatio": 0.25,
+          "filledQuantity": 0.25,
+          "cashFlow": -15
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -1,
+        "WB": 1,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.25,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "requestedCash": -18,
+      "executedCash": -4.5
+    },
+    {
+      "id": "market-maker:hedge-package:q1:inventory-skewed",
+      "perspectiveId": "market-maker",
+      "candidateId": "hedge-package",
+      "notional": 1,
+      "profileId": "inventory-skewed",
+      "valuation": {
+        "WA": 45,
+        "WB": 55,
+        "VOL": 40
+      },
+      "standaloneEdge": -11,
+      "fillRatio": 0.4,
+      "filledNotional": 0.4,
+      "oldMetrics": {
+        "expectedPnl": 0,
+        "tailLoss": 90,
+        "objective": -45,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -11,
+        "tailLoss": 11,
+        "objective": -16.5,
+        "worstStateId": "S1",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": -11
+          },
+          {
+            "stateId": "S2",
+            "pnl": -11
+          },
+          {
+            "stateId": "S3",
+            "pnl": -11
+          },
+          {
+            "stateId": "S4",
+            "pnl": -11
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": -4.4,
+        "tailLoss": 58.4,
+        "objective": -33.6,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 61.6
+          },
+          {
+            "stateId": "S2",
+            "pnl": 61.6
+          },
+          {
+            "stateId": "S3",
+            "pnl": -58.4
+          },
+          {
+            "stateId": "S4",
+            "pnl": -58.4
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.4,
+          "price": 39,
+          "fillRatio": 0.4,
+          "filledQuantity": 0.4,
+          "cashFlow": 15.6
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.6,
+          "price": 60,
+          "fillRatio": 0.4,
+          "filledQuantity": 0.4,
+          "cashFlow": -24
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -1,
+        "WB": 1,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.4,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "requestedCash": -21,
+      "executedCash": -8.4
+    },
+    {
+      "id": "user:wa-long:q0.5:baseline",
+      "perspectiveId": "user",
+      "candidateId": "wa-long",
+      "notional": 0.5,
+      "profileId": "baseline",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": 6.5,
+      "fillRatio": 1,
+      "filledNotional": 0.5,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 36.5,
+        "tailLoss": 113.5,
+        "objective": -20.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 136.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 136.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -113.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -113.5
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 36.5,
+        "tailLoss": 113.5,
+        "objective": -20.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 136.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 136.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -113.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -113.5
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 1.2,
+          "price": 47,
+          "fillRatio": 1,
+          "filledQuantity": 0.5,
+          "cashFlow": -23.5
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -23.5,
+      "executedCash": -23.5
+    },
+    {
+      "id": "user:wa-long:q0.5:shallow",
+      "perspectiveId": "user",
+      "candidateId": "wa-long",
+      "notional": 0.5,
+      "profileId": "shallow",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": 6,
+      "fillRatio": 0.9,
+      "filledNotional": 0.45,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 36,
+        "tailLoss": 114,
+        "objective": -21,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 136
+          },
+          {
+            "stateId": "S2",
+            "pnl": 136
+          },
+          {
+            "stateId": "S3",
+            "pnl": -114
+          },
+          {
+            "stateId": "S4",
+            "pnl": -114
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 35.4,
+        "tailLoss": 111.6,
+        "objective": -20.4,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 133.4
+          },
+          {
+            "stateId": "S2",
+            "pnl": 133.4
+          },
+          {
+            "stateId": "S3",
+            "pnl": -111.6
+          },
+          {
+            "stateId": "S4",
+            "pnl": -111.6
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.45,
+          "price": 48,
+          "fillRatio": 0.9,
+          "filledQuantity": 0.45,
+          "cashFlow": -21.6
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 0.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -24,
+      "executedCash": -21.6
+    },
+    {
+      "id": "user:wa-long:q0.5:inventory-skewed",
+      "perspectiveId": "user",
+      "candidateId": "wa-long",
+      "notional": 0.5,
+      "profileId": "inventory-skewed",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": 8,
+      "fillRatio": 1,
+      "filledNotional": 0.5,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 38,
+        "tailLoss": 112,
+        "objective": -18,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 138
+          },
+          {
+            "stateId": "S2",
+            "pnl": 138
+          },
+          {
+            "stateId": "S3",
+            "pnl": -112
+          },
+          {
+            "stateId": "S4",
+            "pnl": -112
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 38,
+        "tailLoss": 112,
+        "objective": -18,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 138
+          },
+          {
+            "stateId": "S2",
+            "pnl": 138
+          },
+          {
+            "stateId": "S3",
+            "pnl": -112
+          },
+          {
+            "stateId": "S4",
+            "pnl": -112
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 1.5,
+          "price": 44,
+          "fillRatio": 1,
+          "filledQuantity": 0.5,
+          "cashFlow": -22
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 0.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -22,
+      "executedCash": -22
+    },
+    {
+      "id": "user:wa-long:q1:baseline",
+      "perspectiveId": "user",
+      "candidateId": "wa-long",
+      "notional": 1,
+      "profileId": "baseline",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": 13,
+      "fillRatio": 1,
+      "filledNotional": 1,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 43,
+        "tailLoss": 137,
+        "objective": -25.5,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 163
+          },
+          {
+            "stateId": "S2",
+            "pnl": 163
+          },
+          {
+            "stateId": "S3",
+            "pnl": -137
+          },
+          {
+            "stateId": "S4",
+            "pnl": -137
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 43,
+        "tailLoss": 137,
+        "objective": -25.5,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 163
+          },
+          {
+            "stateId": "S2",
+            "pnl": 163
+          },
+          {
+            "stateId": "S3",
+            "pnl": -137
+          },
+          {
+            "stateId": "S4",
+            "pnl": -137
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 1.2,
+          "price": 47,
+          "fillRatio": 1,
+          "filledQuantity": 1,
+          "cashFlow": -47
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -47,
+      "executedCash": -47
+    },
+    {
+      "id": "user:wa-long:q1:shallow",
+      "perspectiveId": "user",
+      "candidateId": "wa-long",
+      "notional": 1,
+      "profileId": "shallow",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": 12,
+      "fillRatio": 0.45,
+      "filledNotional": 0.45,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 42,
+        "tailLoss": 138,
+        "objective": -27,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 162
+          },
+          {
+            "stateId": "S2",
+            "pnl": 162
+          },
+          {
+            "stateId": "S3",
+            "pnl": -138
+          },
+          {
+            "stateId": "S4",
+            "pnl": -138
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 35.4,
+        "tailLoss": 111.6,
+        "objective": -20.4,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 133.4
+          },
+          {
+            "stateId": "S2",
+            "pnl": 133.4
+          },
+          {
+            "stateId": "S3",
+            "pnl": -111.6
+          },
+          {
+            "stateId": "S4",
+            "pnl": -111.6
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.45,
+          "price": 48,
+          "fillRatio": 0.45,
+          "filledQuantity": 0.45,
+          "cashFlow": -21.6
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 0.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -48,
+      "executedCash": -21.6
+    },
+    {
+      "id": "user:wa-long:q1:inventory-skewed",
+      "perspectiveId": "user",
+      "candidateId": "wa-long",
+      "notional": 1,
+      "profileId": "inventory-skewed",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": 16,
+      "fillRatio": 1,
+      "filledNotional": 1,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 46,
+        "tailLoss": 134,
+        "objective": -21,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 166
+          },
+          {
+            "stateId": "S2",
+            "pnl": 166
+          },
+          {
+            "stateId": "S3",
+            "pnl": -134
+          },
+          {
+            "stateId": "S4",
+            "pnl": -134
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 46,
+        "tailLoss": 134,
+        "objective": -21,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 166
+          },
+          {
+            "stateId": "S2",
+            "pnl": 166
+          },
+          {
+            "stateId": "S3",
+            "pnl": -134
+          },
+          {
+            "stateId": "S4",
+            "pnl": -134
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": false,
+      "decision": "reject",
+      "reason": "The filled position breaches the reconstructed worst-case loss limit.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 1.5,
+          "price": 44,
+          "fillRatio": 1,
+          "filledQuantity": 1,
+          "cashFlow": -44
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": 1,
+        "WB": 0,
+        "VOL": 0
+      },
+      "requestedCash": -44,
+      "executedCash": -44
+    },
+    {
+      "id": "user:hedge-package:q0.5:baseline",
+      "perspectiveId": "user",
+      "candidateId": "hedge-package",
+      "notional": 0.5,
+      "profileId": "baseline",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": -17.5,
+      "fillRatio": 1,
+      "filledNotional": 0.5,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 12.5,
+        "tailLoss": 47.5,
+        "objective": -11.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -47.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -47.5
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 12.5,
+        "tailLoss": 47.5,
+        "objective": -11.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -47.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -47.5
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.8,
+          "price": 43,
+          "fillRatio": 1,
+          "filledQuantity": 0.5,
+          "cashFlow": 21.5
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.5,
+          "price": 58,
+          "fillRatio": 1,
+          "filledQuantity": 0.5,
+          "cashFlow": -29
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "requestedCash": -7.5,
+      "executedCash": -7.5
+    },
+    {
+      "id": "user:hedge-package:q0.5:shallow",
+      "perspectiveId": "user",
+      "candidateId": "hedge-package",
+      "notional": 0.5,
+      "profileId": "shallow",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": -19,
+      "fillRatio": 0.5,
+      "filledNotional": 0.25,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 11,
+        "tailLoss": 49,
+        "objective": -13.5,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 51
+          },
+          {
+            "stateId": "S2",
+            "pnl": 51
+          },
+          {
+            "stateId": "S3",
+            "pnl": -49
+          },
+          {
+            "stateId": "S4",
+            "pnl": -49
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 20.5,
+        "tailLoss": 69.5,
+        "objective": -14.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 80.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 80.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -69.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -69.5
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.35,
+          "price": 42,
+          "fillRatio": 0.5,
+          "filledQuantity": 0.25,
+          "cashFlow": 10.5
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.25,
+          "price": 60,
+          "fillRatio": 0.5,
+          "filledQuantity": 0.25,
+          "cashFlow": -15
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.25,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "requestedCash": -9,
+      "executedCash": -4.5
+    },
+    {
+      "id": "user:hedge-package:q0.5:inventory-skewed",
+      "perspectiveId": "user",
+      "candidateId": "hedge-package",
+      "notional": 0.5,
+      "profileId": "inventory-skewed",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": -20.5,
+      "fillRatio": 0.8,
+      "filledNotional": 0.4,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": 9.5,
+        "tailLoss": 50.5,
+        "objective": -15.75,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 49.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 49.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -50.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -50.5
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 13.6,
+        "tailLoss": 58.4,
+        "objective": -15.6,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 61.6
+          },
+          {
+            "stateId": "S2",
+            "pnl": 61.6
+          },
+          {
+            "stateId": "S3",
+            "pnl": -58.4
+          },
+          {
+            "stateId": "S4",
+            "pnl": -58.4
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": true,
+      "decision": "reject",
+      "reason": "The filled position does not improve the combined-book risk-adjusted objective.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.4,
+          "price": 39,
+          "fillRatio": 0.8,
+          "filledQuantity": 0.4,
+          "cashFlow": 15.6
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 0.5,
+          "availableQuantity": 0.6,
+          "price": 60,
+          "fillRatio": 0.8,
+          "filledQuantity": 0.4,
+          "cashFlow": -24
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.4,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "requestedCash": -10.5,
+      "executedCash": -8.4
+    },
+    {
+      "id": "user:hedge-package:q1:baseline",
+      "perspectiveId": "user",
+      "candidateId": "hedge-package",
+      "notional": 1,
+      "profileId": "baseline",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": -35,
+      "fillRatio": 0.5,
+      "filledNotional": 0.5,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -5,
+        "tailLoss": 5,
+        "objective": -7.5,
+        "worstStateId": "S1",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": -5
+          },
+          {
+            "stateId": "S2",
+            "pnl": -5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -5
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 12.5,
+        "tailLoss": 47.5,
+        "objective": -11.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 52.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -47.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -47.5
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.8,
+          "price": 43,
+          "fillRatio": 0.5,
+          "filledQuantity": 0.5,
+          "cashFlow": 21.5
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.5,
+          "price": 58,
+          "fillRatio": 0.5,
+          "filledQuantity": 0.5,
+          "cashFlow": -29
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -1,
+        "WB": 1,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "requestedCash": -15,
+      "executedCash": -7.5
+    },
+    {
+      "id": "user:hedge-package:q1:shallow",
+      "perspectiveId": "user",
+      "candidateId": "hedge-package",
+      "notional": 1,
+      "profileId": "shallow",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": -38,
+      "fillRatio": 0.25,
+      "filledNotional": 0.25,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -8,
+        "tailLoss": 8,
+        "objective": -12,
+        "worstStateId": "S1",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": -8
+          },
+          {
+            "stateId": "S2",
+            "pnl": -8
+          },
+          {
+            "stateId": "S3",
+            "pnl": -8
+          },
+          {
+            "stateId": "S4",
+            "pnl": -8
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 20.5,
+        "tailLoss": 69.5,
+        "objective": -14.25,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 80.5
+          },
+          {
+            "stateId": "S2",
+            "pnl": 80.5
+          },
+          {
+            "stateId": "S3",
+            "pnl": -69.5
+          },
+          {
+            "stateId": "S4",
+            "pnl": -69.5
+          }
+        ]
+      },
+      "passesObjective": true,
+      "passesLossLimit": true,
+      "decision": "conditional-commit",
+      "reason": "The filled package improves the combined-book objective without crossing the reconstructed loss limit; fees and final VWAP remain a commit condition.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.35,
+          "price": 42,
+          "fillRatio": 0.25,
+          "filledQuantity": 0.25,
+          "cashFlow": 10.5
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.25,
+          "price": 60,
+          "fillRatio": 0.25,
+          "filledQuantity": 0.25,
+          "cashFlow": -15
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -1,
+        "WB": 1,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.25,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "requestedCash": -18,
+      "executedCash": -4.5
+    },
+    {
+      "id": "user:hedge-package:q1:inventory-skewed",
+      "perspectiveId": "user",
+      "candidateId": "hedge-package",
+      "notional": 1,
+      "profileId": "inventory-skewed",
+      "valuation": {
+        "WA": 60,
+        "WB": 40,
+        "VOL": 45
+      },
+      "standaloneEdge": -41,
+      "fillRatio": 0.4,
+      "filledNotional": 0.4,
+      "oldMetrics": {
+        "expectedPnl": 30,
+        "tailLoss": 90,
+        "objective": -15,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 110
+          },
+          {
+            "stateId": "S2",
+            "pnl": 110
+          },
+          {
+            "stateId": "S3",
+            "pnl": -90
+          },
+          {
+            "stateId": "S4",
+            "pnl": -90
+          }
+        ]
+      },
+      "requestedMetrics": {
+        "expectedPnl": -11,
+        "tailLoss": 11,
+        "objective": -16.5,
+        "worstStateId": "S1",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": -11
+          },
+          {
+            "stateId": "S2",
+            "pnl": -11
+          },
+          {
+            "stateId": "S3",
+            "pnl": -11
+          },
+          {
+            "stateId": "S4",
+            "pnl": -11
+          }
+        ]
+      },
+      "executedMetrics": {
+        "expectedPnl": 13.6,
+        "tailLoss": 58.4,
+        "objective": -15.6,
+        "worstStateId": "S3",
+        "outcomes": [
+          {
+            "stateId": "S1",
+            "pnl": 61.6
+          },
+          {
+            "stateId": "S2",
+            "pnl": 61.6
+          },
+          {
+            "stateId": "S3",
+            "pnl": -58.4
+          },
+          {
+            "stateId": "S4",
+            "pnl": -58.4
+          }
+        ]
+      },
+      "passesObjective": false,
+      "passesLossLimit": true,
+      "decision": "reject",
+      "reason": "The filled position does not improve the combined-book risk-adjusted objective.",
+      "legs": [
+        {
+          "contractId": "WA",
+          "side": "sell",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.4,
+          "price": 39,
+          "fillRatio": 0.4,
+          "filledQuantity": 0.4,
+          "cashFlow": 15.6
+        },
+        {
+          "contractId": "WB",
+          "side": "buy",
+          "requestedQuantity": 1,
+          "availableQuantity": 0.6,
+          "price": 60,
+          "fillRatio": 0.4,
+          "filledQuantity": 0.4,
+          "cashFlow": -24
+        }
+      ],
+      "requestedPositionChange": {
+        "WA": -1,
+        "WB": 1,
+        "VOL": 0
+      },
+      "executedPositionChange": {
+        "WA": -0.4,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "requestedCash": -21,
+      "executedCash": -8.4
+    }
+  ],
+  "settlementRows": [
+    {
+      "id": "market-maker:wa-long:q0.5:baseline:S1",
+      "decisionRowId": "market-maker:wa-long:q0.5:baseline",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -113.5,
+      "makerCashAfterTrades": 113.5,
+      "userSettlementPayoff": 250,
+      "makerSettlementPayoff": -250,
+      "userRealizedPnl": 136.5,
+      "makerRealizedPnl": -136.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:baseline:S2",
+      "decisionRowId": "market-maker:wa-long:q0.5:baseline",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -113.5,
+      "makerCashAfterTrades": 113.5,
+      "userSettlementPayoff": 250,
+      "makerSettlementPayoff": -250,
+      "userRealizedPnl": 136.5,
+      "makerRealizedPnl": -136.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:baseline:S3",
+      "decisionRowId": "market-maker:wa-long:q0.5:baseline",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -113.5,
+      "makerCashAfterTrades": 113.5,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -113.5,
+      "makerRealizedPnl": 113.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:baseline:S4",
+      "decisionRowId": "market-maker:wa-long:q0.5:baseline",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -113.5,
+      "makerCashAfterTrades": 113.5,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -113.5,
+      "makerRealizedPnl": 113.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:shallow:S1",
+      "decisionRowId": "market-maker:wa-long:q0.5:shallow",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 245,
+      "makerSettlementPayoff": -245,
+      "userRealizedPnl": 133.4,
+      "makerRealizedPnl": -133.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:shallow:S2",
+      "decisionRowId": "market-maker:wa-long:q0.5:shallow",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 245,
+      "makerSettlementPayoff": -245,
+      "userRealizedPnl": 133.4,
+      "makerRealizedPnl": -133.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:shallow:S3",
+      "decisionRowId": "market-maker:wa-long:q0.5:shallow",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -111.6,
+      "makerRealizedPnl": 111.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:shallow:S4",
+      "decisionRowId": "market-maker:wa-long:q0.5:shallow",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -111.6,
+      "makerRealizedPnl": 111.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:inventory-skewed:S1",
+      "decisionRowId": "market-maker:wa-long:q0.5:inventory-skewed",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -112,
+      "makerCashAfterTrades": 112,
+      "userSettlementPayoff": 250,
+      "makerSettlementPayoff": -250,
+      "userRealizedPnl": 138,
+      "makerRealizedPnl": -138,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:inventory-skewed:S2",
+      "decisionRowId": "market-maker:wa-long:q0.5:inventory-skewed",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -112,
+      "makerCashAfterTrades": 112,
+      "userSettlementPayoff": 250,
+      "makerSettlementPayoff": -250,
+      "userRealizedPnl": 138,
+      "makerRealizedPnl": -138,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:inventory-skewed:S3",
+      "decisionRowId": "market-maker:wa-long:q0.5:inventory-skewed",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -112,
+      "makerCashAfterTrades": 112,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -112,
+      "makerRealizedPnl": 112,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q0.5:inventory-skewed:S4",
+      "decisionRowId": "market-maker:wa-long:q0.5:inventory-skewed",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -112,
+      "makerCashAfterTrades": 112,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -112,
+      "makerRealizedPnl": 112,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:baseline:S1",
+      "decisionRowId": "market-maker:wa-long:q1:baseline",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -137,
+      "makerCashAfterTrades": 137,
+      "userSettlementPayoff": 300,
+      "makerSettlementPayoff": -300,
+      "userRealizedPnl": 163,
+      "makerRealizedPnl": -163,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:baseline:S2",
+      "decisionRowId": "market-maker:wa-long:q1:baseline",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -137,
+      "makerCashAfterTrades": 137,
+      "userSettlementPayoff": 300,
+      "makerSettlementPayoff": -300,
+      "userRealizedPnl": 163,
+      "makerRealizedPnl": -163,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:baseline:S3",
+      "decisionRowId": "market-maker:wa-long:q1:baseline",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -137,
+      "makerCashAfterTrades": 137,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -137,
+      "makerRealizedPnl": 137,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:baseline:S4",
+      "decisionRowId": "market-maker:wa-long:q1:baseline",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -137,
+      "makerCashAfterTrades": 137,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -137,
+      "makerRealizedPnl": 137,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:shallow:S1",
+      "decisionRowId": "market-maker:wa-long:q1:shallow",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 245,
+      "makerSettlementPayoff": -245,
+      "userRealizedPnl": 133.4,
+      "makerRealizedPnl": -133.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:shallow:S2",
+      "decisionRowId": "market-maker:wa-long:q1:shallow",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 245,
+      "makerSettlementPayoff": -245,
+      "userRealizedPnl": 133.4,
+      "makerRealizedPnl": -133.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:shallow:S3",
+      "decisionRowId": "market-maker:wa-long:q1:shallow",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -111.6,
+      "makerRealizedPnl": 111.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:shallow:S4",
+      "decisionRowId": "market-maker:wa-long:q1:shallow",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -111.6,
+      "makerRealizedPnl": 111.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:inventory-skewed:S1",
+      "decisionRowId": "market-maker:wa-long:q1:inventory-skewed",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -134,
+      "makerCashAfterTrades": 134,
+      "userSettlementPayoff": 300,
+      "makerSettlementPayoff": -300,
+      "userRealizedPnl": 166,
+      "makerRealizedPnl": -166,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:inventory-skewed:S2",
+      "decisionRowId": "market-maker:wa-long:q1:inventory-skewed",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -134,
+      "makerCashAfterTrades": 134,
+      "userSettlementPayoff": 300,
+      "makerSettlementPayoff": -300,
+      "userRealizedPnl": 166,
+      "makerRealizedPnl": -166,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:inventory-skewed:S3",
+      "decisionRowId": "market-maker:wa-long:q1:inventory-skewed",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -134,
+      "makerCashAfterTrades": 134,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -134,
+      "makerRealizedPnl": 134,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:wa-long:q1:inventory-skewed:S4",
+      "decisionRowId": "market-maker:wa-long:q1:inventory-skewed",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -134,
+      "makerCashAfterTrades": 134,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -134,
+      "makerRealizedPnl": 134,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:baseline:S1",
+      "decisionRowId": "market-maker:hedge-package:q0.5:baseline",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 150,
+      "makerSettlementPayoff": -150,
+      "userRealizedPnl": 52.5,
+      "makerRealizedPnl": -52.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:baseline:S2",
+      "decisionRowId": "market-maker:hedge-package:q0.5:baseline",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 150,
+      "makerSettlementPayoff": -150,
+      "userRealizedPnl": 52.5,
+      "makerRealizedPnl": -52.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:baseline:S3",
+      "decisionRowId": "market-maker:hedge-package:q0.5:baseline",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 50,
+      "makerSettlementPayoff": -50,
+      "userRealizedPnl": -47.5,
+      "makerRealizedPnl": 47.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:baseline:S4",
+      "decisionRowId": "market-maker:hedge-package:q0.5:baseline",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 50,
+      "makerSettlementPayoff": -50,
+      "userRealizedPnl": -47.5,
+      "makerRealizedPnl": 47.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:shallow:S1",
+      "decisionRowId": "market-maker:hedge-package:q0.5:shallow",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 175,
+      "makerSettlementPayoff": -175,
+      "userRealizedPnl": 80.5,
+      "makerRealizedPnl": -80.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:shallow:S2",
+      "decisionRowId": "market-maker:hedge-package:q0.5:shallow",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 175,
+      "makerSettlementPayoff": -175,
+      "userRealizedPnl": 80.5,
+      "makerRealizedPnl": -80.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:shallow:S3",
+      "decisionRowId": "market-maker:hedge-package:q0.5:shallow",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 25,
+      "makerSettlementPayoff": -25,
+      "userRealizedPnl": -69.5,
+      "makerRealizedPnl": 69.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:shallow:S4",
+      "decisionRowId": "market-maker:hedge-package:q0.5:shallow",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 25,
+      "makerSettlementPayoff": -25,
+      "userRealizedPnl": -69.5,
+      "makerRealizedPnl": 69.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:inventory-skewed:S1",
+      "decisionRowId": "market-maker:hedge-package:q0.5:inventory-skewed",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 160,
+      "makerSettlementPayoff": -160,
+      "userRealizedPnl": 61.6,
+      "makerRealizedPnl": -61.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:inventory-skewed:S2",
+      "decisionRowId": "market-maker:hedge-package:q0.5:inventory-skewed",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 160,
+      "makerSettlementPayoff": -160,
+      "userRealizedPnl": 61.6,
+      "makerRealizedPnl": -61.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:inventory-skewed:S3",
+      "decisionRowId": "market-maker:hedge-package:q0.5:inventory-skewed",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 40,
+      "makerSettlementPayoff": -40,
+      "userRealizedPnl": -58.4,
+      "makerRealizedPnl": 58.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q0.5:inventory-skewed:S4",
+      "decisionRowId": "market-maker:hedge-package:q0.5:inventory-skewed",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 40,
+      "makerSettlementPayoff": -40,
+      "userRealizedPnl": -58.4,
+      "makerRealizedPnl": 58.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:baseline:S1",
+      "decisionRowId": "market-maker:hedge-package:q1:baseline",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 150,
+      "makerSettlementPayoff": -150,
+      "userRealizedPnl": 52.5,
+      "makerRealizedPnl": -52.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:baseline:S2",
+      "decisionRowId": "market-maker:hedge-package:q1:baseline",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 150,
+      "makerSettlementPayoff": -150,
+      "userRealizedPnl": 52.5,
+      "makerRealizedPnl": -52.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:baseline:S3",
+      "decisionRowId": "market-maker:hedge-package:q1:baseline",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 50,
+      "makerSettlementPayoff": -50,
+      "userRealizedPnl": -47.5,
+      "makerRealizedPnl": 47.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:baseline:S4",
+      "decisionRowId": "market-maker:hedge-package:q1:baseline",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 50,
+      "makerSettlementPayoff": -50,
+      "userRealizedPnl": -47.5,
+      "makerRealizedPnl": 47.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:shallow:S1",
+      "decisionRowId": "market-maker:hedge-package:q1:shallow",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 175,
+      "makerSettlementPayoff": -175,
+      "userRealizedPnl": 80.5,
+      "makerRealizedPnl": -80.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:shallow:S2",
+      "decisionRowId": "market-maker:hedge-package:q1:shallow",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 175,
+      "makerSettlementPayoff": -175,
+      "userRealizedPnl": 80.5,
+      "makerRealizedPnl": -80.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:shallow:S3",
+      "decisionRowId": "market-maker:hedge-package:q1:shallow",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 25,
+      "makerSettlementPayoff": -25,
+      "userRealizedPnl": -69.5,
+      "makerRealizedPnl": 69.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:shallow:S4",
+      "decisionRowId": "market-maker:hedge-package:q1:shallow",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 25,
+      "makerSettlementPayoff": -25,
+      "userRealizedPnl": -69.5,
+      "makerRealizedPnl": 69.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:inventory-skewed:S1",
+      "decisionRowId": "market-maker:hedge-package:q1:inventory-skewed",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 160,
+      "makerSettlementPayoff": -160,
+      "userRealizedPnl": 61.6,
+      "makerRealizedPnl": -61.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:inventory-skewed:S2",
+      "decisionRowId": "market-maker:hedge-package:q1:inventory-skewed",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 160,
+      "makerSettlementPayoff": -160,
+      "userRealizedPnl": 61.6,
+      "makerRealizedPnl": -61.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:inventory-skewed:S3",
+      "decisionRowId": "market-maker:hedge-package:q1:inventory-skewed",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 40,
+      "makerSettlementPayoff": -40,
+      "userRealizedPnl": -58.4,
+      "makerRealizedPnl": 58.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "market-maker:hedge-package:q1:inventory-skewed:S4",
+      "decisionRowId": "market-maker:hedge-package:q1:inventory-skewed",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 40,
+      "makerSettlementPayoff": -40,
+      "userRealizedPnl": -58.4,
+      "makerRealizedPnl": 58.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:baseline:S1",
+      "decisionRowId": "user:wa-long:q0.5:baseline",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -113.5,
+      "makerCashAfterTrades": 113.5,
+      "userSettlementPayoff": 250,
+      "makerSettlementPayoff": -250,
+      "userRealizedPnl": 136.5,
+      "makerRealizedPnl": -136.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:baseline:S2",
+      "decisionRowId": "user:wa-long:q0.5:baseline",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -113.5,
+      "makerCashAfterTrades": 113.5,
+      "userSettlementPayoff": 250,
+      "makerSettlementPayoff": -250,
+      "userRealizedPnl": 136.5,
+      "makerRealizedPnl": -136.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:baseline:S3",
+      "decisionRowId": "user:wa-long:q0.5:baseline",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -113.5,
+      "makerCashAfterTrades": 113.5,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -113.5,
+      "makerRealizedPnl": 113.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:baseline:S4",
+      "decisionRowId": "user:wa-long:q0.5:baseline",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -113.5,
+      "makerCashAfterTrades": 113.5,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -113.5,
+      "makerRealizedPnl": 113.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:shallow:S1",
+      "decisionRowId": "user:wa-long:q0.5:shallow",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 245,
+      "makerSettlementPayoff": -245,
+      "userRealizedPnl": 133.4,
+      "makerRealizedPnl": -133.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:shallow:S2",
+      "decisionRowId": "user:wa-long:q0.5:shallow",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 245,
+      "makerSettlementPayoff": -245,
+      "userRealizedPnl": 133.4,
+      "makerRealizedPnl": -133.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:shallow:S3",
+      "decisionRowId": "user:wa-long:q0.5:shallow",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -111.6,
+      "makerRealizedPnl": 111.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:shallow:S4",
+      "decisionRowId": "user:wa-long:q0.5:shallow",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -111.6,
+      "makerRealizedPnl": 111.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:inventory-skewed:S1",
+      "decisionRowId": "user:wa-long:q0.5:inventory-skewed",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -112,
+      "makerCashAfterTrades": 112,
+      "userSettlementPayoff": 250,
+      "makerSettlementPayoff": -250,
+      "userRealizedPnl": 138,
+      "makerRealizedPnl": -138,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:inventory-skewed:S2",
+      "decisionRowId": "user:wa-long:q0.5:inventory-skewed",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -112,
+      "makerCashAfterTrades": 112,
+      "userSettlementPayoff": 250,
+      "makerSettlementPayoff": -250,
+      "userRealizedPnl": 138,
+      "makerRealizedPnl": -138,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:inventory-skewed:S3",
+      "decisionRowId": "user:wa-long:q0.5:inventory-skewed",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -112,
+      "makerCashAfterTrades": 112,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -112,
+      "makerRealizedPnl": 112,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q0.5:inventory-skewed:S4",
+      "decisionRowId": "user:wa-long:q0.5:inventory-skewed",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.5,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -112,
+      "makerCashAfterTrades": 112,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -112,
+      "makerRealizedPnl": 112,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:baseline:S1",
+      "decisionRowId": "user:wa-long:q1:baseline",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -137,
+      "makerCashAfterTrades": 137,
+      "userSettlementPayoff": 300,
+      "makerSettlementPayoff": -300,
+      "userRealizedPnl": 163,
+      "makerRealizedPnl": -163,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:baseline:S2",
+      "decisionRowId": "user:wa-long:q1:baseline",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -137,
+      "makerCashAfterTrades": 137,
+      "userSettlementPayoff": 300,
+      "makerSettlementPayoff": -300,
+      "userRealizedPnl": 163,
+      "makerRealizedPnl": -163,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:baseline:S3",
+      "decisionRowId": "user:wa-long:q1:baseline",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -137,
+      "makerCashAfterTrades": 137,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -137,
+      "makerRealizedPnl": 137,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:baseline:S4",
+      "decisionRowId": "user:wa-long:q1:baseline",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -137,
+      "makerCashAfterTrades": 137,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -137,
+      "makerRealizedPnl": 137,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:shallow:S1",
+      "decisionRowId": "user:wa-long:q1:shallow",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 245,
+      "makerSettlementPayoff": -245,
+      "userRealizedPnl": 133.4,
+      "makerRealizedPnl": -133.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:shallow:S2",
+      "decisionRowId": "user:wa-long:q1:shallow",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 245,
+      "makerSettlementPayoff": -245,
+      "userRealizedPnl": 133.4,
+      "makerRealizedPnl": -133.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:shallow:S3",
+      "decisionRowId": "user:wa-long:q1:shallow",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -111.6,
+      "makerRealizedPnl": 111.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:shallow:S4",
+      "decisionRowId": "user:wa-long:q1:shallow",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -2.45,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -111.6,
+      "makerCashAfterTrades": 111.6,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -111.6,
+      "makerRealizedPnl": 111.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:inventory-skewed:S1",
+      "decisionRowId": "user:wa-long:q1:inventory-skewed",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -134,
+      "makerCashAfterTrades": 134,
+      "userSettlementPayoff": 300,
+      "makerSettlementPayoff": -300,
+      "userRealizedPnl": 166,
+      "makerRealizedPnl": -166,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:inventory-skewed:S2",
+      "decisionRowId": "user:wa-long:q1:inventory-skewed",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -134,
+      "makerCashAfterTrades": 134,
+      "userSettlementPayoff": 300,
+      "makerSettlementPayoff": -300,
+      "userRealizedPnl": 166,
+      "makerRealizedPnl": -166,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:inventory-skewed:S3",
+      "decisionRowId": "user:wa-long:q1:inventory-skewed",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -134,
+      "makerCashAfterTrades": 134,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -134,
+      "makerRealizedPnl": 134,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:wa-long:q1:inventory-skewed:S4",
+      "decisionRowId": "user:wa-long:q1:inventory-skewed",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -3,
+        "WB": 0,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -134,
+      "makerCashAfterTrades": 134,
+      "userSettlementPayoff": 0,
+      "makerSettlementPayoff": 0,
+      "userRealizedPnl": -134,
+      "makerRealizedPnl": 134,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:baseline:S1",
+      "decisionRowId": "user:hedge-package:q0.5:baseline",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 150,
+      "makerSettlementPayoff": -150,
+      "userRealizedPnl": 52.5,
+      "makerRealizedPnl": -52.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:baseline:S2",
+      "decisionRowId": "user:hedge-package:q0.5:baseline",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 150,
+      "makerSettlementPayoff": -150,
+      "userRealizedPnl": 52.5,
+      "makerRealizedPnl": -52.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:baseline:S3",
+      "decisionRowId": "user:hedge-package:q0.5:baseline",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 50,
+      "makerSettlementPayoff": -50,
+      "userRealizedPnl": -47.5,
+      "makerRealizedPnl": 47.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:baseline:S4",
+      "decisionRowId": "user:hedge-package:q0.5:baseline",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 50,
+      "makerSettlementPayoff": -50,
+      "userRealizedPnl": -47.5,
+      "makerRealizedPnl": 47.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:shallow:S1",
+      "decisionRowId": "user:hedge-package:q0.5:shallow",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 175,
+      "makerSettlementPayoff": -175,
+      "userRealizedPnl": 80.5,
+      "makerRealizedPnl": -80.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:shallow:S2",
+      "decisionRowId": "user:hedge-package:q0.5:shallow",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 175,
+      "makerSettlementPayoff": -175,
+      "userRealizedPnl": 80.5,
+      "makerRealizedPnl": -80.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:shallow:S3",
+      "decisionRowId": "user:hedge-package:q0.5:shallow",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 25,
+      "makerSettlementPayoff": -25,
+      "userRealizedPnl": -69.5,
+      "makerRealizedPnl": 69.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:shallow:S4",
+      "decisionRowId": "user:hedge-package:q0.5:shallow",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 25,
+      "makerSettlementPayoff": -25,
+      "userRealizedPnl": -69.5,
+      "makerRealizedPnl": 69.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:inventory-skewed:S1",
+      "decisionRowId": "user:hedge-package:q0.5:inventory-skewed",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 160,
+      "makerSettlementPayoff": -160,
+      "userRealizedPnl": 61.6,
+      "makerRealizedPnl": -61.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:inventory-skewed:S2",
+      "decisionRowId": "user:hedge-package:q0.5:inventory-skewed",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 160,
+      "makerSettlementPayoff": -160,
+      "userRealizedPnl": 61.6,
+      "makerRealizedPnl": -61.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:inventory-skewed:S3",
+      "decisionRowId": "user:hedge-package:q0.5:inventory-skewed",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 40,
+      "makerSettlementPayoff": -40,
+      "userRealizedPnl": -58.4,
+      "makerRealizedPnl": 58.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q0.5:inventory-skewed:S4",
+      "decisionRowId": "user:hedge-package:q0.5:inventory-skewed",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 40,
+      "makerSettlementPayoff": -40,
+      "userRealizedPnl": -58.4,
+      "makerRealizedPnl": 58.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:baseline:S1",
+      "decisionRowId": "user:hedge-package:q1:baseline",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 150,
+      "makerSettlementPayoff": -150,
+      "userRealizedPnl": 52.5,
+      "makerRealizedPnl": -52.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:baseline:S2",
+      "decisionRowId": "user:hedge-package:q1:baseline",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 150,
+      "makerSettlementPayoff": -150,
+      "userRealizedPnl": 52.5,
+      "makerRealizedPnl": -52.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:baseline:S3",
+      "decisionRowId": "user:hedge-package:q1:baseline",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 50,
+      "makerSettlementPayoff": -50,
+      "userRealizedPnl": -47.5,
+      "makerRealizedPnl": 47.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:baseline:S4",
+      "decisionRowId": "user:hedge-package:q1:baseline",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.5,
+        "WB": 0.5,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.5,
+        "WB": -0.5,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -97.5,
+      "makerCashAfterTrades": 97.5,
+      "userSettlementPayoff": 50,
+      "makerSettlementPayoff": -50,
+      "userRealizedPnl": -47.5,
+      "makerRealizedPnl": 47.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:shallow:S1",
+      "decisionRowId": "user:hedge-package:q1:shallow",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 175,
+      "makerSettlementPayoff": -175,
+      "userRealizedPnl": 80.5,
+      "makerRealizedPnl": -80.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:shallow:S2",
+      "decisionRowId": "user:hedge-package:q1:shallow",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 175,
+      "makerSettlementPayoff": -175,
+      "userRealizedPnl": 80.5,
+      "makerRealizedPnl": -80.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:shallow:S3",
+      "decisionRowId": "user:hedge-package:q1:shallow",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 25,
+      "makerSettlementPayoff": -25,
+      "userRealizedPnl": -69.5,
+      "makerRealizedPnl": 69.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:shallow:S4",
+      "decisionRowId": "user:hedge-package:q1:shallow",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.75,
+        "WB": 0.25,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.75,
+        "WB": -0.25,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -94.5,
+      "makerCashAfterTrades": 94.5,
+      "userSettlementPayoff": 25,
+      "makerSettlementPayoff": -25,
+      "userRealizedPnl": -69.5,
+      "makerRealizedPnl": 69.5,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:inventory-skewed:S1",
+      "decisionRowId": "user:hedge-package:q1:inventory-skewed",
+      "stateId": "S1",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 160,
+      "makerSettlementPayoff": -160,
+      "userRealizedPnl": 61.6,
+      "makerRealizedPnl": -61.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:inventory-skewed:S2",
+      "decisionRowId": "user:hedge-package:q1:inventory-skewed",
+      "stateId": "S2",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 160,
+      "makerSettlementPayoff": -160,
+      "userRealizedPnl": 61.6,
+      "makerRealizedPnl": -61.6,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:inventory-skewed:S3",
+      "decisionRowId": "user:hedge-package:q1:inventory-skewed",
+      "stateId": "S3",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 40,
+      "makerSettlementPayoff": -40,
+      "userRealizedPnl": -58.4,
+      "makerRealizedPnl": 58.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    },
+    {
+      "id": "user:hedge-package:q1:inventory-skewed:S4",
+      "decisionRowId": "user:hedge-package:q1:inventory-skewed",
+      "stateId": "S4",
+      "userPositions": {
+        "WA": 1.6,
+        "WB": 0.4,
+        "VOL": 0
+      },
+      "makerPositions": {
+        "WA": -1.6,
+        "WB": -0.4,
+        "VOL": 0
+      },
+      "userCashAfterTrades": -98.4,
+      "makerCashAfterTrades": 98.4,
+      "userSettlementPayoff": 40,
+      "makerSettlementPayoff": -40,
+      "userRealizedPnl": -58.4,
+      "makerRealizedPnl": 58.4,
+      "positionConservation": true,
+      "cashConservation": true,
+      "pnlConservation": true
+    }
+  ],
+  "boundary": {
+    "originalSourcePublic": false,
+    "reconstructedDemo": true,
+    "realMoneyTrading": false,
+    "observedPerformance": false,
+    "browserCalculation": false,
+    "statement": "A deterministic interface reconstruction for explaining EventEdge decisions. It is not the private C++ source, an observed backtest, a live market, or evidence of realized performance."
+  }
+}

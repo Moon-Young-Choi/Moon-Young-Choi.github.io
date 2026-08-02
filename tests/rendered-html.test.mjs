@@ -21,12 +21,12 @@ const arbitrageRoute = "projects/triangular-arbitrage-detector";
 const quantRoute = "projects/quant-platform";
 const pwrRoute = "projects/pwr-scan";
 const pwrLegacyRoute = "projects/pwr-scan-validation";
+const eventEdgeRoute = "projects/eventedge-derivatives";
 const standardRoutes = [
   "experience/avikus-simulation-perception",
   "experience/finburh-document-automation",
   "projects/open-source-intelligence",
   "projects/bayesian-ad-targeting",
-  "projects/eventedge-derivatives",
 ];
 const expectedStack = {
   "experience/avikus-simulation-perception": ["C++", "CUDA", "OpenCV", "OpenMP", "Homography", "Synthetic signal generation"],
@@ -67,15 +67,23 @@ test("renders the revised home information architecture", async () => {
   assert.doesNotMatch(html, /date of birth|\bage\b/i);
 });
 
-test("renders Quant first, consolidated PWR second, and no duplicate PWR home card", async () => {
+test("renders the six projects in the revised order while keeping position colors", async () => {
   const html = await routeHtml();
   const quant = html.indexOf(">Quant Platform<");
   const pwr = html.indexOf(">PWR-Scan<");
   const osint = html.indexOf(">Open Source Intelligence<");
+  const eventEdge = html.indexOf(">EventEdge Derivatives<");
+  const arbitrage = html.indexOf(">Triangular Arbitrage Detector<");
+  const bayesian = html.indexOf(">Bayesian Ad Targeting<");
 
   assert.ok(quant >= 0, "Quant Platform card is missing");
   assert.ok(pwr > quant, "PWR-Scan must follow Quant Platform");
-  assert.ok(osint > pwr, "the existing project order after PWR changed");
+  assert.ok(osint > pwr, "Open Source Intelligence must follow PWR-Scan");
+  assert.ok(eventEdge > osint, "EventEdge must occupy project position 04");
+  assert.ok(arbitrage > eventEdge, "Triangular Arbitrage must follow EventEdge");
+  assert.ok(bayesian > arbitrage, "Bayesian Ad Targeting must occupy project position 06");
+  assert.match(html, /href="\/projects\/eventedge-derivatives\/" class="project-card coral"/);
+  assert.match(html, /href="\/projects\/bayesian-ad-targeting\/" class="project-card paper"/);
   assert.doesNotMatch(html, /href="\/projects\/pwr-scan-validation\/?"/);
   assert.doesNotMatch(html, /https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan/);
 });
@@ -152,7 +160,7 @@ test("copies the authenticated local PWR synthetic study artifact", async () => 
   assert.equal(data.boundary.performanceClaim, false);
 });
 
-test("keeps the standard case-study contract on the remaining five pages", async () => {
+test("keeps the standard case-study contract on the remaining four pages", async () => {
   for (const route of standardRoutes) {
     const html = await routeHtml(route);
     const method = html.indexOf("02 / Method");
@@ -168,6 +176,68 @@ test("keeps the standard case-study contract on the remaining five pages", async
       assert.ok(html.includes(renderedItem), `${route} is missing ${item}`);
     }
   }
+});
+
+test("renders the dedicated EventEdge market and its private-source boundary", async () => {
+  const [html, home, css, clientSource] = await Promise.all([
+    routeHtml(eventEdgeRoute),
+    routeHtml(),
+    readFile(new URL("../app/components/EventEdgeMarket.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/EventEdgeMarketConsole.tsx", import.meta.url), "utf8"),
+  ]);
+
+  for (const marker of [
+    "Private research artifact",
+    "Reconstructed demo",
+    "No real-money trading",
+    "Loading verified reconstructed market",
+    "Trade after public action. Reveal after settlement.",
+    "The decision object is the combined portfolio.",
+    "EventEdge public claim ledger",
+    "Not implemented in this portfolio revision",
+    "PDF not published",
+  ]) assert.ok(html.includes(marker), `EventEdge is missing ${marker}`);
+
+  for (const marker of ["Perspective", "Candidate", "Requested notional", "Book profile", "Terminal state", "REVEAL & SETTLE", "aria-live=\"polite\"", "loadEventEdgeDemo"]) {
+    assert.ok(clientSource.includes(marker), `EventEdge console source is missing ${marker}`);
+  }
+  for (const item of expectedStack[eventEdgeRoute]) assert.ok(html.includes(item) || studyMarker(item), `EventEdge is missing ${item}`);
+  assert.match(html, /<math[\s>]/);
+  assert.match(html, /<table[^>]*>.*?<caption(?:\s[^>]*)?>/s);
+  assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
+  assert.doesNotMatch(html, /href="https:\/\/github\.com\/Moon-Young-Choi\/.*eventedge/i);
+  assert.doesNotMatch(html, /observed return|realized performance|live order submission/i);
+  assert.match(home, /href="\/projects\/eventedge-derivatives\/" class="project-card coral"/);
+  assert.match(css, /@media \(max-width:\s*900px\)/);
+  assert.match(css, /@media \(max-width:\s*640px\)/);
+  assert.match(css, /@media \(max-width:\s*420px\)/);
+  assert.match(css, /@media \(max-width:\s*320px\)/);
+  assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(css, /overflow:\s*clip/);
+
+  function studyMarker(item) {
+    const aliases = {
+      "C++": "Linux CLI simulator",
+      "Linux CLI": "Linux CLI simulator",
+      "Monte Carlo simulation": "Exact / Monte Carlo split",
+      "CVaR": "Portfolio CVaR",
+      "order-book simulation": "20 × 2 order books",
+      "exact-enumeration/CFR validation": "CFR diagnostics",
+    };
+    return html.includes(aliases[item] ?? item);
+  }
+});
+
+test("copies the verified local EventEdge artifact", async () => {
+  const artifactUrl = new URL("data/eventedge-demo.v1.json", outputRoot);
+  await access(artifactUrl);
+  const data = JSON.parse(await readFile(artifactUrl, "utf8"));
+  assert.equal(data.schemaVersion, "eventedge-demo.v1");
+  assert.equal(data.provenance.dataClass, "reconstructed-demo");
+  assert.equal(data.decisionRows.length, 24);
+  assert.equal(data.settlementRows.length, 96);
+  assert.equal(data.boundary.browserCalculation, false);
+  assert.equal(data.boundary.observedPerformance, false);
 });
 
 test("renders the dedicated arbitrage lab and its precomputed controls", async () => {
