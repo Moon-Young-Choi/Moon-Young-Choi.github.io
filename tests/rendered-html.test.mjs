@@ -22,11 +22,8 @@ const quantRoute = "projects/quant-platform";
 const pwrRoute = "projects/pwr-scan";
 const pwrLegacyRoute = "projects/pwr-scan-validation";
 const eventEdgeRoute = "projects/eventedge-derivatives";
-const standardRoutes = [
-  "projects/open-source-intelligence",
-];
+const standardRoutes = [];
 const expectedStack = {
-  "projects/open-source-intelligence": ["Python", "PyTorch", "Transformers", "NumPy", "SafeTensors", "DART", "FSC/KRX", "pytest"],
   "projects/triangular-arbitrage-detector": ["Node.js", "JavaScript", "Axios", "WebSocket", "Upbit REST/WebSocket", "Node test runner"],
   "projects/eventedge-derivatives": ["C++", "Linux CLI", "Monte Carlo simulation", "CVaR", "order-book simulation", "exact-enumeration/CFR validation"],
 };

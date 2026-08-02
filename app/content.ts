@@ -8,7 +8,7 @@ export type Formula = {
 
 export type CaseStudy = {
   kind: "work" | "project";
-  presentation: "standard" | "quant-platform" | "pwr-theory" | "arbitrage-lab" | "eventedge-market" | "bayesian-math" | "avikus-experience" | "finburh-experience";
+  presentation: "standard" | "quant-platform" | "pwr-theory" | "arbitrage-lab" | "eventedge-market" | "bayesian-math" | "osint-math" | "avikus-experience" | "finburh-experience";
   number: string;
   slug: string;
   title: string;
@@ -302,7 +302,7 @@ export const projectStudies: CaseStudy[] = [
   },
   {
     kind: "project",
-    presentation: "standard",
+    presentation: "osint-math",
     number: "03",
     slug: "open-source-intelligence",
     title: "Open Source Intelligence",

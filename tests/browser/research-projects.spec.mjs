@@ -7,6 +7,7 @@ const routes = [
   "/experience/finburh-document-automation/",
   "/projects/quant-platform/",
   "/projects/pwr-scan/",
+  "/projects/open-source-intelligence/",
   "/projects/eventedge-derivatives/",
   "/projects/bayesian-ad-targeting/",
 ];
