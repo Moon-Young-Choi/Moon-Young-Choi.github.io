@@ -232,13 +232,16 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(home, />MainGate</);
   assert.match(home, />Partners Inc\.</);
 
-  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "mosaicField", "mosaicSpiral", "spiralTile", "spiralPoints", "spiralTiles", "commandRoutes", "conversationAgent", "taskAgent", "workAgent", "researchAgent"]) {
+  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "opticalField", "wavefrontField", "apertureOne", "apertureTwo", "refractiveLens", "refractedBands", "caustic", "commandRoutes", "conversationAgent", "taskAgent", "workAgent", "researchAgent"]) {
     assert.ok(graphicSource.includes(marker) || graphicCss.includes(marker), `work graphic is missing ${marker}`);
   }
   assert.doesNotMatch(graphicSource, /<svg|<canvas/i);
-  assert.doesNotMatch(graphicSource, /homographyField|referencePlane|inputFrames|inputFrameOne|inputFrameTwo|inputFrameThree|correspondenceLinks|linkSetOne|linkSetTwo|linkSetThree|overlapRegion|projectionGrid|packetOrbit|panoramaFrame|thermalWindow|shipCuboid|outputCluster|wordCluster|slideCluster|sheetCluster/);
-  assert.match(graphicCss, /@keyframes spiral-field/);
-  assert.match(graphicCss, /@keyframes spiral-tile/);
+  assert.doesNotMatch(graphicSource, /mosaicField|mosaicSpiral|spiralTile|spiralPoints|spiralTiles|homographyField|referencePlane|inputFrames|inputFrameOne|inputFrameTwo|inputFrameThree|correspondenceLinks|linkSetOne|linkSetTwo|linkSetThree|overlapRegion|projectionGrid|packetOrbit|panoramaFrame|thermalWindow|shipCuboid|outputCluster|wordCluster|slideCluster|sheetCluster/);
+  assert.match(graphicCss, /@keyframes optical-axis-one/);
+  assert.match(graphicCss, /@keyframes optical-axis-two/);
+  assert.match(graphicCss, /@keyframes lens-align/);
+  assert.match(graphicCss, /@keyframes refracted-bands/);
+  assert.match(graphicCss, /@keyframes caustic-drift/);
   assert.match(graphicCss, /@keyframes command-flow/);
   for (const fill of ["background: var(--paper)", "background: var(--coral)", "background: var(--blue)", "background: var(--ink)"]) {
     assert.ok(graphicCss.includes(fill), `FINBURH agent palette is missing ${fill}`);

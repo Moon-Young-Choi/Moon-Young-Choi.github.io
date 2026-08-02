@@ -45,7 +45,7 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             </div>
             <figure className={styles.heroFigure} aria-labelledby="avikus-field-caption">
               <AvikusProjectiveField variant="hero" />
-              <figcaption id="avikus-field-caption">Fourteen planar fragments begin near their target path, then lock in sequence to form one loose spiral mosaic.</figcaption>
+              <figcaption id="avikus-field-caption">Two offset optical fields converge around a shared axis; the overlap magnifies and bends the wavefront into one stable refractive aperture.</figcaption>
             </figure>
           </div>
           <div className={styles.factDock}>
@@ -88,11 +88,11 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             <div className={styles.sectionLabel}>02 / Alignment path</div>
             <div className={styles.sectionBody}>
               <span className={styles.reconstruction}>Architecture reconstruction · no internal imagery</span>
-              <h2 id="alignment-title">Fourteen fragments. One projective sequence. One continuous field.</h2>
+              <h2 id="alignment-title">Two optical fields. One aligned aperture. A stable panorama.</h2>
               <div className={styles.splitFeature}>
                 <figure className={styles.featureFigure} aria-labelledby="alignment-caption">
                   <AvikusProjectiveField variant="hero" />
-                  <figcaption id="alignment-caption">The coral activation follows the curve as each nearby fragment settles into the shared spiral, turning a loose arrangement into one continuous geometric field.</figcaption>
+                  <figcaption id="alignment-caption">As the optical axes converge, straight wavefronts become enlarged curved bands inside the shared lens and resolve around a narrow caustic.</figcaption>
                 </figure>
                 <div>
                   <div className={styles.formula}>

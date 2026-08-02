@@ -8,31 +8,102 @@
 
 .hero { width: min(100%, 680px); }
 
-/* Avikus: fourteen planar fragments resolve into one loose spiral mosaic. */
-.mosaicField {
+/* Avikus: two optical fields converge into one refractive aperture. */
+.opticalField {
   position: absolute;
-  inset: 5% 2%;
+  inset: 6% 2%;
   overflow: hidden;
+  isolation: isolate;
 }
 
-.mosaicSpiral {
+.wavefrontField {
   position: absolute;
-  inset: 0;
-  transform-origin: center;
-  animation: spiral-field 14s cubic-bezier(.58,0,.22,1) infinite;
+  inset: 10% 4%;
+  opacity: .22;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 8.6%,
+    color-mix(in srgb, var(--ink) 48%, transparent) 8.9% 9.2%,
+    transparent 9.5% 18%
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  animation: wavefront-drift 8.4s ease-in-out infinite;
 }
 
-.spiralTile {
+.aperture {
   position: absolute;
-  left: var(--tile-x);
-  top: var(--tile-y);
-  width: var(--tile-width);
-  height: 8.5%;
+  top: 14%;
+  width: 66%;
+  height: 68%;
   border: 2px solid var(--ink);
-  background: var(--tile-fill);
+  border-radius: 50%;
+  transform-origin: center center;
+}
+
+.aperture::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: 1px solid color-mix(in srgb, var(--ink) 48%, transparent);
+  border-radius: inherit;
+}
+
+.apertureOne {
+  left: 3%;
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  animation: optical-axis-one 8.4s cubic-bezier(.58,0,.22,1) infinite;
+}
+
+.apertureTwo {
+  right: 3%;
+  border-color: color-mix(in srgb, var(--blue) 68%, var(--ink));
+  background: color-mix(in srgb, var(--blue) 11%, transparent);
+  animation: optical-axis-two 8.4s cubic-bezier(.58,0,.22,1) infinite;
+}
+
+.refractiveLens {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  width: 52%;
+  height: 72%;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--blue) 15%, var(--paper));
+  clip-path: ellipse(37% 47% at 50% 50%);
+  mask-image:
+    radial-gradient(ellipse 58% 88% at 28% 50%, #000 98%, transparent 100%),
+    radial-gradient(ellipse 58% 88% at 72% 50%, #000 98%, transparent 100%);
+  mask-composite: intersect;
   transform-origin: center;
-  transform: translate(-50%, -50%) translate(var(--scatter-x), var(--scatter-y)) rotate(calc(var(--tile-angle) + var(--scatter-rotate)));
-  animation: spiral-tile 14s cubic-bezier(.58,0,.22,1) var(--tile-delay) infinite both;
+  animation: lens-align 8.4s cubic-bezier(.58,0,.22,1) infinite;
+}
+
+.refractedBands {
+  position: absolute;
+  inset: -18%;
+  opacity: .54;
+  background: repeating-radial-gradient(
+    ellipse 72% 61% at 50% 50%,
+    transparent 0 13px,
+    color-mix(in srgb, var(--ink) 72%, transparent) 14px 15px,
+    transparent 16px 27px
+  );
+  transform-origin: center;
+  animation: refracted-bands 8.4s ease-in-out infinite;
+}
+
+.caustic {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 9%;
+  width: 2px;
+  height: 82%;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  box-shadow: 0 0 12px 5px color-mix(in srgb, var(--paper) 46%, transparent);
+  opacity: .28;
+  animation: caustic-drift 8.4s ease-in-out infinite;
 }
 
 /* FINBURH: four agent geometries and the command paths between them. */
@@ -108,24 +179,31 @@
 .workAgent i:nth-child(2) { transform: translate(-6px, 5px); opacity: .72; animation-delay: -.12s; }
 .workAgent i:nth-child(3) { animation-delay: -.24s; }
 
-@keyframes spiral-field {
-  0%, 42%, 100% { transform: scale(.96); }
-  54%, 82% { transform: scale(1.02); }
+@keyframes wavefront-drift {
+  0%, 100% { transform: translateX(-1.6%); }
+  52%, 76% { transform: translateX(1.6%); }
 }
-@keyframes spiral-tile {
-  0%, 8%, 100% {
-    background: var(--tile-fill);
-    transform: translate(-50%, -50%) translate(var(--scatter-x), var(--scatter-y)) rotate(calc(var(--tile-angle) + var(--scatter-rotate)));
-  }
-  12%, 20% { background: var(--coral); }
-  25%, 82% {
-    background: var(--tile-fill);
-    transform: translate(-50%, -50%) rotate(var(--tile-angle));
-  }
-  92% {
-    background: var(--tile-fill);
-    transform: translate(-50%, -50%) translate(var(--scatter-x), var(--scatter-y)) rotate(calc(var(--tile-angle) + var(--scatter-rotate)));
-  }
+@keyframes optical-axis-one {
+  0%, 100% { transform: translate(-5%, -4%) scaleX(.94); }
+  48%, 76% { transform: translate(5%, 0) scaleX(1.02); }
+}
+@keyframes optical-axis-two {
+  0%, 100% { transform: translate(5%, 4%) scaleX(.94); }
+  48%, 76% { transform: translate(-5%, 0) scaleX(1.02); }
+}
+@keyframes lens-align {
+  0%, 100% { opacity: .7; transform: translate(-50%, -50%) translateY(3%) scaleX(.7); }
+  48%, 76% { opacity: 1; transform: translate(-50%, -50%) scaleX(1.04); }
+}
+@keyframes refracted-bands {
+  0%, 100% { transform: translateX(-5%) scaleX(.86); }
+  48%, 76% { transform: translateX(0) scaleX(1.18); }
+}
+@keyframes caustic-drift {
+  0%, 22%, 100% { opacity: .12; transform: translateX(-18px); }
+  48% { opacity: .34; transform: translateX(-5px); }
+  62% { opacity: .42; transform: translateX(8px); }
+  76% { opacity: .3; transform: translateX(0); }
 }
 @keyframes command-flow { 0%, 12% { left: 0; opacity: 0; } 24% { opacity: 1; } 76% { opacity: 1; } 90%, 100% { left: calc(100% - 8px); opacity: 0; } }
 @keyframes agent-breathe { 50% { transform: scale(.92); } }
@@ -144,7 +222,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .graphic *, .graphic *::before, .graphic *::after { animation: none !important; transition: none !important; }
-  .mosaicSpiral { transform: scale(1.02); }
-  .spiralTile { background: var(--tile-fill); transform: translate(-50%, -50%) rotate(var(--tile-angle)); }
+  .wavefrontField { transform: none; }
+  .apertureOne { transform: translate(5%, 0) scaleX(1.02); }
+  .apertureTwo { transform: translate(-5%, 0) scaleX(1.02); }
+  .refractiveLens { opacity: 1; transform: translate(-50%, -50%) scaleX(1.04); }
+  .refractedBands { transform: scaleX(1.18); }
+  .caustic { opacity: .34; transform: none; }
   .commandRoutes span i { left: calc(100% - 8px); opacity: .8; }
 }
