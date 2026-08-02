@@ -8,41 +8,32 @@
 
 .hero { width: min(100%, 680px); }
 
-/* Avikus: one planar mosaic ribbon, led by one traveling alignment wave. */
+/* Avikus: fourteen planar fragments resolve into one loose spiral mosaic. */
 .mosaicField {
   position: absolute;
-  inset: 9% 3%;
-  display: grid;
-  place-items: center;
+  inset: 5% 2%;
   overflow: hidden;
 }
 
-.mosaicRibbon {
-  width: 84%;
-  height: 46%;
-  display: flex;
-  align-items: stretch;
-  transform: rotate(-4deg) scaleX(.93);
+.mosaicSpiral {
+  position: absolute;
+  inset: 0;
   transform-origin: center;
-  animation: ribbon-span 9.6s cubic-bezier(.58,0,.22,1) infinite;
+  animation: spiral-field 14s cubic-bezier(.58,0,.22,1) infinite;
 }
 
-.ribbonTile {
-  --tile-fill: var(--paper);
-  min-width: 0;
-  flex: 1 1 0;
-  margin-left: -2px;
+.spiralTile {
+  position: absolute;
+  left: var(--tile-x);
+  top: var(--tile-y);
+  width: var(--tile-width);
+  height: 8.5%;
   border: 2px solid var(--ink);
   background: var(--tile-fill);
   transform-origin: center;
+  transform: translate(-50%, -50%) translate(var(--scatter-x), var(--scatter-y)) rotate(calc(var(--tile-angle) + var(--scatter-rotate)));
+  animation: spiral-tile 14s cubic-bezier(.58,0,.22,1) var(--tile-delay) infinite both;
 }
-
-.ribbonTile:first-child { margin-left: 0; }
-.tileOne { --tile-fill: var(--paper); animation: ribbon-tile-one 9.6s cubic-bezier(.58,0,.22,1) infinite; }
-.tileTwo { --tile-fill: color-mix(in srgb, var(--blue) 22%, var(--paper)); animation: ribbon-tile-two 9.6s cubic-bezier(.58,0,.22,1) infinite; }
-.tileThree { --tile-fill: var(--paper); flex-grow: 1.16; animation: ribbon-tile-three 9.6s cubic-bezier(.58,0,.22,1) infinite; }
-.tileFour { --tile-fill: color-mix(in srgb, var(--blue) 22%, var(--paper)); animation: ribbon-tile-four 9.6s cubic-bezier(.58,0,.22,1) infinite; }
-.tileFive { --tile-fill: var(--paper); animation: ribbon-tile-five 9.6s cubic-bezier(.58,0,.22,1) infinite; }
 
 /* FINBURH: four agent geometries and the command paths between them. */
 .finburh { min-height: 250px; }
@@ -117,39 +108,24 @@
 .workAgent i:nth-child(2) { transform: translate(-6px, 5px); opacity: .72; animation-delay: -.12s; }
 .workAgent i:nth-child(3) { animation-delay: -.24s; }
 
-@keyframes ribbon-span {
-  0%, 52%, 100% { transform: rotate(-4deg) scaleX(.93); }
-  62%, 78% { transform: rotate(-4deg) scaleX(1.07); }
+@keyframes spiral-field {
+  0%, 42%, 100% { transform: scale(.96); }
+  54%, 82% { transform: scale(1.02); }
 }
-@keyframes ribbon-tile-one {
-  0%, 4%, 100% { background: var(--tile-fill); transform: translateY(18%) rotate(-7deg) skewX(-10deg); }
-  5%, 12% { background: var(--coral); }
-  13%, 82% { background: var(--tile-fill); transform: translateY(0) rotate(0) skewX(-10deg); }
-  91% { transform: translateY(18%) rotate(-7deg) skewX(-10deg); }
-}
-@keyframes ribbon-tile-two {
-  0%, 14%, 100% { background: var(--tile-fill); transform: translateY(-15%) rotate(5deg) skewX(-10deg); }
-  15%, 22% { background: var(--coral); }
-  23%, 82% { background: var(--tile-fill); transform: translateY(0) rotate(0) skewX(-10deg); }
-  91% { transform: translateY(-15%) rotate(5deg) skewX(-10deg); }
-}
-@keyframes ribbon-tile-three {
-  0%, 24%, 100% { background: var(--tile-fill); transform: translateY(12%) rotate(-5deg) skewX(-10deg); }
-  25%, 32% { background: var(--coral); }
-  33%, 82% { background: var(--tile-fill); transform: translateY(0) rotate(0) skewX(-10deg); }
-  91% { transform: translateY(12%) rotate(-5deg) skewX(-10deg); }
-}
-@keyframes ribbon-tile-four {
-  0%, 34%, 100% { background: var(--tile-fill); transform: translateY(-17%) rotate(6deg) skewX(-10deg); }
-  35%, 42% { background: var(--coral); }
-  43%, 82% { background: var(--tile-fill); transform: translateY(0) rotate(0) skewX(-10deg); }
-  91% { transform: translateY(-17%) rotate(6deg) skewX(-10deg); }
-}
-@keyframes ribbon-tile-five {
-  0%, 44%, 100% { background: var(--tile-fill); transform: translateY(15%) rotate(-6deg) skewX(-10deg); }
-  45%, 52% { background: var(--coral); }
-  53%, 82% { background: var(--tile-fill); transform: translateY(0) rotate(0) skewX(-10deg); }
-  91% { transform: translateY(15%) rotate(-6deg) skewX(-10deg); }
+@keyframes spiral-tile {
+  0%, 8%, 100% {
+    background: var(--tile-fill);
+    transform: translate(-50%, -50%) translate(var(--scatter-x), var(--scatter-y)) rotate(calc(var(--tile-angle) + var(--scatter-rotate)));
+  }
+  12%, 20% { background: var(--coral); }
+  25%, 82% {
+    background: var(--tile-fill);
+    transform: translate(-50%, -50%) rotate(var(--tile-angle));
+  }
+  92% {
+    background: var(--tile-fill);
+    transform: translate(-50%, -50%) translate(var(--scatter-x), var(--scatter-y)) rotate(calc(var(--tile-angle) + var(--scatter-rotate)));
+  }
 }
 @keyframes command-flow { 0%, 12% { left: 0; opacity: 0; } 24% { opacity: 1; } 76% { opacity: 1; } 90%, 100% { left: calc(100% - 8px); opacity: 0; } }
 @keyframes agent-breathe { 50% { transform: scale(.92); } }
@@ -168,7 +144,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .graphic *, .graphic *::before, .graphic *::after { animation: none !important; transition: none !important; }
-  .mosaicRibbon { transform: rotate(-4deg) scaleX(1.07); }
-  .ribbonTile { background: var(--tile-fill); transform: skewX(-10deg); }
+  .mosaicSpiral { transform: scale(1.02); }
+  .spiralTile { background: var(--tile-fill); transform: translate(-50%, -50%) rotate(var(--tile-angle)); }
   .commandRoutes span i { left: calc(100% - 8px); opacity: .8; }
 }
