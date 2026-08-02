@@ -1,0 +1,144 @@
+.graphic {
+  position: relative;
+  width: min(100%, 520px);
+  aspect-ratio: 1.42;
+  overflow: hidden;
+  color: currentColor;
+}
+
+.hero { width: min(100%, 660px); }
+
+.projectionGrid {
+  position: absolute;
+  left: 21%;
+  top: 21%;
+  width: 59%;
+  height: 58%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  border: 1px solid currentColor;
+  clip-path: polygon(9% 7%, 92% 0, 100% 91%, 0 100%);
+  transform-origin: 50% 50%;
+}
+
+.projectionGrid i { border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; opacity: .72; }
+.gridA { animation: projection-a 8.4s cubic-bezier(.5,0,.3,1) infinite; }
+.gridB { animation: projection-b 8.4s cubic-bezier(.5,0,.3,1) infinite; }
+
+.correspondenceField i {
+  position: absolute;
+  left: 31%;
+  top: calc(29% + var(--match-row, 0) * 7%);
+  width: 38%;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left center;
+  opacity: 0;
+  animation: correspondence-lock 8.4s ease-in-out infinite;
+}
+.correspondenceField i:nth-child(1) { --match-row: 0; --match-angle: 8deg; }
+.correspondenceField i:nth-child(2) { --match-row: 1; --match-angle: -6deg; animation-delay: -.18s; }
+.correspondenceField i:nth-child(3) { --match-row: 2; --match-angle: 5deg; animation-delay: -.36s; }
+.correspondenceField i:nth-child(4) { --match-row: 3; --match-angle: -7deg; animation-delay: -.54s; }
+.correspondenceField i:nth-child(5) { --match-row: 4; --match-angle: 4deg; animation-delay: -.72s; }
+.correspondenceField i:nth-child(6) { --match-row: 5; --match-angle: -3deg; animation-delay: -.9s; }
+
+.packetOrbit { position: absolute; inset: 9% 11%; border: 1px solid currentColor; border-radius: 50%; opacity: .78; }
+.packetOrbit i { position: absolute; width: 7px; height: 7px; background: currentColor; animation: packet-cycle 4.8s ease-in-out infinite; }
+.packetOrbit i:nth-child(1) { left: 14%; top: 3%; }
+.packetOrbit i:nth-child(2) { left: 37%; top: -3px; animation-delay: -.4s; }
+.packetOrbit i:nth-child(3) { left: 64%; top: 1%; animation-delay: -.8s; }
+.packetOrbit i:nth-child(4) { right: 5%; top: 21%; animation-delay: -1.2s; }
+.packetOrbit i:nth-child(5) { right: -3px; top: 49%; animation-delay: -1.6s; }
+.packetOrbit i:nth-child(6) { right: 7%; bottom: 17%; animation-delay: -2s; }
+.packetOrbit i:nth-child(7) { right: 28%; bottom: -3px; animation-delay: -2.4s; }
+.packetOrbit i:nth-child(8) { left: 43%; bottom: -3px; animation-delay: -2.8s; }
+.packetOrbit i:nth-child(9) { left: 17%; bottom: 4%; animation-delay: -3.2s; }
+.packetOrbit i:nth-child(10) { left: -3px; bottom: 28%; animation-delay: -3.6s; }
+.packetOrbit i:nth-child(11) { left: -3px; top: 38%; animation-delay: -4s; }
+.packetOrbit i:nth-child(12) { left: 5%; top: 16%; animation-delay: -4.4s; }
+.packetOrbit i[data-missing] { background: transparent; border: 1px solid currentColor; animation-name: missing-packet; }
+
+.projectiveCore { position: absolute; left: 50%; top: 50%; width: 20px; height: 20px; margin: -10px; border-radius: 50%; border: 1px solid currentColor; background: var(--blue); animation: projective-core 8.4s ease-in-out infinite; }
+.speedMark { position: absolute; right: 12%; bottom: 8%; padding: 6px 8px; border: 1px solid currentColor; font: 600 9px/1 var(--font-mono); letter-spacing: .08em; }
+
+.finburh { min-height: 250px; }
+.dependencyRoutes i { position: absolute; left: 49%; top: 50%; height: 1px; background: currentColor; transform-origin: left center; opacity: .68; }
+.dependencyRoutes i:nth-child(1) { width: 31%; transform: rotate(-40deg); }
+.dependencyRoutes i:nth-child(2) { width: 34%; transform: rotate(1deg); }
+.dependencyRoutes i:nth-child(3) { width: 31%; transform: rotate(41deg); }
+.dependencyRoutes i:nth-child(4) { width: 27%; transform: rotate(157deg); }
+.dependencyRoutes i:nth-child(5) { width: 31%; transform: rotate(181deg); }
+.dependencyRoutes i:nth-child(6) { width: 27%; transform: rotate(204deg); }
+
+.conversationCore { position: absolute; left: 50%; top: 50%; width: 68px; height: 68px; margin: -34px; border-radius: 50%; background: currentColor; animation: dependency-core 6.8s ease-in-out infinite; }
+.conversationCore::after { content: ""; position: absolute; inset: 17px; border: 1px solid var(--lime); border-radius: 50%; }
+
+.workNodes i { position: absolute; width: 25px; height: 25px; border: 1px solid currentColor; background: var(--lime); animation: work-accept 6.8s ease-in-out infinite; }
+.workNodes i:nth-child(1) { left: 64%; top: 23%; }
+.workNodes i:nth-child(2) { left: 68%; top: 46%; animation-delay: -.28s; }
+.workNodes i:nth-child(3) { left: 63%; top: 69%; animation-delay: -.56s; }
+.workNodes i:nth-child(4) { left: 31%; top: 47%; animation-delay: -.84s; }
+.workNodes i[data-failed] { animation-name: work-reassign; }
+
+.evidenceParticles i { position: absolute; width: 9px; height: 9px; background: currentColor; animation: evidence-enter 6.8s ease-in-out infinite; }
+.evidenceParticles i:nth-child(1) { left: 7%; top: 27%; }
+.evidenceParticles i:nth-child(2) { left: 13%; top: 42%; animation-delay: -.35s; }
+.evidenceParticles i:nth-child(3) { left: 8%; top: 58%; animation-delay: -.7s; }
+.evidenceParticles i:nth-child(4) { left: 19%; top: 70%; animation-delay: -1.05s; }
+.evidenceParticles i:nth-child(5) { left: 22%; top: 18%; animation-delay: -1.4s; }
+
+.assumptionBranch { position: absolute; left: 25%; top: 68%; width: 23%; height: 21%; border-top: 1px solid currentColor; }
+.assumptionBranch::before, .assumptionBranch::after { content: ""; position: absolute; left: 25%; top: 0; width: 1px; height: 74%; background: currentColor; transform-origin: top; }
+.assumptionBranch::before { transform: rotate(44deg); }
+.assumptionBranch::after { transform: rotate(-44deg); }
+.assumptionBranch i { position: absolute; width: 12px; height: 12px; border: 1px solid currentColor; background: var(--lime); }
+.assumptionBranch i:nth-child(1) { left: 20%; top: -6px; }
+.assumptionBranch i:nth-child(2) { left: 1%; bottom: 0; }
+.assumptionBranch i:nth-child(3) { left: 43%; bottom: 0; }
+.assumptionBranch b { position: absolute; font: 500 11px/1 var(--font-mono); }
+.assumptionBranch b:nth-of-type(1) { left: -5%; bottom: 18%; }
+.assumptionBranch b:nth-of-type(2) { left: 51%; bottom: 18%; }
+
+.outputCluster { position: absolute; width: 60px; height: 48px; animation: artifact-form 6.8s ease-in-out infinite; }
+.wordCluster { right: 5%; top: 13%; }
+.slideCluster { right: 2%; top: 43%; animation-delay: -.3s; }
+.sheetCluster { right: 6%; bottom: 8%; animation-delay: -.6s; }
+.wordCluster i { position: absolute; width: 35px; height: 45px; border: 1px solid currentColor; background: var(--lime); }
+.wordCluster i:nth-child(1) { left: 0; top: 0; }.wordCluster i:nth-child(2) { left: 8px; top: 2px; }.wordCluster i:nth-child(3) { left: 16px; top: 4px; }
+.slideCluster i { position: absolute; width: 52px; height: 28px; border: 1px solid currentColor; background: var(--lime); }
+.slideCluster i:nth-child(1) { top: 0; }.slideCluster i:nth-child(2) { top: 8px; left: 4px; }.slideCluster i:nth-child(3) { top: 16px; left: 8px; }
+.sheetCluster i { display: block; width: 54px; height: 44px; border: 1px solid currentColor; background-image: linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg,currentColor 1px,transparent 1px); background-size: 13px 11px; }
+.routeSignal { position: absolute; left: 48%; top: 49%; width: 9px; height: 9px; background: var(--coral); animation: route-dispatch 6.8s cubic-bezier(.45,0,.25,1) infinite; }
+
+@keyframes projection-a {
+  0%, 100% { transform: translate(-13%, 3%) rotate(-10deg) scale(.94); opacity: .58; }
+  42%, 72% { transform: translate(0, 0) rotate(0) scale(1); opacity: .95; }
+}
+@keyframes projection-b {
+  0%, 100% { transform: translate(14%, -3%) rotate(11deg) scale(.94); opacity: .58; }
+  42%, 72% { transform: translate(0, 0) rotate(0) scale(1); opacity: .95; }
+}
+@keyframes correspondence-lock { 0%, 20%, 100% { opacity: 0; transform: rotate(var(--match-angle)) scaleX(.2); } 42%, 72% { opacity: .85; transform: rotate(var(--match-angle)) scaleX(1); } }
+@keyframes packet-cycle { 0%, 100% { opacity: .18; transform: scale(.72); } 38%, 62% { opacity: 1; transform: scale(1.25); } }
+@keyframes missing-packet { 0%, 23%, 75%, 100% { opacity: 0; } 42%, 58% { opacity: .8; } }
+@keyframes projective-core { 0%, 100% { transform: scale(.58); } 46%, 68% { transform: scale(1.25); background: var(--paper); } }
+@keyframes dependency-core { 0%, 100% { transform: scale(.86); } 35%, 62% { transform: scale(1.08); } }
+@keyframes work-accept { 0%, 18%, 100% { transform: scale(.72); opacity: .45; } 35%, 68% { transform: scale(1); opacity: 1; } }
+@keyframes work-reassign { 0%, 35%, 100% { transform: translate(0,0) rotate(0); background: var(--lime); } 48% { transform: translate(-22px,-14px) rotate(45deg); background: var(--coral); } 68% { transform: translate(0,0) rotate(90deg); } }
+@keyframes evidence-enter { 0%, 100% { transform: translate(0,0); opacity: .15; } 38%, 64% { transform: translate(95px,17px); opacity: .95; } }
+@keyframes artifact-form { 0%, 25%, 100% { transform: scale(.72); opacity: .22; } 54%, 78% { transform: scale(1); opacity: 1; } }
+@keyframes route-dispatch { 0%, 15%, 100% { transform: translate(0,0); opacity: 0; } 25% { opacity: 1; } 53% { transform: translate(115px,-66px); opacity: 1; } 70% { transform: translate(125px,0); opacity: 1; } 86% { transform: translate(113px,67px); opacity: 0; } }
+
+@media (max-width: 640px) {
+  .graphic { width: min(100%, 390px); }
+  .speedMark { right: 9%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graphic *, .graphic *::before, .graphic *::after { animation: none !important; transition: none !important; }
+  .gridA, .gridB { transform: none; opacity: .88; }
+  .correspondenceField i { opacity: .72; transform: rotate(var(--match-angle)) scaleX(1); }
+  .routeSignal { display: none; }
+}

@@ -23,14 +23,10 @@ const pwrRoute = "projects/pwr-scan";
 const pwrLegacyRoute = "projects/pwr-scan-validation";
 const eventEdgeRoute = "projects/eventedge-derivatives";
 const standardRoutes = [
-  "experience/avikus-simulation-perception",
-  "experience/finburh-document-automation",
   "projects/open-source-intelligence",
   "projects/bayesian-ad-targeting",
 ];
 const expectedStack = {
-  "experience/avikus-simulation-perception": ["C++", "CUDA", "OpenCV", "OpenMP", "Homography", "Synthetic signal generation"],
-  "experience/finburh-document-automation": ["Python", "MCP", "Multi-agent orchestration", "DART", "KRX", "Embedding & retrieval", "Spreadsheet and presentation generation"],
   "projects/open-source-intelligence": ["Python", "PyTorch", "Transformers", "NumPy", "SafeTensors", "DART", "FSC/KRX", "pytest"],
   "projects/bayesian-ad-targeting": ["Python", "NumPy", "pandas", "Beta–Bernoulli inference", "Thompson Sampling"],
   "projects/triangular-arbitrage-detector": ["Node.js", "JavaScript", "Axios", "WebSocket", "Upbit REST/WebSocket", "Node test runner"],
@@ -166,7 +162,7 @@ test("copies the authenticated local PWR synthetic study artifact", async () => 
   assert.equal(data.boundary.performanceClaim, false);
 });
 
-test("keeps the standard case-study contract on the remaining four pages", async () => {
+test("keeps the standard case-study contract on the remaining standard pages", async () => {
   for (const route of standardRoutes) {
     const html = await routeHtml(route);
     const method = html.indexOf("02 / Method");
@@ -182,6 +178,71 @@ test("keeps the standard case-study contract on the remaining four pages", async
       assert.ok(html.includes(renderedItem), `${route} is missing ${item}`);
     }
   }
+});
+
+test("renders dedicated public-safe work pages and abstract geometric home graphics", async () => {
+  const [avikus, finburh, home, graphicSource, graphicCss, pageCss] = await Promise.all([
+    routeHtml("experience/avikus-simulation-perception"),
+    routeHtml("experience/finburh-document-automation"),
+    routeHtml(),
+    readFile(new URL("../app/components/WorkExperienceGraphic.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/WorkExperienceGraphic.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/WorkExperiencePage.module.css", import.meta.url), "utf8"),
+  ]);
+
+  for (const marker of [
+    "Public-safe reconstruction",
+    "No employer code or data",
+    "NMEA 0183",
+    "Own Ship",
+    "Target Ship",
+    "CUDA warp + blend",
+    "Stable accelerated replay",
+    "350×",
+    "CONCEPTUAL RECONSTRUCTION",
+  ]) assert.ok(avikus.toUpperCase().includes(marker.toUpperCase()), `Avikus is missing ${marker}`);
+
+  for (const marker of [
+    "Private product architecture",
+    "Conversation",
+    "Task",
+    "Work",
+    "Research",
+    "Assumption",
+    "Orchestrator",
+    "DART",
+    "KRX",
+    "Word",
+    "PowerPoint",
+    "Excel",
+    "30+",
+    "~200",
+    "~5 min",
+    "Seconds",
+  ]) assert.ok(finburh.includes(marker), `FINBURH is missing ${marker}`);
+
+  for (const html of [avikus, finburh]) {
+    assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
+    assert.doesNotMatch(html, /<svg|<canvas|<pre|<code/i);
+    assert.match(html, /<table[^>]*>.*?<caption(?:\s[^>]*)?>/s);
+  }
+  assert.doesNotMatch(avikus, /355×|10,000×|\b(?:GGA|RMC|HDT|VTG)\b/i);
+  assert.match(home, /src="\/brand\/hd-hyundai\.png"/);
+  assert.match(home, /src="\/brand\/avikus\.png"/);
+  assert.match(home, />MainGate</);
+  assert.match(home, />Partners Inc\.</);
+
+  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "projectionGrid", "packetOrbit", "dependencyRoutes", "assumptionBranch", "wordCluster", "slideCluster", "sheetCluster"]) {
+    assert.ok(graphicSource.includes(marker) || graphicCss.includes(marker), `work graphic is missing ${marker}`);
+  }
+  assert.doesNotMatch(graphicSource, /<svg|<canvas/i);
+  assert.match(graphicCss, /@keyframes projection-a/);
+  assert.match(graphicCss, /@keyframes route-dispatch/);
+  assert.match(graphicCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(pageCss, /@media \(max-width:\s*900px\)/);
+  assert.match(pageCss, /@media \(max-width:\s*640px\)/);
+  assert.match(pageCss, /@media \(max-width:\s*420px\)/);
+  assert.match(pageCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
 });
 
 test("renders the dedicated EventEdge market and its private-source boundary", async () => {

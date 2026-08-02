@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element -- GitHub Pages serves these small, local brand assets directly. */
-import { ProjectShape } from "@/app/components/ProjectShape";
+import { AvikusProjectiveField, FinburhDependencyLattice } from "@/app/components/WorkExperienceGraphic";
 
 export function WorkCardVisual({ type }: { type: string }) {
   const isAvikus = type === "navigation";
@@ -19,7 +19,7 @@ export function WorkCardVisual({ type }: { type: string }) {
       )}
       <span className="brand-cross">×</span>
       <div className="work-shape-wrap">
-        <ProjectShape type={type} />
+        {isAvikus ? <AvikusProjectiveField /> : <FinburhDependencyLattice />}
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CaseStudyPage } from "@/app/components/CaseStudyPage";
+import { AvikusExperiencePage } from "@/app/components/AvikusExperiencePage";
+import { FinburhExperiencePage } from "@/app/components/FinburhExperiencePage";
 import { findStudy, workStudies } from "@/app/content";
 
 export function generateStaticParams() {
@@ -19,5 +21,7 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const study = findStudy("work", slug);
   if (!study) notFound();
+  if (study.presentation === "avikus-experience") return <AvikusExperiencePage study={study} />;
+  if (study.presentation === "finburh-experience") return <FinburhExperiencePage study={study} />;
   return <CaseStudyPage study={study} />;
 }

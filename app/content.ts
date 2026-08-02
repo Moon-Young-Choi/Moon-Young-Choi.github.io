@@ -8,7 +8,7 @@ export type Formula = {
 
 export type CaseStudy = {
   kind: "work" | "project";
-  presentation: "standard" | "quant-platform" | "pwr-theory" | "arbitrage-lab" | "eventedge-market";
+  presentation: "standard" | "quant-platform" | "pwr-theory" | "arbitrage-lab" | "eventedge-market" | "avikus-experience" | "finburh-experience";
   number: string;
   slug: string;
   title: string;
@@ -48,7 +48,7 @@ export const education = [
 export const workStudies: CaseStudy[] = [
   {
     kind: "work",
-    presentation: "standard",
+    presentation: "avikus-experience",
     number: "01",
     slug: "avikus-simulation-perception",
     title: "Simulation & Perception Systems",
@@ -58,7 +58,7 @@ export const workStudies: CaseStudy[] = [
     shape: "navigation",
     eyebrow: "Research internship · Integrated situational awareness",
     summary:
-      "Synthetic signal and video scenarios for autonomous-navigation training, coupled with an accelerated panoramic alignment pipeline.",
+      "Synthetic NMEA 0183 and video scenarios for autonomous-navigation training, coupled with an accelerated panoramic alignment pipeline.",
     tags: ["C++", "CUDA", "OpenCV", "OpenMP"],
     stack: [
       { group: "Core", items: ["C++", "CUDA"] },
@@ -111,7 +111,7 @@ export const workStudies: CaseStudy[] = [
   },
   {
     kind: "work",
-    presentation: "standard",
+    presentation: "finburh-experience",
     number: "02",
     slug: "finburh-document-automation",
     title: "Financial Document Automation",
@@ -121,13 +121,13 @@ export const workStudies: CaseStudy[] = [
     shape: "agents",
     eyebrow: "Co-Founder & CEO · Product, engineering, operations",
     summary:
-      "An agentic workflow that converted public financial evidence into editable valuation and transaction documents.",
+      "An agentic workflow that converted public financial evidence into editable Word, PowerPoint and Excel artifacts.",
     tags: ["Python", "Agent orchestration", "DART · KRX", "MCP"],
     stack: [
       { group: "Core", items: ["Python", "MCP"] },
       { group: "Orchestration", items: ["Multi-agent orchestration"] },
       { group: "Data & retrieval", items: ["DART", "KRX", "Embedding & retrieval"] },
-      { group: "Output", items: ["Spreadsheet and presentation generation"] },
+      { group: "Output", items: ["Word, PowerPoint and Excel generation"] },
     ],
     facts: [
       ["Role", "Co-Founder & CEO"],

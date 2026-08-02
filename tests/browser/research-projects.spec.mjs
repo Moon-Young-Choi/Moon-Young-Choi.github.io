@@ -1,10 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 const widths = [1280, 900, 640, 420, 320];
-const routes = ["/", "/projects/quant-platform/", "/projects/pwr-scan/", "/projects/eventedge-derivatives/"];
+const routes = [
+  "/",
+  "/experience/avikus-simulation-perception/",
+  "/experience/finburh-document-automation/",
+  "/projects/quant-platform/",
+  "/projects/pwr-scan/",
+  "/projects/eventedge-derivatives/",
+];
 
 for (const width of widths) {
-  test(`Quant and PWR layouts do not widen the document at ${width}px`, async ({ page }) => {
+  test(`research and experience layouts do not widen the document at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     for (const route of routes) {
       await page.goto(route);
@@ -201,5 +208,59 @@ test("reduced-motion preference removes explanatory cover animation", async ({ p
   for (let index = 0; index < count; index += 1) {
     const style = await movingNodes.nth(index).evaluate((node) => getComputedStyle(node));
     expect(["0s", "none"]).toContain(style.animationDuration === "0s" ? "0s" : style.animationName);
+  }
+});
+
+test("work cards preserve employer lockups while rendering dedicated geometric systems", async ({ page }) => {
+  await page.goto("/");
+  const workCards = page.locator(".experience-grid .project-card");
+  await expect(workCards).toHaveCount(2);
+  await expect(workCards.nth(0).locator('img[src="/brand/hd-hyundai.png"]')).toHaveCount(1);
+  await expect(workCards.nth(0).locator('img[src="/brand/avikus.png"]')).toHaveCount(1);
+  await expect(workCards.nth(1).getByText("MainGate", { exact: true })).toBeVisible();
+  await expect(workCards.nth(1).getByText("Partners Inc.", { exact: true })).toBeVisible();
+  await expect(workCards.nth(0).locator('[class*="projectionGrid"]')).toHaveCount(2);
+  await expect(workCards.nth(0).locator('[class*="packetOrbit"]')).toHaveCount(1);
+  await expect(workCards.nth(1).locator('[class*="dependencyRoutes"]')).toHaveCount(1);
+  await expect(workCards.nth(1).locator('[class*="outputCluster"]')).toHaveCount(3);
+  await expect(workCards.locator("svg, canvas, pre, code")).toHaveCount(0);
+
+  const projectionAnimation = await workCards.nth(0).locator('[class*="gridA"]').evaluate((node) => getComputedStyle(node).animationName);
+  const dependencyAnimation = await workCards.nth(1).locator('[class*="conversationCore"]').evaluate((node) => getComputedStyle(node).animationName);
+  expect(projectionAnimation).not.toBe("none");
+  expect(dependencyAnimation).not.toBe("none");
+});
+
+test("dedicated work pages expose public-safe evidence and table alternatives", async ({ page }) => {
+  await page.goto("/experience/avikus-simulation-perception/");
+  await expect(page.getByText("Public-safe reconstruction", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("NMEA 0183", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("350× stable", { exact: true })).toBeVisible();
+  await expect(page.getByRole("table")).toHaveCount(4);
+  await expect(page.locator("math")).toHaveCount(1);
+  await expect(page.locator("body")).not.toContainText(/355×|10,000×|\b(?:GGA|RMC|HDT|VTG)\b/i);
+
+  await page.goto("/experience/finburh-document-automation/");
+  await expect(page.getByText("Private product architecture", { exact: false }).first()).toBeVisible();
+  await expect(page.getByRole("table")).toHaveCount(4);
+  for (const label of ["Conversation", "Task", "Work", "Research", "Assumption", "Orchestrator"]) {
+    await expect(page.getByRole("rowheader", { name: label, exact: true })).toBeVisible();
+  }
+  await expect(page.getByRole("heading", { name: "Word", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "PowerPoint", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Excel", exact: true })).toBeVisible();
+  await expect(page.getByText("30+", { exact: true })).toBeVisible();
+  await expect(page.getByText("~200", { exact: true })).toBeVisible();
+  await expect(page.getByText("~5 min", { exact: true })).toBeVisible();
+});
+
+test("reduced-motion preference freezes both work-card graphic systems", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const movingNodes = page.locator('.experience-grid [class*="gridA"], .experience-grid [class*="gridB"], .experience-grid [class*="conversationCore"], .experience-grid [class*="routeSignal"]');
+  const count = await movingNodes.count();
+  expect(count).toBeGreaterThan(0);
+  for (let index = 0; index < count; index += 1) {
+    await expect(movingNodes.nth(index)).toHaveCSS("animation-name", "none");
   }
 });
