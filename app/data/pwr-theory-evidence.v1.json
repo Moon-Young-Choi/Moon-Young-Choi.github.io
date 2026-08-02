@@ -1,0 +1,2246 @@
+{
+  "schemaVersion": "pwr-theory-evidence.v1",
+  "provenance": {
+    "repository": "https://github.com/Moon-Young-Choi/pwr-scan",
+    "validationBaselineCommit": "d77e2a04a9237c23ef07f1b4a07e0a8149cf7b2d",
+    "engineCommit": "7847fc5561987bc11385eba5093a94cafdb5cc6b",
+    "engineRelease": "v0.2.2",
+    "targetRelease": "v0.3.0",
+    "releaseCommit": "624c21435d6172dfb7125cdc2c1c83e1765b3243",
+    "integrationEvidenceFingerprint": "b655ed9bb103dbf2eae1b56504e9b60f8d9b76195b2e1b225278e829e2354cfe",
+    "manuscript": "PWR-Scan: A Complete Detection Theory and Algorithm for Structured Frequency-Covariance Change",
+    "manuscriptPages": 117,
+    "manuscriptPublished": false,
+    "fingerprint": "27858a3eac97d87e62f31098ed33f1a0574a1c273c7df40048416ad1bc453f03"
+  },
+  "verification": {
+    "engineeringCloseout": "complete",
+    "engineeringRuns": 56,
+    "computationalTests": 246,
+    "publicationScaleValidation": "pending",
+    "externalValidity": "not-established",
+    "dcase": {
+      "status": "negative",
+      "rocAuc": 0.4843,
+      "sensitivity": 0,
+      "interpretation": "The external DCASE check did not demonstrate discrimination. It is retained as negative evidence, not reframed as validation."
+    },
+    "campaigns": [
+      {
+        "id": "V1",
+        "label": "Locked global-level study",
+        "status": "pending"
+      },
+      {
+        "id": "V2",
+        "label": "Finite-sample power campaign",
+        "status": "pending"
+      },
+      {
+        "id": "V3",
+        "label": "Rate campaign",
+        "status": "pending"
+      },
+      {
+        "id": "V4",
+        "label": "Mismatch campaign",
+        "status": "pending"
+      },
+      {
+        "id": "V5",
+        "label": "Adaptation campaign",
+        "status": "pending"
+      }
+    ]
+  },
+  "guarantees": [
+    {
+      "id": "exact-validity",
+      "label": "Exact validity",
+      "basis": [
+        "assumption-5-1",
+        "lemma-5-4",
+        "theorem-5-5"
+      ],
+      "status": "proved-under-assumptions"
+    },
+    {
+      "id": "monte-carlo-validity",
+      "label": "Monte Carlo validity",
+      "basis": [
+        "definition-5-7",
+        "theorem-5-8"
+      ],
+      "status": "proved-under-assumptions"
+    },
+    {
+      "id": "power-transfer",
+      "label": "Power transfer",
+      "basis": [
+        "proposition-5-10"
+      ],
+      "status": "proved-under-assumptions"
+    },
+    {
+      "id": "fixed-scale-power",
+      "label": "Fixed-scale power",
+      "basis": [
+        "lemma-6-3",
+        "lemma-6-4",
+        "theorem-6-6"
+      ],
+      "status": "proved-under-assumptions"
+    },
+    {
+      "id": "minimax-rate",
+      "label": "Minimax lower and upper rate",
+      "basis": [
+        "theorem-6-11",
+        "theorem-6-12"
+      ],
+      "status": "proved-under-assumptions"
+    },
+    {
+      "id": "mismatch-robustness",
+      "label": "Mismatch robustness",
+      "basis": [
+        "assumption-6-14",
+        "theorem-6-15"
+      ],
+      "status": "proved-under-assumptions"
+    },
+    {
+      "id": "adaptive-multiscale",
+      "label": "Adaptive multiscale power",
+      "basis": [
+        "theorem-7-1",
+        "lemma-7-2",
+        "theorem-7-3",
+        "corollary-7-4"
+      ],
+      "status": "proved-upper-bound"
+    },
+    {
+      "id": "acoustic-bridge",
+      "label": "Acoustic bridge",
+      "basis": [
+        "assumption-2-1",
+        "proposition-2-2",
+        "proposition-2-3"
+      ],
+      "status": "proved-with-calibration-boundary"
+    },
+    {
+      "id": "mixing-approximate-level",
+      "label": "Mixing approximate level",
+      "basis": [
+        "proposition-3-3"
+      ],
+      "status": "proved-when-beta-bound-is-available"
+    }
+  ],
+  "proofEntries": [
+    {
+      "id": "assumption-2-1",
+      "label": "Assumption 2.1",
+      "kind": "assumption",
+      "sectionId": "acoustic-bridge",
+      "title": "Smooth conditional response",
+      "statement": "For u0 = E[U], V = U - u0 and tau^2 = E[V^2], every conditional log-power response g_k is twice continuously differentiable on an interval containing the support of U, with sup |g''_k| <= L_k, and E[V^4] is finite.",
+      "assumptions": [],
+      "dependencies": [],
+      "proofSteps": [
+        "This is the regularity hypothesis used to control the Taylor remainder; it is not inferred from the observations used by the test."
+      ],
+      "conclusion": "The loading ell = g'(u0) and a finite fourth-moment remainder bound are well-defined.",
+      "boundary": "Smoothness and the fourth moment must be justified or calibrated for the intended acoustic regime.",
+      "codeMapping": [
+        "runtime/src/pwrscan/features.py",
+        "runtime/tests/test_features.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-2-9",
+          "label": "(2.9)",
+          "tex": "\\ell=g'(u_0)",
+          "alt": "ell equals the derivative of g at u zero"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "proposition-2-2",
+      "label": "Proposition 2.2",
+      "kind": "proposition",
+      "sectionId": "acoustic-bridge",
+      "title": "Rank-one approximation of log-power covariance",
+      "statement": "Under Assumption 2.1, the current-minus-baseline feature covariance decomposes as tau^2 ell ell^T + E, and the operator norm of E is bounded by conditional-residual drift plus the cross and quadratic Taylor remainders.",
+      "assumptions": [
+        "assumption-2-1"
+      ],
+      "dependencies": [
+        "assumption-2-1"
+      ],
+      "proofSteps": [
+        "Expand g(U) at u0 and center the Taylor remainder.",
+        "Use E[xi | U] = 0 to remove residual cross-covariances.",
+        "Bound E[V r-bar], Cov(r-bar), and rank-one cross terms by Cauchy-Schwarz and the operator norm identity for outer products."
+      ],
+      "conclusion": "The acoustic model supplies a quantified rank-one leading covariance term rather than an exact factor claim.",
+      "boundary": "If the remainder bound is of the same order as tau^2 ||ell||^2, a rank-one interpretation is not warranted.",
+      "codeMapping": [
+        "runtime/src/pwrscan/features.py",
+        "runtime/tests/test_features.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-2-13",
+          "label": "(2.13)-(2.14)",
+          "tex": "\\Sigma_1-\\Sigma_0=\\tau^2\\ell\\ell^\\top+E,\\quad \\|E\\|_{op}\\leq \\|\\Sigma_\\xi-\\Sigma_0\\|_{op}+\\|\\ell\\|_2L\\tau\\sqrt{\\mathbb E V^4}+\\frac{L^2}{4}\\mathbb E V^4",
+          "alt": "covariance difference equals a rank-one term plus an operator-norm-bounded remainder"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "proposition-2-3",
+      "label": "Proposition 2.3",
+      "kind": "proposition",
+      "sectionId": "acoustic-bridge",
+      "title": "Directional spike survives model mismatch",
+      "statement": "If the baseline-whitened block contrast is vartheta u u^T + E_B with ||E_B||op <= eta, its leading relative-covariance eigenvalue is at least 1 + vartheta - eta. When vartheta > eta, the pooled-whitened effect has the stated strictly positive lower bound.",
+      "assumptions": [
+        "Positive-definite baseline covariance",
+        "Unit loading direction",
+        "Operator-norm mismatch bound",
+        "Positive signal margin vartheta > eta for the pooled positive lower bound"
+      ],
+      "dependencies": [],
+      "proofSteps": [
+        "Insert u into the Rayleigh quotient.",
+        "Apply |u^T E_B u| <= ||E_B||op.",
+        "Use monotonicity of x/(1 + pi_1 x) to translate the baseline-relative gap into the pooled-whitened effect."
+      ],
+      "conclusion": "The conservative effective signal is (vartheta - eta)+, mapped monotonically to the pooled parameter.",
+      "boundary": "The result supplies no positive-signal guarantee when eta >= vartheta.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-2-31",
+          "label": "(2.31)",
+          "tex": "\\vartheta>\\eta\\quad\\Longrightarrow\\quad\\tau_B\\geq\\frac{\\vartheta-\\eta}{1+\\pi_1(\\vartheta-\\eta)}>0",
+          "alt": "when vartheta is greater than eta, the pooled effect is bounded below by vartheta minus eta divided by one plus pi one times vartheta minus eta, which is positive"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "assumption-3-1",
+      "label": "Assumption 3.1",
+      "kind": "assumption",
+      "sectionId": "exchangeability",
+      "title": "Stratified cluster exchangeability",
+      "statement": "Conditional on observed strata and pre-fixed folds, the complete cluster-level data object has the same distribution under every label-preserving transformation in the allowed group.",
+      "assumptions": [],
+      "dependencies": [],
+      "proofSteps": [
+        "This is a design or distributional invariance condition. Permutations move entire recordings, never individual frames."
+      ],
+      "conclusion": "The cluster is the inferential unit for exact randomization.",
+      "boundary": "Cluster length, sensor, deployment and observed covariates must not create label-dependent laws within a stratum.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "runtime/tests/test_core_randomization.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-3-14",
+          "label": "(3.14)",
+          "tex": "D\\overset d= gD\\quad\\text{for every }g\\in\\mathcal G",
+          "alt": "D is equal in distribution to g D for every allowed transformation g"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "proposition-3-2",
+      "label": "Proposition 3.2",
+      "kind": "proposition",
+      "sectionId": "exchangeability",
+      "title": "Covariance equality is not exchangeability",
+      "statement": "Outside a common Gaussian law, equal covariance does not imply invariance under label permutation; even Gaussian groups with different means can share covariance while violating cluster exchangeability.",
+      "assumptions": [],
+      "dependencies": [],
+      "proofSteps": [
+        "Choose two laws with identical covariance but different means or fourth moments.",
+        "Their joint law changes after labels are swapped.",
+        "Re-centering changes the statistic but cannot create invariance of the raw data law."
+      ],
+      "conclusion": "Finite-sample exactness applies to the full-law or design-based null, not a covariance-only null.",
+      "boundary": "A covariance-only null requires a separately proved studentized asymptotic or bootstrap procedure.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "proposition-3-3",
+      "label": "Proposition 3.3",
+      "kind": "proposition",
+      "sectionId": "exchangeability",
+      "title": "Approximate level with guard gaps",
+      "statement": "For a stationary beta-mixing process split into N equal clusters separated by guard gap g, Berbee coupling bounds rejection probability by alpha + (N - 1) beta(g), provided the independent-copy randomization test has level alpha.",
+      "assumptions": [
+        "Stationarity within stratum",
+        "Absolute regularity",
+        "Equal cluster lengths",
+        "A usable external bound on beta(g)"
+      ],
+      "dependencies": [
+        "assumption-3-1"
+      ],
+      "proofSteps": [
+        "Couple clusters sequentially to independent replicas.",
+        "A union bound limits any coupling mismatch to (N - 1) beta(g).",
+        "On the no-mismatch event, the dependent-data decision equals the exact independent-copy decision."
+      ],
+      "conclusion": "Dependence costs an explicit additive level error.",
+      "boundary": "A visually small sample autocorrelation is not evidence that beta(g) equals zero.",
+      "codeMapping": [
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [
+        {
+          "id": "eq-3-15",
+          "label": "(3.15)",
+          "tex": "\\Pr_{H_0}(\\mathrm{reject})\\leq\\alpha+(N-1)\\beta(g)",
+          "alt": "null rejection probability is at most alpha plus N minus one times beta of the guard gap"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "not-applicable",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "definition-4-1",
+      "label": "Definition 4.1",
+      "kind": "definition",
+      "sectionId": "statistic",
+      "title": "Block PWR matrix and local statistic",
+      "statement": "For each candidate block, whiten the sample covariance difference by the pooled sample covariance and take its largest eigenvalue.",
+      "assumptions": [
+        "Invertible pooled covariance on every candidate block"
+      ],
+      "dependencies": [],
+      "proofSteps": [
+        "This is the local statistic definition; symmetry makes its spectrum real and its Rayleigh quotient explicit."
+      ],
+      "conclusion": "Large T_B is evidence for a positive current-state covariance component.",
+      "boundary": "A data-selected ridge is outside the primary theorem unless the full selection rule is included and re-proved.",
+      "codeMapping": [
+        "runtime/src/pwrscan/statistics.py",
+        "runtime/tests/test_core_statistics.py",
+        "src/pwr_scan/statistics.py",
+        "tests/test_statistics.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-4-8",
+          "label": "(4.8)-(4.9)",
+          "tex": "D_B=\\widehat\\Sigma_{P,B}^{-1/2}(\\widehat\\Sigma_{1,B}-\\widehat\\Sigma_{0,B})\\widehat\\Sigma_{P,B}^{-1/2},\\quad T_B=\\lambda_{\\max}(D_B)",
+          "alt": "D B is the pooled-whitened sample covariance difference and T B is its largest eigenvalue"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "not-applicable"
+      }
+    },
+    {
+      "id": "proposition-4-2",
+      "label": "Proposition 4.2",
+      "kind": "proposition",
+      "sectionId": "statistic",
+      "title": "Exact monotone correspondence with Roy's root",
+      "statement": "If lambda_k are the generalized eigenvalues of the current and baseline covariance pair, the PWR eigenvalues are h(lambda_k) = (lambda_k - 1)/(pi_0 + pi_1 lambda_k), and h is strictly increasing.",
+      "assumptions": [
+        "Positive-definite baseline covariance"
+      ],
+      "dependencies": [
+        "definition-4-1"
+      ],
+      "proofSteps": [
+        "Use the same generalized eigenvector for the difference/pooled pair.",
+        "Symmetric whitening preserves generalized eigenvalues.",
+        "Differentiate h to obtain a strictly positive derivative."
+      ],
+      "conclusion": "Within a block, PWR and Fisher-Roy orderings and one-sided rejection regions coincide exactly.",
+      "boundary": "The pooled representation is a reparameterization, not a claim of a new empirical root.",
+      "codeMapping": [
+        "runtime/src/pwrscan/statistics.py",
+        "runtime/tests/test_core_statistics.py",
+        "src/pwr_scan/statistics.py",
+        "tests/test_statistics.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-4-11",
+          "label": "(4.11)-(4.12)",
+          "tex": "\\eta_{k,B}=h(\\lambda_{k,B})=\\frac{\\lambda_{k,B}-1}{\\pi_0+\\pi_1\\lambda_{k,B}},\\quad T_B=h(R_B)",
+          "alt": "each PWR eigenvalue is a monotone transform of its generalized eigenvalue and T B is h of Roy's root"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "not-applicable"
+      }
+    },
+    {
+      "id": "remark-4-3",
+      "label": "Remark 4.3",
+      "kind": "remark",
+      "sectionId": "statistic",
+      "title": "Re-expression, not a new empirical statistic",
+      "statement": "Pooled whitening is selected to keep the whitening matrix fixed across permutations and expose the power analysis; it does not discard Roy-root information.",
+      "assumptions": [],
+      "dependencies": [
+        "proposition-4-2"
+      ],
+      "proofSteps": [
+        "The claim follows from the strict monotonicity established in Proposition 4.2."
+      ],
+      "conclusion": "Local rank and one-sided rejection order are unchanged.",
+      "boundary": "This equivalence is block-local and does not remove the need to calibrate the global maximum.",
+      "codeMapping": [
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "not-applicable"
+      }
+    },
+    {
+      "id": "definition-4-4",
+      "label": "Definition 4.4",
+      "kind": "definition",
+      "sectionId": "statistic",
+      "title": "Theory-derived block scale",
+      "statement": "Each block is normalized by the effective-sample scale containing direction cost, weighted search cost, and the second-order matrix-concentration term.",
+      "assumptions": [
+        "Pre-fixed weights w_B > 0 with sum at most one"
+      ],
+      "dependencies": [
+        "definition-4-1"
+      ],
+      "proofSteps": [
+        "This definition packages the terms later obtained from Gaussian covariance concentration and a weighted union bound."
+      ],
+      "conclusion": "Different block widths become comparable on a common theoretical noise scale.",
+      "boundary": "Weights are complexity allocations, not posterior signal probabilities, and cannot be tuned after viewing the test data.",
+      "codeMapping": [
+        "runtime/src/pwrscan/candidates.py",
+        "runtime/src/pwrscan/statistics.py",
+        "runtime/tests/test_core_candidates.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-4-15",
+          "label": "(4.15)",
+          "tex": "a_B=\\sqrt{\\frac{b_B}{n_e}}+\\sqrt{\\frac{\\ell_B}{n_e}}+\\frac{b_B+\\ell_B}{n_e},\\quad\\ell_B=\\log\\frac e{w_B}",
+          "alt": "a B equals the square root direction term plus square root weighted search term plus a second-order term"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "not-applicable"
+      }
+    },
+    {
+      "id": "definition-4-5",
+      "label": "Definition 4.5",
+      "kind": "definition",
+      "sectionId": "statistic",
+      "title": "One-layer PWR-Scan",
+      "statement": "The global statistic is the maximum of T_B/a_B over the pre-fixed candidate family, calibrated once by the permutation distribution of that complete maximum.",
+      "assumptions": [
+        "Candidate family, weights, preprocessing and numerical rules fixed before analysis"
+      ],
+      "dependencies": [
+        "definition-4-1",
+        "definition-4-4"
+      ],
+      "proofSteps": [
+        "This definition places block dependence and search multiplicity inside one randomization statistic rather than a second min-p layer."
+      ],
+      "conclusion": "The method performs one global upper-tail rank calculation per analysis.",
+      "boundary": "Data-dependent candidate additions must be repeated inside every permutation or treated as a new procedure.",
+      "codeMapping": [
+        "runtime/src/pwrscan/statistics.py",
+        "runtime/src/pwrscan/randomization.py",
+        "runtime/tests/test_core_statistics.py",
+        "runtime/tests/test_core_randomization.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-4-17",
+          "label": "(4.17)",
+          "tex": "Z_B=\\frac{T_B}{a_B},\\qquad S_{\\mathrm{PWR}}=\\max_{B\\in\\mathcal B}Z_B",
+          "alt": "Z B is T B divided by a B and S PWR is the maximum Z B"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "not-applicable"
+      }
+    },
+    {
+      "id": "assumption-5-1",
+      "label": "Assumption 5.1",
+      "kind": "assumption",
+      "sectionId": "exact-validity",
+      "title": "Full exchangeability",
+      "statement": "Under the global exchangeability null, the complete data object is distributionally invariant under every element of the allowed finite transformation group.",
+      "assumptions": [],
+      "dependencies": [],
+      "proofSteps": [
+        "This is the invariance premise for the finite-group rank argument."
+      ],
+      "conclusion": "Every orbit position is probabilistically interchangeable under the null.",
+      "boundary": "Equality of covariance alone does not imply this condition.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "runtime/src/pwrscan/guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-5-4",
+          "label": "(5.4)",
+          "tex": "D\\overset d=hD\\quad\\text{for all }h\\in\\mathcal H",
+          "alt": "D is equal in distribution to h D for every h in the transformation group"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "remark-5-2",
+      "label": "Remark 5.2",
+      "kind": "remark",
+      "sectionId": "exact-validity",
+      "title": "Two null models have different roles",
+      "statement": "In the common Gaussian model, equality in law and equality of covariance align, allowing exactness and minimax analysis in one experiment; outside it, exactness requires the stronger full-law null.",
+      "assumptions": [],
+      "dependencies": [
+        "proposition-3-2",
+        "assumption-5-1"
+      ],
+      "proofSteps": [
+        "Contrast the common-Gaussian special case with non-Gaussian equal-covariance counterexamples."
+      ],
+      "conclusion": "Finite-sample exactness and covariance-only inference must not be conflated.",
+      "boundary": "Studentized asymptotic randomization or bootstrap validity is a separate theorem.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "definition-5-3",
+      "label": "Definition 5.3",
+      "kind": "definition",
+      "sectionId": "exact-validity",
+      "title": "Full-permutation PWR p-value",
+      "statement": "The p-value is the proportion of distinct orbit assignments whose complete global statistic is at least as large as the observed statistic; ties use the conservative greater-than-or-equal rule.",
+      "assumptions": [
+        "Finite orbit of allowed assignments"
+      ],
+      "dependencies": [
+        "definition-4-5"
+      ],
+      "proofSteps": [
+        "This is the exact orbit-rank definition used by the level theorem."
+      ],
+      "conclusion": "Reject at level alpha exactly when the orbit p-value is at most alpha.",
+      "boundary": "The p-value grid cannot resolve values below one over the orbit size.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "src/pwr_scan/statistics.py",
+        "runtime/tests/test_core_randomization.py",
+        "tests/test_statistics.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-5-8",
+          "label": "(5.8)",
+          "tex": "p_{\\mathrm{PWR}}(D)=\\frac1{|\\mathcal G|}\\sum_{g\\in\\mathcal G}\\mathbf 1\\{S(gD)\\geq S(D)\\}",
+          "alt": "the PWR p-value is the orbit fraction with statistic at least the observed statistic"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-5-4",
+      "label": "Lemma 5.4",
+      "kind": "lemma",
+      "sectionId": "exact-validity",
+      "title": "Randomization rank lemma",
+      "statement": "For a finite group acting on an invariant random object, the upper orbit rank of any measurable statistic is super-uniform.",
+      "assumptions": [
+        "Finite group action",
+        "Distributional invariance"
+      ],
+      "dependencies": [
+        "assumption-5-1"
+      ],
+      "proofSteps": [
+        "Condition on the orbit.",
+        "Invariance makes the observed orbit position uniform.",
+        "At most a u fraction of orbit positions can have conservative upper rank at most u; stabilizers and ties only increase ranks."
+      ],
+      "conclusion": "P(p_S <= u) <= u for every u in [0,1].",
+      "boundary": "The lemma proves validity, not power or sharpness of the random critical value.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "runtime/tests/test_core_randomization.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-5-11",
+          "label": "(5.11)",
+          "tex": "\\Pr\\{p_S(D)\\leq u\\}\\leq u",
+          "alt": "the probability that p S is at most u is at most u"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "theorem-5-5",
+      "label": "Theorem 5.5",
+      "kind": "theorem",
+      "sectionId": "exact-validity",
+      "title": "Finite-sample global level",
+      "statement": "Under full exchangeability and identical application of the complete analysis function to every orbit element, PWR-Scan controls the global rejection probability at alpha for any sample size, dimension, candidate family and dependence among blocks.",
+      "assumptions": [
+        "assumption-5-1",
+        "Same complete measurable analysis on every assignment"
+      ],
+      "dependencies": [
+        "definition-4-5",
+        "definition-5-3",
+        "lemma-5-4"
+      ],
+      "proofSteps": [
+        "Treat the already-maximized scan as one measurable statistic.",
+        "Apply Lemma 5.4 to its orbit rank.",
+        "No blockwise union bound is needed because maximization is inside S."
+      ],
+      "conclusion": "The global test is finite-sample level alpha under the explicit exchangeability null.",
+      "boundary": "Exactness does not extend automatically to unequal full laws with equal covariance.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_randomization.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-5-12",
+          "label": "(5.12)",
+          "tex": "\\sup_{P\\in H_0^E}\\Pr_P\\{\\phi_{\\alpha}^{\\mathrm{PWR}}=1\\}\\leq\\alpha",
+          "alt": "the worst-case null rejection probability under the exchangeability null is at most alpha"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "corollary-5-6",
+      "label": "Corollary 5.6",
+      "kind": "corollary",
+      "sectionId": "exact-validity",
+      "title": "Gaussian finite-sample exactness",
+      "statement": "Independent samples from one common zero-mean Gaussian distribution satisfy Theorem 5.5 whenever every pooled block covariance is invertible; no asymptotic ratio condition is required for validity.",
+      "assumptions": [
+        "Common Gaussian law",
+        "Invertible pooled covariance on every block"
+      ],
+      "dependencies": [
+        "theorem-5-5"
+      ],
+      "proofSteps": [
+        "A pooled sample from the common Gaussian law is exchangeable in its labels.",
+        "Invoke Theorem 5.5."
+      ],
+      "conclusion": "The Gaussian reference experiment inherits finite-sample global level control.",
+      "boundary": "Exact size alpha additionally depends on a continuous orbit statistic and alignment of alpha with the orbit grid.",
+      "codeMapping": [
+        "src/pwr_scan/experiments/v0_reference.py",
+        "tests/test_v0_reference.py"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "definition-5-7",
+      "label": "Definition 5.7",
+      "kind": "definition",
+      "sectionId": "monte-carlo",
+      "title": "Monte Carlo PWR p-value",
+      "statement": "With R independent uniform transformations, the randomized p-value adds the observed assignment as one exceedance and divides by R + 1.",
+      "assumptions": [
+        "Transformations sampled independently of the data and uniformly from the allowed group"
+      ],
+      "dependencies": [
+        "definition-5-3"
+      ],
+      "proofSteps": [
+        "This is the plus-one corrected finite-sample definition."
+      ],
+      "conclusion": "The smallest possible Monte Carlo p-value is 1/(R + 1), never zero.",
+      "boundary": "Removing either plus one invalidates the finite-sample calibration.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "src/pwr_scan/statistics.py",
+        "runtime/tests/test_core_randomization.py",
+        "tests/test_statistics.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-5-15",
+          "label": "(5.15)",
+          "tex": "\\widehat p_{\\mathrm{PWR}}=\\frac{1+\\sum_{r=1}^R\\mathbf1\\{S(G_rD)\\geq S(D)\\}}{R+1}",
+          "alt": "the Monte Carlo p-value is one plus the exceedance count divided by R plus one"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "theorem-5-8",
+      "label": "Theorem 5.8",
+      "kind": "theorem",
+      "sectionId": "monte-carlo",
+      "title": "Finite-sample validity of random permutations",
+      "statement": "Under full exchangeability, independent uniform random transformations with the plus-one correction produce a super-uniform p-value and hence a level-alpha test.",
+      "assumptions": [
+        "assumption-5-1",
+        "Independent uniform transformations"
+      ],
+      "dependencies": [
+        "definition-5-7",
+        "lemma-5-4"
+      ],
+      "proofSteps": [
+        "Introduce an independent uniform reference group element G0.",
+        "Conditional on the orbit, the R + 1 transformed statistics are exchangeable.",
+        "The conservative upper rank of the reference statistic is super-uniform; relative transformations recover the implemented p-value law."
+      ],
+      "conclusion": "Monte Carlo randomization retains finite-sample validity for every R.",
+      "boundary": "Validity can coexist with no rejection resolution when R + 1 < 1/alpha.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "runtime/tests/test_core_randomization.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-5-16",
+          "label": "(5.16)",
+          "tex": "\\Pr_{H_0^E}\\{\\widehat p_{\\mathrm{PWR}}\\leq\\alpha\\}\\leq\\alpha",
+          "alt": "under the exchangeability null, the probability that the Monte Carlo p-value is at most alpha is at most alpha"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "remark-5-9",
+      "label": "Remark 5.9",
+      "kind": "remark",
+      "sectionId": "monte-carlo",
+      "title": "The plus-one correction is mandatory",
+      "statement": "Zero observed exceedances do not justify p = 0; rejection at level alpha requires R + 1 >= 1/alpha, and the candidate count does not multiply this one-layer resolution requirement.",
+      "assumptions": [],
+      "dependencies": [
+        "definition-5-7",
+        "theorem-5-8"
+      ],
+      "proofSteps": [
+        "Read the minimum p-value directly from the corrected numerator and denominator."
+      ],
+      "conclusion": "Randomization resolution is explicit and auditable.",
+      "boundary": "Increasing the candidate family still affects the statistic's distribution even though it does not multiply the p-value grid requirement.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "runtime/tests/test_core_randomization.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-5-17",
+          "label": "(5.17)",
+          "tex": "R+1\\geq\\alpha^{-1}",
+          "alt": "R plus one must be at least one over alpha"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "proposition-5-10",
+      "label": "Proposition 5.10",
+      "kind": "proposition",
+      "sectionId": "monte-carlo",
+      "title": "Monte Carlo power transfer",
+      "statement": "If the full-orbit p-value is at most gamma < alpha with probability at least 1 - beta, Monte Carlo power is at least one minus beta minus the explicit binomial tail for crossing alpha(R + 1).",
+      "assumptions": [
+        "A full-orbit p-value margin gamma < alpha"
+      ],
+      "dependencies": [
+        "definition-5-3",
+        "definition-5-7"
+      ],
+      "proofSteps": [
+        "Conditional on data, the exceedance count is Binomial(R,p(D)).",
+        "On p(D) <= gamma it is stochastically dominated by Binomial(R,gamma).",
+        "Union-bound failure of the full-orbit margin and the binomial resolution event."
+      ],
+      "conclusion": "R can be selected from a target additional power loss, not by an informal 'large enough' rule.",
+      "boundary": "The proposition transfers an established full-orbit margin; it does not create that margin.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-5-20",
+          "label": "(5.20)",
+          "tex": "\\Pr_{H_1}(\\widehat\\phi_\\alpha=1)\\geq1-\\beta-\\Pr\\{1+\\mathrm{Bin}(R,\\gamma)>\\alpha(R+1)\\}",
+          "alt": "Monte Carlo power is at least one minus beta minus an explicit binomial tail"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "assumption-6-1",
+      "label": "Assumption 6.1",
+      "kind": "assumption",
+      "sectionId": "concentration",
+      "title": "Balanced Gaussian two-sample model",
+      "statement": "The two independent samples are centered Gaussian, both group proportions stay in a fixed interval away from zero, every baseline block covariance is positive definite, and each current-to-baseline relative covariance is uniformly bounded above and below.",
+      "assumptions": [],
+      "dependencies": [],
+      "proofSteps": [
+        "This reference experiment fixes the balance and relative-conditioning constants used throughout the concentration and minimax arguments."
+      ],
+      "conclusion": "All rate constants may depend on the fixed balance and relative-conditioning bounds, but not on n, p or the block family.",
+      "boundary": "The condition does not require a well-conditioned raw baseline covariance; it constrains the relative change after whitening.",
+      "codeMapping": [
+        "src/pwr_scan/contracts.py",
+        "src/pwr_scan/experiments/v0_reference.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-3",
+          "label": "(6.3)",
+          "tex": "K^{-1}I_{b_B}\\preceq\\Sigma_{0,B}^{-1/2}\\Sigma_{1,B}\\Sigma_{0,B}^{-1/2}\\preceq KI_{b_B}",
+          "alt": "the relative current covariance lies between one over K and K times the identity"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "assumption-6-2",
+      "label": "Assumption 6.2",
+      "kind": "assumption",
+      "sectionId": "concentration",
+      "title": "Moderate-dimensional range",
+      "statement": "For every candidate block and each tail parameter used by the proof, dimension plus weighted entropy plus tail size is no larger than a sufficiently small constant times the effective sample size.",
+      "assumptions": [],
+      "dependencies": [
+        "assumption-6-1",
+        "definition-4-4"
+      ],
+      "proofSteps": [
+        "This is the invertibility and perturbation regime for the sample pooled covariance."
+      ],
+      "conclusion": "Second-order covariance concentration remains controlled uniformly over the candidate family.",
+      "boundary": "The proportional b/n regime requires separate random-matrix asymptotics and is not covered.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-4",
+          "label": "(6.4)",
+          "tex": "b_B+\\ell_B+t\\leq c_0n_e",
+          "alt": "block size plus entropy plus tail parameter is at most c zero times effective sample size"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-6-3",
+      "label": "Lemma 6.3",
+      "kind": "lemma",
+      "sectionId": "concentration",
+      "title": "Local concentration of the observed Gaussian contrast",
+      "statement": "On a fixed block, the observed leading PWR root falls below the population root by more than a constant times r_ne(b,t+1) with probability at most 2e^{-t}.",
+      "assumptions": [
+        "assumption-6-1",
+        "assumption-6-2"
+      ],
+      "dependencies": [
+        "definition-4-1",
+        "assumption-6-1",
+        "assumption-6-2",
+        "lemma-b-1",
+        "lemma-b-2"
+      ],
+      "proofSteps": [
+        "Move to population pooled coordinates.",
+        "Concentrate both group covariance errors in operator norm.",
+        "Control inverse-square-root perturbation of the sample whitener.",
+        "Apply Weyl's inequality to the largest eigenvalue."
+      ],
+      "conclusion": "The true block score has an explicit high-probability signal lower bound.",
+      "boundary": "Constants rely on Gaussianity, group balance and bounded relative covariance.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-7",
+          "label": "(6.7)",
+          "tex": "\\Pr\\{T_B<\\tau_B-C_1r_{n_e}(b_B,t+1)\\}\\leq2e^{-t}",
+          "alt": "the observed root is below the population root minus its concentration radius with probability at most two e to minus t"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-6-4",
+      "label": "Lemma 6.4",
+      "kind": "lemma",
+      "sectionId": "concentration",
+      "title": "Gaussian random-partition maximum scan",
+      "statement": "For a uniform label reassignment independent of the data, the normalized maximum scan exceeds a constant multiple of its tail inflation factor with joint probability at most 2e^{-t}, even under the bounded Gaussian alternative.",
+      "assumptions": [
+        "assumption-6-1",
+        "assumption-6-2",
+        "Uniform random assignment independent of data"
+      ],
+      "dependencies": [
+        "definition-4-5",
+        "assumption-6-1",
+        "assumption-6-2",
+        "lemma-b-2",
+        "lemma-b-3"
+      ],
+      "proofSteps": [
+        "Express the permuted covariance difference exactly as a centered finite-population matrix sum.",
+        "Control hypergeometric imbalance of original group membership.",
+        "Condition on the assignment and concentrate non-identically distributed Gaussian quadratic forms over a net.",
+        "Transfer population to sample pooled whitening and use the weighted union bound over overlapping blocks."
+      ],
+      "conclusion": "Random partition erases the O(tau) signal up to hypergeometric leakage and matrix fluctuation on the same a_B scale.",
+      "boundary": "The lemma is a joint data-permutation tail, not a pointwise deterministic bound for every conditional permutation quantile.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_randomization.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-10",
+          "label": "(6.10)",
+          "tex": "\\Pr_{D,G}\\{S(GD)\\geq C_2\\kappa(t)\\}\\leq2e^{-t}",
+          "alt": "the joint probability that the randomized scan exceeds C two kappa t is at most two e to minus t"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "remark-6-5",
+      "label": "Remark 6.5",
+      "kind": "remark",
+      "sectionId": "concentration",
+      "title": "The new proof ingredient",
+      "statement": "The nonstandard step is simultaneous control of hypergeometric signal leakage and matrix fluctuation after repartitioning two different Gaussian populations, uniformly over overlapping generalized-eigenvalue blocks.",
+      "assumptions": [],
+      "dependencies": [
+        "lemma-6-4"
+      ],
+      "proofSteps": [
+        "Identify which ingredients are standard and isolate the random-partition maximum-scan bridge."
+      ],
+      "conclusion": "Lemma 6.4 closes the gap between the actual permutation threshold and the analytic minimax scale.",
+      "boundary": "Generic permutation-power results do not automatically imply this nonsmooth overlapping-block eigenvalue bound.",
+      "codeMapping": [
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "not-applicable",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "theorem-6-6",
+      "label": "Theorem 6.6",
+      "kind": "theorem",
+      "sectionId": "fixed-power",
+      "title": "Finite-sample permutation power lower bound",
+      "statement": "If one true block's pooled population root exceeds the sum of its observed-contrast concentration radius and the normalized random-partition threshold, the full-orbit PWR test has power at least 1 - beta, subject to orbit resolution.",
+      "assumptions": [
+        "assumption-6-1",
+        "assumption-6-2",
+        "Positive population effect on a candidate block",
+        "Orbit size greater than 1/alpha"
+      ],
+      "dependencies": [
+        "lemma-6-3",
+        "lemma-6-4",
+        "definition-5-3"
+      ],
+      "proofSteps": [
+        "Lemma 6.3 puts the observed score above a fixed threshold with failure beta/2.",
+        "Use Lemma 6.4 and Fubini to bound the expected non-identity conditional orbit tail.",
+        "Markov's inequality converts the joint tail into a high-probability conditional tail.",
+        "Combine the identity mass and residual orbit budget to obtain p <= alpha."
+      ],
+      "conclusion": "The actual full-permutation test, not a surrogate analytic scan, receives a finite-sample power guarantee.",
+      "boundary": "The constants are non-sharp and the theorem remains inside the balanced Gaussian moderate-dimensional regime.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py",
+        "src/pwr_scan/experiments/v1_level.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-15",
+          "label": "(6.15)-(6.16)",
+          "tex": "\\tau_\\star>C_1r_{n_e}(b_\\star,t_o+1)+C_2a_{B_\\star}\\kappa(t_p)\\Longrightarrow\\Pr_{H_1}(\\phi_\\alpha^{\\mathrm{PWR}}=1)\\geq1-\\beta",
+          "alt": "a separated population root implies power at least one minus beta"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "remark-6-7",
+      "label": "Remark 6.7",
+      "kind": "remark",
+      "sectionId": "fixed-power",
+      "title": "Orbit resolution",
+      "statement": "The full-permutation p-value cannot be smaller than one over the orbit size, so |G|^{-1} <= alpha is necessary for rejection; in a balanced two-sample orbit this condition becomes automatic quickly as N grows.",
+      "assumptions": [],
+      "dependencies": [
+        "definition-5-3",
+        "theorem-6-6"
+      ],
+      "proofSteps": [
+        "Read the minimum p-value from the identity assignment's unavoidable exceedance."
+      ],
+      "conclusion": "The theorem reserves the usable alpha budget after accounting for the identity mass.",
+      "boundary": "A tiny orbit can make a formally valid test unable to reject.",
+      "codeMapping": [
+        "runtime/src/pwrscan/randomization.py",
+        "runtime/tests/test_core_randomization.py"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "remark-6-8",
+      "label": "Remark 6.8",
+      "kind": "remark",
+      "sectionId": "fixed-power",
+      "title": "Why the Markov step matters",
+      "statement": "Power depends on a data-conditional permutation tail, whereas Lemma 6.4 is joint in data and permutation; Markov's inequality is the explicit bridge from the joint expectation to the high-probability conditional bound.",
+      "assumptions": [],
+      "dependencies": [
+        "lemma-6-4",
+        "theorem-6-6"
+      ],
+      "proofSteps": [
+        "Apply Fubini to identify the expected conditional tail, then Markov to control its realized value."
+      ],
+      "conclusion": "An analogy between analytic and permutation thresholds cannot replace this conditioning step.",
+      "boundary": "The conversion is conservative and does not yield a sharp conditional quantile approximation.",
+      "codeMapping": [
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "not-applicable",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "corollary-6-9",
+      "label": "Corollary 6.9",
+      "kind": "corollary",
+      "sectionId": "fixed-power",
+      "title": "Moderate-regime detection condition",
+      "statement": "For fixed alpha, beta, balance and relative-conditioning constants, uniform moderate dimension and sufficient orbit resolution reduce Theorem 6.6 to the square-root direction plus square-root search rate.",
+      "assumptions": [
+        "Fixed alpha and beta",
+        "Uniform Assumption 6.2",
+        "b + ell = o(n_e)",
+        "Adequate orbit resolution"
+      ],
+      "dependencies": [
+        "theorem-6-6",
+        "definition-4-4"
+      ],
+      "proofSteps": [
+        "Tail parameters are fixed constants.",
+        "The kappa inflation is bounded.",
+        "Absorb the second-order term into the two square-root terms."
+      ],
+      "conclusion": "A sufficiently large constant times sqrt(b/n_e) + sqrt(ell/n_e) yields power at least 1 - beta.",
+      "boundary": "This is a rate statement; it does not supply a sharp finite-sample constant.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-20",
+          "label": "(6.20)",
+          "tex": "\\tau_\\star\\geq C\\left(\\sqrt{\\frac{b_\\star}{n_e}}+\\sqrt{\\frac{\\ell_{B_\\star}}{n_e}}\\right)",
+          "alt": "the signal is at least a constant times the square root dimension rate plus square root entropy rate"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "corollary-6-10",
+      "label": "Corollary 6.10",
+      "kind": "corollary",
+      "sectionId": "fixed-power",
+      "title": "Finite Monte Carlo power",
+      "statement": "Replacing alpha by a strict margin gamma in Theorem 6.6 and applying Proposition 5.10 yields full finite-sample Monte Carlo power minus an explicit binomial tail.",
+      "assumptions": [
+        "Orbit resolution below gamma",
+        "Theorem 6.6 separation at the gamma margin"
+      ],
+      "dependencies": [
+        "theorem-6-6",
+        "proposition-5-10"
+      ],
+      "proofSteps": [
+        "Establish a full-orbit p-value margin at gamma.",
+        "Transfer it through the conditional binomial exceedance count."
+      ],
+      "conclusion": "The permutation budget R can be tied to a stated power-loss tolerance.",
+      "boundary": "The locked V2 campaign needed to estimate operational constants remains pending.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "theorem-6-11",
+      "label": "Theorem 6.11",
+      "kind": "theorem",
+      "sectionId": "lower-bound",
+      "title": "Minimax lower bound for unknown direction and location",
+      "statement": "Even when the baseline covariance is known and only the current Gaussian sample must be tested, total risk stays bounded away from zero when theta is below a constant times max{sqrt(b/n_1), sqrt(log M/n_1)} over M disjoint candidate blocks.",
+      "assumptions": [
+        "Gaussian oracle experiment",
+        "M pairwise-disjoint blocks of width b",
+        "Rank-one positive spike in the small-signal range theta < 1"
+      ],
+      "dependencies": [
+        "appendix-b-11-1",
+        "appendix-b-11-2"
+      ],
+      "proofSteps": [
+        "Unknown direction: mix the spike direction uniformly on the b-sphere and bound chi-square divergence when n theta^2/b is small.",
+        "Unknown location: mix fixed orthogonal directions over M disjoint blocks and bound divergence when n theta^2 <= c log M.",
+        "Use Le Cam's inequality in each subexperiment and take the harder of the two costs."
+      ],
+      "conclusion": "No test uniformly beats both the direction and location square-root costs.",
+      "boundary": "The theorem is a rate lower bound with universal constants, not a sharp power envelope.",
+      "codeMapping": [
+        "runtime/docs/theory-traceability.md",
+        "src/pwr_scan/experiments/v0_reference.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-25",
+          "label": "(6.25)-(6.26)",
+          "tex": "\\theta\\leq c\\left(\\sqrt{\\frac b{n_1}}\\vee\\sqrt{\\frac{\\log M}{n_1}}\\right)\\Longrightarrow\\inf_\\phi R(\\phi,\\theta)\\geq c_0",
+          "alt": "below the maximum of direction and location rates, minimax total risk stays at least c zero"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "not-applicable",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "theorem-6-12",
+      "label": "Theorem 6.12",
+      "kind": "theorem",
+      "sectionId": "rate-optimality",
+      "title": "Balanced Gaussian minimax rate",
+      "statement": "With comparable group sizes, M equal-width candidates weighted 1/M, moderate dimension and a disjoint packing, the actual full-permutation PWR-Scan attains the minimax rank-one separation rate sqrt(b/n) + sqrt(log M/n), up to constant factors.",
+      "assumptions": [
+        "assumption-6-1",
+        "b + log M = o(n)",
+        "Equal weights",
+        "Candidate family contains the lower-bound packing",
+        "Adequate orbit resolution"
+      ],
+      "dependencies": [
+        "corollary-6-9",
+        "theorem-6-11",
+        "proposition-4-2"
+      ],
+      "proofSteps": [
+        "Balance makes n_e, n and n_1 equivalent up to constants.",
+        "The monotone pooled effect is equivalent to the bounded baseline spike.",
+        "Corollary 6.9 supplies the upper rate; Theorem 6.11 supplies max of the same two terms.",
+        "Use max{x,y} <= x+y <= 2 max{x,y}."
+      ],
+      "conclusion": "The same permutation-calibrated statistic that is exact under the null is rate-optimal in the Gaussian reference experiment.",
+      "boundary": "No uniformly most-powerful, sharp-constant, proportional-dimensional or non-Gaussian optimality claim is made.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-29",
+          "label": "(6.29)",
+          "tex": "\\theta_n^\\star\\asymp\\sqrt{\\frac bn}+\\sqrt{\\frac{\\log M}{n}}",
+          "alt": "the minimax separation rate is square root b over n plus square root log M over n"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "remark-6-13",
+      "label": "Remark 6.13",
+      "kind": "remark",
+      "sectionId": "rate-optimality",
+      "title": "What rate optimality does not say",
+      "statement": "Theorem 6.12 establishes order and fixed-factor equivalence only; it does not imply uniform most-powerfulness, a sharp asymptotic constant, a power envelope, or optimality beyond independent balanced Gaussian moderate dimension.",
+      "assumptions": [],
+      "dependencies": [
+        "theorem-6-12"
+      ],
+      "proofSteps": [
+        "Separate rate equivalence from stronger optimality notions."
+      ],
+      "conclusion": "The public claim is deliberately narrower than 'optimal in all settings'.",
+      "boundary": "Real-audio performance and external validity require empirical evidence, not extrapolation from this theorem.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "assumption-6-14",
+      "label": "Assumption 6.14",
+      "kind": "assumption",
+      "sectionId": "mismatch",
+      "title": "Approximate block spike",
+      "statement": "On some candidate block, the population pooled contrast equals tau u u^T plus a symmetric remainder R whose operator norm is at most eta.",
+      "assumptions": [
+        "Unit direction",
+        "Operator-norm remainder bound"
+      ],
+      "dependencies": [
+        "proposition-2-2",
+        "proposition-2-3"
+      ],
+      "proofSteps": [
+        "This assumption packages weak extra components, Taylor error, leakage and finite-taper error into one auditable norm bound."
+      ],
+      "conclusion": "Model mismatch enters the power theorem through a single conservative signal erosion eta.",
+      "boundary": "Eta must be bounded externally; describing leakage as merely 'small' is not sufficient.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-30",
+          "label": "(6.30)",
+          "tex": "\\Gamma_{B_\\star}=\\tau uu^\\top+R,\\qquad\\|R\\|_{op}\\leq\\eta",
+          "alt": "the population contrast equals a rank-one signal plus an operator norm bounded remainder"
+        }
+      ],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "theorem-6-15",
+      "label": "Theorem 6.15",
+      "kind": "theorem",
+      "sectionId": "mismatch",
+      "title": "Mismatch-robust permutation power",
+      "statement": "Under the Gaussian and moderate-dimensional assumptions plus an approximate spike, Theorem 6.6 remains valid after replacing the nominal signal by (tau - eta)+.",
+      "assumptions": [
+        "assumption-6-1",
+        "assumption-6-2",
+        "assumption-6-14"
+      ],
+      "dependencies": [
+        "theorem-6-6",
+        "assumption-6-14",
+        "proposition-b-9"
+      ],
+      "proofSteps": [
+        "Weyl's inequality lower-bounds the population leading eigenvalue by tau - eta.",
+        "All subsequent concentration and random-partition arguments use only that population lower bound."
+      ],
+      "conclusion": "The finite-sample power guarantee degrades explicitly with operator-norm mismatch.",
+      "boundary": "When eta >= tau the theorem guarantees no positive signal and no favorable power claim is justified.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-6-31",
+          "label": "(6.31)-(6.32)",
+          "tex": "\\tau_{eff}=(\\tau-\\eta)_+\\quad\\Longrightarrow\\quad\\Pr_{H_1}(\\phi_\\alpha^{\\mathrm{PWR}}=1)\\geq1-\\beta",
+          "alt": "effective signal is the positive part of tau minus eta and yields power at least one minus beta under the separation condition"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "theorem-7-1",
+      "label": "Theorem 7.1",
+      "kind": "theorem",
+      "sectionId": "multiscale",
+      "title": "Deterministic interval covering",
+      "statement": "Every admissible contiguous interval is contained in a member of the shifted geometric candidate family whose length is less than 2(1 + epsilon) times the true interval length.",
+      "assumptions": [
+        "Geometric widths",
+        "Grid spacing at most epsilon times the scale width",
+        "Pre-fixed minimum and maximum widths"
+      ],
+      "dependencies": [],
+      "proofSteps": [
+        "Choose the smallest geometric scale at least as wide as the target interval, making it less than twice the target width.",
+        "Choose the last shifted grid start not exceeding the target start.",
+        "The start mismatch is below one grid step, so the enlarged candidate covers the target while its length obeys the stated factor."
+      ],
+      "conclusion": "An O(p)-scale deterministic family covers every interval without data-dependent screening.",
+      "boundary": "A single aligned dyadic tree does not provide this uniform constant-factor covering for intervals crossing a tree boundary.",
+      "codeMapping": [
+        "runtime/src/pwrscan/candidates.py",
+        "runtime/tests/test_core_candidates.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-7-10",
+          "label": "(7.10)",
+          "tex": "I\\subseteq B(I),\\qquad |B(I)|<2(1+\\varepsilon)|I|",
+          "alt": "I is contained in B of I and the covering block is less than two times one plus epsilon times the interval size"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-7-2",
+      "label": "Lemma 7.2",
+      "kind": "lemma",
+      "sectionId": "multiscale",
+      "title": "PSD signal monotonicity under supersets",
+      "statement": "If a positive-semidefinite covariance increase is supported inside I x I and I is contained in B, the leading pooled-whitened population root on B is at least its value on I.",
+      "assumptions": [
+        "Positive-semidefinite covariance increase",
+        "Support contained in the true interval"
+      ],
+      "dependencies": [
+        "definition-4-1"
+      ],
+      "proofSteps": [
+        "Write the leading root as a generalized Rayleigh maximum on B.",
+        "Restrict candidate vectors to zero outside I.",
+        "On this subset, numerator and denominator equal the I-block Rayleigh quotient."
+      ],
+      "conclusion": "Covering enlarges noise dimension but does not attenuate a strict PSD block signal.",
+      "boundary": "An indefinite remainder must be handled separately through the eta mismatch bound.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [
+        {
+          "id": "eq-7-17",
+          "label": "(7.17)",
+          "tex": "\\lambda_{\\max}(\\Sigma_{P,B}^{-1/2}\\Delta_B\\Sigma_{P,B}^{-1/2})\\geq\\lambda_{\\max}(\\Sigma_{P,I}^{-1/2}\\Delta_I\\Sigma_{P,I}^{-1/2})",
+          "alt": "the pooled leading root on the covering block is at least the leading root on the true interval"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "theorem-7-3",
+      "label": "Theorem 7.3",
+      "kind": "theorem",
+      "sectionId": "multiscale",
+      "title": "Adaptive power of multiscale PWR-Scan",
+      "statement": "Uniformly over admissible widths, a PSD interval signal is detected with power at least 1 - beta when its population PWR effect exceeds the direction, location, scale-adaptation and second-order concentration terms induced by the shifted geometric family.",
+      "assumptions": [
+        "assumption-6-1",
+        "Uniform assumption-6-2",
+        "PSD interval-supported signal",
+        "Adequate orbit resolution"
+      ],
+      "dependencies": [
+        "theorem-7-1",
+        "lemma-7-2",
+        "theorem-6-6"
+      ],
+      "proofSteps": [
+        "Select the constant-factor covering block from Theorem 7.1.",
+        "Use Lemma 7.2 to preserve the population effect.",
+        "Bound covering-block dimension and its weighted entropy by b and Lambda_b.",
+        "Insert those bounds into Theorem 6.6 and absorb constants."
+      ],
+      "conclusion": "One permutation-calibrated multiscale maximum adapts over unknown interval width.",
+      "boundary": "The theorem is an adaptive upper bound and does not prove that its log-log scale cost is information-theoretically necessary.",
+      "codeMapping": [
+        "runtime/src/pwrscan/candidates.py",
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_candidates.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-7-22",
+          "label": "(7.21)-(7.22)",
+          "tex": "\\rho_{ad}(b)=\\sqrt{\\frac b{n_e}}+\\sqrt{\\frac{\\Lambda_b(\\alpha,\\beta)}{n_e}}+\\frac{b+\\Lambda_b(\\alpha,\\beta)}{n_e},\\quad\\tau_I\\geq C_\\star\\rho_{ad}(b)",
+          "alt": "adaptive radius equals direction, adaptive entropy, and second-order terms; signal above a constant times this radius is detected"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "corollary-7-4",
+      "label": "Corollary 7.4",
+      "kind": "corollary",
+      "sectionId": "multiscale",
+      "title": "Near-minimax width adaptation",
+      "statement": "For fixed design constants and moderate dimension, multiscale PWR-Scan detects at the fixed-width direction-plus-location rate with an additional log-log term for unknown scale.",
+      "assumptions": [
+        "Fixed alpha, beta and epsilon",
+        "Adequate orbit resolution",
+        "b + Lambda_b = o(n)"
+      ],
+      "dependencies": [
+        "theorem-7-3",
+        "theorem-6-11"
+      ],
+      "proofSteps": [
+        "Bound the selected geometric scale by 1 + log2(b/b_min).",
+        "Substitute into Lambda_b and drop the lower-order second-order concentration term.",
+        "Compare with the fixed-width packing lower bound."
+      ],
+      "conclusion": "Width adaptation costs at most a logarithm of the number of scales inside the square-root entropy term.",
+      "boundary": "Removal or necessity of the adaptation term is an unresolved sharp-adaptation question.",
+      "codeMapping": [
+        "runtime/src/pwrscan/candidates.py",
+        "runtime/src/pwrscan/guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-7-25",
+          "label": "(7.25)",
+          "tex": "\\sqrt{\\frac bn}+\\sqrt{\\frac{\\log(ep/b)+2\\log\\{1+\\log_2(b/b_{min})\\}}n}",
+          "alt": "the adaptive rate is square root b over n plus the square root of location entropy and twice log scale count over n"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-b-1",
+      "label": "Lemma B.1",
+      "kind": "lemma",
+      "sectionId": "appendix",
+      "title": "Gaussian covariance concentration on one block",
+      "statement": "For m independent standard b-variate Gaussian vectors, the sample covariance differs from identity in operator norm by at most 2r + r^2 with probability at least 1 - 2e^{-t^2/2}, where r = sqrt(b/m) + t/sqrt(m).",
+      "assumptions": [
+        "Independent standard Gaussian vectors"
+      ],
+      "dependencies": [],
+      "proofSteps": [
+        "Represent the covariance as m^{-1}G^T G.",
+        "Apply the extreme singular-value inequality to G.",
+        "Square the normalized singular-value interval and take its largest deviation from one."
+      ],
+      "conclusion": "A nonasymptotic operator-norm radius is available block by block.",
+      "boundary": "The standard statement assumes Gaussian observations and no data-dependent dimension choice.",
+      "codeMapping": [
+        "src/pwr_scan/experiments/v0_reference.py",
+        "tests/test_v0_reference.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-b-4",
+          "label": "(B.4)",
+          "tex": "\\|\\widehat C-I_b\\|_{op}\\leq2r+r^2,\\qquad r=\\sqrt{b/m}+t/\\sqrt m",
+          "alt": "sample covariance error is at most two r plus r squared"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "not-applicable",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-b-2",
+      "label": "Lemma B.2",
+      "kind": "lemma",
+      "sectionId": "appendix",
+      "title": "Average of non-identical Gaussian covariances",
+      "statement": "Independent centered Gaussian vectors with uniformly bounded covariance eigenvalues obey the same sqrt((b+x)/m) + (b+x)/m relative operator-norm concentration around their average covariance.",
+      "assumptions": [
+        "Independent centered Gaussian vectors",
+        "Uniform upper and lower covariance bounds"
+      ],
+      "dependencies": [
+        "lemma-b-1"
+      ],
+      "proofSteps": [
+        "For each fixed direction, centered Gaussian squares are uniformly sub-exponential.",
+        "Apply scalar Bernstein on a one-quarter net.",
+        "Lift the net maximum to operator norm."
+      ],
+      "conclusion": "Permutation groups containing observations from both original populations remain concentrable after conditioning on membership.",
+      "boundary": "Constants depend on the covariance condition ratio.",
+      "codeMapping": [
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "not-applicable",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-b-3",
+      "label": "Lemma B.3",
+      "kind": "lemma",
+      "sectionId": "appendix",
+      "title": "Weighted union bound",
+      "statement": "If block event failures are bounded by c e^{-x}, evaluating block B at x + log(1/w_B) and summing weights no larger than one yields simultaneous success with probability at least 1 - c e^{-x}.",
+      "assumptions": [
+        "Positive pre-fixed weights summing to at most one"
+      ],
+      "dependencies": [],
+      "proofSteps": [
+        "Substitute the block-specific tail allocation.",
+        "Sum c e^{-x} w_B over blocks."
+      ],
+      "conclusion": "Weighted entropy log(1/w_B) replaces a crude uniform log M cost.",
+      "boundary": "Weights selected after seeing the tested data invalidate the registered event allocation.",
+      "codeMapping": [
+        "runtime/src/pwrscan/candidates.py",
+        "runtime/tests/test_core_candidates.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-b-union",
+          "label": "B.3 bound",
+          "tex": "\\Pr\\left(\\bigcap_{B\\in\\mathcal B}E_B(x+\\log(1/w_B))\\right)\\geq1-ce^{-x}",
+          "alt": "all weighted block events hold with probability at least one minus c e to minus x"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-b-4",
+      "label": "Lemma B.4",
+      "kind": "lemma",
+      "sectionId": "appendix",
+      "title": "Pooled population gap for a Roy spike",
+      "statement": "For a baseline-relative rank-one covariance spike of size theta, the pooled-whitened population contrast has one nonzero eigenvalue delta(theta) = theta/(1 + pi_1 theta).",
+      "assumptions": [
+        "Positive-definite baseline covariance",
+        "Rank-one positive spike"
+      ],
+      "dependencies": [
+        "proposition-4-2"
+      ],
+      "proofSteps": [
+        "Use congruence invariance to set the baseline covariance to identity.",
+        "Diagonalize along u and its orthogonal complement.",
+        "Read the unique whitened eigenvalue in the u direction."
+      ],
+      "conclusion": "For bounded spikes, pooled and baseline-relative effect sizes are equivalent up to constants.",
+      "boundary": "The mapping saturates under large spikes because the pooled denominator also grows.",
+      "codeMapping": [
+        "runtime/src/pwrscan/statistics.py",
+        "runtime/tests/test_core_statistics.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-b-5",
+          "label": "(B.5)",
+          "tex": "\\delta(\\vartheta)=\\frac{\\vartheta}{1+\\pi_1\\vartheta}",
+          "alt": "delta theta equals theta divided by one plus pi one theta"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "verified",
+        "audit": "complete",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-b-5",
+      "label": "Lemma B.5",
+      "kind": "lemma",
+      "sectionId": "appendix",
+      "title": "Signal-noise decomposition of the observed statistic",
+      "statement": "On the true block, the observed largest PWR root exceeds the pooled population gap minus a constant times the Gaussian direction and second-order covariance-estimation errors with high probability.",
+      "assumptions": [
+        "Appendix B common conditions"
+      ],
+      "dependencies": [
+        "lemma-b-1",
+        "lemma-b-2",
+        "lemma-b-4"
+      ],
+      "proofSteps": [
+        "Control the pooled covariance and group-difference errors.",
+        "Perturb the inverse square root under an operator-norm half-radius event.",
+        "Apply Weyl's inequality and insert Lemma B.4."
+      ],
+      "conclusion": "The observed true-block root retains the population gap up to the stated nonasymptotic radius.",
+      "boundary": "This appendix form targets constant-factor rates, not optimized constants.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-b-6",
+          "label": "(B.6)",
+          "tex": "T_{B_\\star}^{obs}\\geq\\delta(\\vartheta)-C\\left(\\sqrt{\\frac{b_\\star+x}{n_{eff}}}+\\frac{b_\\star+x}{n_{eff}}\\right)",
+          "alt": "the observed true block statistic exceeds the population gap minus its covariance concentration error"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "lemma-b-6",
+      "label": "Lemma B.6",
+      "kind": "lemma",
+      "sectionId": "appendix",
+      "title": "Joint tail of the permuted PWR-Scan",
+      "statement": "Under the Gaussian null or bounded-spike alternative and the appendix common conditions, the data-and-reassignment joint upper tail of the normalized scan is bounded by a sub-Gaussian term plus an exponentially small effective-sample term.",
+      "assumptions": [
+        "Appendix B common conditions",
+        "Gaussian null or bounded spike alternative"
+      ],
+      "dependencies": [
+        "lemma-b-2",
+        "lemma-b-3",
+        "lemma-b-5",
+        "appendix-b-6"
+      ],
+      "proofSteps": [
+        "Condition on the hypergeometric mixture count.",
+        "Apply non-identical Gaussian covariance concentration to each permuted group.",
+        "Allocate tails over candidates with Lemma B.3.",
+        "Absorb population mixture imbalance and whitener perturbation into the same scale."
+      ],
+      "conclusion": "A joint tail strong enough for the full-orbit power proof holds without approximating the entire conditional permutation CDF.",
+      "boundary": "It is not a deterministic upper bound on every data-conditional permutation quantile.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [
+        {
+          "id": "eq-b-9",
+          "label": "(B.9)",
+          "tex": "\\Pr_{D,\\pi}\\{S(\\pi D)>t\\}\\leq c_0e^{-c_1t^2}+c_0e^{-c_1n_{eff}}",
+          "alt": "the joint permuted scan tail is bounded by two exponential terms"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "remark-b-7",
+      "label": "Remark B.7",
+      "kind": "remark",
+      "sectionId": "appendix",
+      "title": "A joint tail is sufficient",
+      "statement": "The proof deliberately avoids claiming a deterministic conditional permutation threshold; Fubini converts the full-orbit p-value expectation into the joint tail needed for minimax power.",
+      "assumptions": [],
+      "dependencies": [
+        "lemma-b-6"
+      ],
+      "proofSteps": [
+        "Restrict the proof target to the rejection probability actually required."
+      ],
+      "conclusion": "The weaker joint statement closes the power chain without an unnecessary conditional-CDF theorem.",
+      "boundary": "It should not be advertised as uniform conditional quantile control.",
+      "codeMapping": [
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [],
+      "evidence": {
+        "proof": "not-applicable",
+        "implementation": "not-applicable",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "theorem-b-8",
+      "label": "Theorem B.8",
+      "kind": "theorem",
+      "sectionId": "appendix",
+      "title": "Joint-tail proof of full-orbit power",
+      "statement": "Under the appendix common conditions and adequate orbit resolution, a true-block pooled gap above a constant times sqrt(b/n_eff) + sqrt(log(1/w_B)/n_eff) gives full-orbit power at least 1 - beta for sufficiently large n_eff.",
+      "assumptions": [
+        "Appendix B common conditions",
+        "Identity orbit mass below alpha"
+      ],
+      "dependencies": [
+        "lemma-b-5",
+        "lemma-b-6"
+      ],
+      "proofSteps": [
+        "Put the observed statistic above a fixed threshold using Lemma B.5.",
+        "Bound the non-identity joint orbit tail using Lemma B.6.",
+        "Apply Markov to the conditional non-identity tail.",
+        "Add identity mass and the residual orbit budget to obtain p_G <= alpha."
+      ],
+      "conclusion": "The actual full-orbit PWR-Scan obtains the fixed-scale power upper bound.",
+      "boundary": "The theorem states a constant-factor moderate-dimensional rate, not a sharp constant.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/docs/theory-traceability.md"
+      ],
+      "equations": [
+        {
+          "id": "eq-b-11",
+          "label": "(B.11)",
+          "tex": "\\delta(\\vartheta)\\geq C_{\\alpha_{orb},\\beta}\\left(\\sqrt{\\frac{b_\\star}{n_{eff}}}+\\sqrt{\\frac{\\log(1/w_{B_\\star})}{n_{eff}}}\\right)",
+          "alt": "the pooled gap is above the direction and weighted search rates"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    },
+    {
+      "id": "proposition-b-9",
+      "label": "Proposition B.9",
+      "kind": "proposition",
+      "sectionId": "appendix",
+      "title": "Operator-norm mismatch",
+      "statement": "If the true pooled contrast is delta u u^T + E with ||E||op <= eta, its leading eigenvalue is at least delta - eta, so Theorem B.8 applies with (delta - eta)+.",
+      "assumptions": [
+        "Unit direction",
+        "Operator-norm remainder bound"
+      ],
+      "dependencies": [
+        "theorem-b-8"
+      ],
+      "proofSteps": [
+        "Evaluate the Rayleigh quotient at u.",
+        "Lower-bound u^T E u by -||E||op.",
+        "Substitute the resulting population gap into the observed lower-bound proof."
+      ],
+      "conclusion": "Mismatch subtracts at most its operator norm from the usable signal.",
+      "boundary": "No positive gap remains guaranteed when eta is at least delta.",
+      "codeMapping": [
+        "runtime/src/pwrscan/guarantees.py",
+        "runtime/tests/test_core_guarantees.py"
+      ],
+      "equations": [
+        {
+          "id": "eq-b-mismatch",
+          "label": "B.9 bound",
+          "tex": "\\lambda_{\\max}(\\delta uu^\\top+E)\\geq\\delta-\\eta",
+          "alt": "the maximum eigenvalue is at least delta minus eta"
+        }
+      ],
+      "evidence": {
+        "proof": "complete",
+        "implementation": "partial",
+        "audit": "partial",
+        "lockedResult": "pending"
+      }
+    }
+  ],
+  "appendixSections": [
+    {
+      "id": "appendix-b-1",
+      "label": "B.1",
+      "title": "Common conditions",
+      "dependencies": [
+        "assumption-6-1",
+        "assumption-6-2"
+      ],
+      "coreSteps": [
+        "Fix balanced group proportions, bounded pooled eigenvalues and a bounded spike range.",
+        "Require pre-fixed weights summing to at most one and uniform moderate dimension."
+      ]
+    },
+    {
+      "id": "appendix-b-2",
+      "label": "B.2",
+      "title": "Gaussian sample covariance concentration",
+      "dependencies": [
+        "lemma-b-1",
+        "lemma-b-2"
+      ],
+      "coreSteps": [
+        "Establish standard and non-identical Gaussian operator-norm concentration."
+      ]
+    },
+    {
+      "id": "appendix-b-3",
+      "label": "B.3",
+      "title": "Uniform concentration over candidates",
+      "dependencies": [
+        "lemma-b-3"
+      ],
+      "coreSteps": [
+        "Allocate tail probability by pre-fixed candidate weights."
+      ]
+    },
+    {
+      "id": "appendix-b-4",
+      "label": "B.4",
+      "title": "Pooled population gap of a rank-one spike",
+      "dependencies": [
+        "lemma-b-4"
+      ],
+      "coreSteps": [
+        "Diagonalize along the spike direction after baseline whitening."
+      ]
+    },
+    {
+      "id": "appendix-b-5",
+      "label": "B.5",
+      "title": "Observed true-block lower bound",
+      "dependencies": [
+        "lemma-b-5"
+      ],
+      "coreSteps": [
+        "Combine covariance concentration, whitener perturbation and Weyl's inequality."
+      ]
+    },
+    {
+      "id": "appendix-b-6",
+      "label": "B.6",
+      "title": "Why random reassignment erases the signal",
+      "dependencies": [
+        "lemma-6-4"
+      ],
+      "coreSteps": [
+        "The number of original current observations in the permuted current group is hypergeometric.",
+        "Its centered composition coefficient is O_P(n_eff^{-1/2}), reducing an O(theta) signal to O_P(theta/sqrt(n_eff))."
+      ]
+    },
+    {
+      "id": "appendix-b-7",
+      "label": "B.7",
+      "title": "Joint randomization tail",
+      "dependencies": [
+        "lemma-b-6",
+        "remark-b-7"
+      ],
+      "coreSteps": [
+        "Control the data-and-randomization joint tail rather than the full conditional CDF."
+      ]
+    },
+    {
+      "id": "appendix-b-8",
+      "label": "B.8",
+      "title": "Power of the full-orbit p-value",
+      "dependencies": [
+        "theorem-b-8"
+      ],
+      "coreSteps": [
+        "Use Fubini, a threshold event and Markov's inequality to control the actual orbit rank."
+      ]
+    },
+    {
+      "id": "appendix-b-9",
+      "label": "B.9",
+      "title": "Monte Carlo randomization power loss",
+      "dependencies": [
+        "proposition-5-10"
+      ],
+      "coreSteps": [
+        "Conditional exceedances are binomial.",
+        "A Chernoff bound gives R of order alpha^{-1} log(2/beta), not M/alpha."
+      ]
+    },
+    {
+      "id": "appendix-b-10",
+      "label": "B.10",
+      "title": "Power under an approximate spike",
+      "dependencies": [
+        "proposition-b-9"
+      ],
+      "coreSteps": [
+        "Replace the nominal pooled gap by its positive part after subtracting operator-norm mismatch."
+      ]
+    },
+    {
+      "id": "appendix-b-11",
+      "label": "B.11",
+      "title": "Two parts of the minimax lower bound",
+      "dependencies": [
+        "appendix-b-11-1",
+        "appendix-b-11-2",
+        "theorem-6-11"
+      ],
+      "coreSteps": [
+        "Prove impossibility in an easier known-baseline oracle experiment and combine direction and location mixtures."
+      ]
+    },
+    {
+      "id": "appendix-b-11-1",
+      "label": "B.11.1",
+      "title": "Unknown direction",
+      "dependencies": [],
+      "coreSteps": [
+        "Mix directions uniformly on the sphere.",
+        "Bound chi-square divergence when n theta^2/b is small and invoke Le Cam."
+      ]
+    },
+    {
+      "id": "appendix-b-11-2",
+      "label": "B.11.2",
+      "title": "Unknown location",
+      "dependencies": [],
+      "coreSteps": [
+        "Mix one fixed direction over disjoint blocks.",
+        "Bound chi-square divergence when n theta^2 <= c log K and invoke Le Cam."
+      ]
+    },
+    {
+      "id": "appendix-b-12",
+      "label": "B.12",
+      "title": "Scope of the proof",
+      "dependencies": [
+        "theorem-b-8",
+        "theorem-6-11"
+      ],
+      "coreSteps": [
+        "The proof closes for fixed or label-independent centering, balanced Gaussian features, moderate dimension, positive covariance increase, pre-fixed candidates and full-orbit or sufficiently accurate Monte Carlo calibration.",
+        "Group-specific centering, selected ridge, heavy tails, proportional dimension and a single dependent time series require new theory."
+      ]
+    }
+  ],
+  "foundations": [
+    {
+      "id": "foundation-a-1",
+      "label": "A.1",
+      "title": "Vectors, outer products and covariance",
+      "role": "Defines the second-moment objects and rank-one matrix notation used by the acoustic bridge."
+    },
+    {
+      "id": "foundation-a-2",
+      "label": "A.2",
+      "title": "PSD order, positive definiteness and operator norm",
+      "role": "Fixes the matrix order and worst-direction error metric used for mismatch bounds."
+    },
+    {
+      "id": "foundation-a-3",
+      "label": "A.3",
+      "title": "Eigenvalues and Rayleigh-Ritz",
+      "role": "Turns directional covariance growth into a maximum quadratic quotient."
+    },
+    {
+      "id": "foundation-a-4",
+      "label": "A.4",
+      "title": "Whitening and congruence",
+      "role": "Explains coordinate-free comparison of covariance matrices and preservation of generalized roots."
+    },
+    {
+      "id": "foundation-a-5",
+      "label": "A.5",
+      "title": "Generalized eigenvalues and the pooled-whitened root",
+      "role": "Connects the PWR statistic to the Fisher-Roy generalized eigenvalue problem."
+    },
+    {
+      "id": "foundation-a-6",
+      "label": "A.6",
+      "title": "Wishart, Jacobi ensemble and finite-sample root CDF",
+      "role": "Locates exact Gaussian root laws as a reference calculation, not the operational global calibration."
+    },
+    {
+      "id": "foundation-a-7",
+      "label": "A.7",
+      "title": "Role and limit of the Tracy-Widom law",
+      "role": "Separates proportional-dimensional asymptotics from the manuscript's moderate-dimensional permutation theorem."
+    },
+    {
+      "id": "foundation-a-8",
+      "label": "A.8",
+      "title": "Multiple weak spikes and linear spectral statistics",
+      "role": "Marks an alternative regime not covered by a largest-root directional test."
+    },
+    {
+      "id": "foundation-a-9",
+      "label": "A.9",
+      "title": "Sample covariance and centering",
+      "role": "Makes denominator, degrees-of-freedom and label-dependent preprocessing choices explicit."
+    },
+    {
+      "id": "foundation-a-10",
+      "label": "A.10",
+      "title": "Permutation groups and randomization p-values",
+      "role": "Provides the finite-group orbit language behind exact and Monte Carlo ranks."
+    },
+    {
+      "id": "foundation-a-11",
+      "label": "A.11",
+      "title": "Sub-Gaussian and sub-exponential variables",
+      "role": "Supplies tail classes for Gaussian quadratic-form concentration."
+    },
+    {
+      "id": "foundation-a-12",
+      "label": "A.12",
+      "title": "Epsilon nets and direction-search cost",
+      "role": "Explains why maximizing an unknown b-dimensional direction contributes the square-root b over n term."
+    },
+    {
+      "id": "foundation-a-13",
+      "label": "A.13",
+      "title": "Minimax risk and separation rate",
+      "role": "Defines the lower-bound decision criterion and rate comparison."
+    },
+    {
+      "id": "foundation-a-14",
+      "label": "A.14",
+      "title": "Why direction and location costs combine",
+      "role": "Relates separate spherical and block-location mixtures to the matched two-term rate."
+    },
+    {
+      "id": "foundation-a-15",
+      "label": "A.15",
+      "title": "Taylor expansion and remainder",
+      "role": "Supports the exact rank-one leading term plus bounded acoustic mismatch decomposition."
+    }
+  ],
+  "claimsBoundary": [
+    "The manuscript establishes mathematical implications only under their displayed assumptions.",
+    "The 56 engineering runs and 246 computational tests verify calculation paths; they are not a statistical power sample size.",
+    "Publication-scale V1-V5 validation remains pending.",
+    "External validity is not established, and the negative DCASE result is retained without reinterpretation.",
+    "The source PDF is intentionally not included in the production artifact."
+  ]
+}

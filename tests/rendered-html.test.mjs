@@ -5,9 +5,12 @@ import test from "node:test";
 const outputRoot = new URL("../dist/client/", import.meta.url);
 const showcase = JSON.parse(await readFile(new URL("../app/data/arbitrage-showcase.json", import.meta.url), "utf8"));
 const universeManifest = JSON.parse(await readFile(new URL("../app/data/arbitrage-universe-manifest.json", import.meta.url), "utf8"));
+const pwrEvidence = JSON.parse(await readFile(new URL("../app/data/pwr-theory-evidence.v1.json", import.meta.url), "utf8"));
+const quantSnapshot = JSON.parse(await readFile(new URL("../app/data/quant-architecture.snapshot.v1.json", import.meta.url), "utf8"));
 const routes = [
   "experience/avikus-simulation-perception",
   "experience/finburh-document-automation",
+  "projects/quant-platform",
   "projects/pwr-scan",
   "projects/pwr-scan-validation",
   "projects/open-source-intelligence",
@@ -16,12 +19,19 @@ const routes = [
   "projects/eventedge-derivatives",
 ];
 const arbitrageRoute = "projects/triangular-arbitrage-detector";
-const standardRoutes = routes.filter((route) => route !== arbitrageRoute);
+const quantRoute = "projects/quant-platform";
+const pwrRoute = "projects/pwr-scan";
+const pwrLegacyRoute = "projects/pwr-scan-validation";
+const standardRoutes = [
+  "experience/avikus-simulation-perception",
+  "experience/finburh-document-automation",
+  "projects/open-source-intelligence",
+  "projects/bayesian-ad-targeting",
+  "projects/eventedge-derivatives",
+];
 const expectedStack = {
   "experience/avikus-simulation-perception": ["C++", "CUDA", "OpenCV", "OpenMP", "Homography", "Synthetic signal generation"],
   "experience/finburh-document-automation": ["Python", "MCP", "Multi-agent orchestration", "DART", "KRX", "Embedding & retrieval", "Spreadsheet and presentation generation"],
-  "projects/pwr-scan": ["Python", "NumPy", "SciPy", "FastAPI", "Pydantic", "SoundFile", "Next.js", "React", "TypeScript"],
-  "projects/pwr-scan-validation": ["Python", "NumPy", "SciPy", "pandas", "Matplotlib", "Plotly", "pytest"],
   "projects/open-source-intelligence": ["Python", "PyTorch", "Transformers", "NumPy", "SafeTensors", "DART", "FSC/KRX", "pytest"],
   "projects/bayesian-ad-targeting": ["Python", "NumPy", "pandas", "Beta–Bernoulli inference", "Thompson Sampling"],
   "projects/triangular-arbitrage-detector": ["Node.js", "JavaScript", "Axios", "WebSocket", "Upbit REST/WebSocket", "Node test runner"],
@@ -32,7 +42,7 @@ async function routeHtml(route = "") {
   return readFile(new URL(`${route}${route ? "/" : ""}index.html`, outputRoot), "utf8");
 }
 
-test("exports the home page and all eight case studies", async () => {
+test("exports the home page and all nine canonical or compatibility case-study paths", async () => {
   await access(new URL("index.html", outputRoot));
   await Promise.all(routes.map((route) => access(new URL(`${route}/index.html`, outputRoot))));
 });
@@ -58,7 +68,78 @@ test("renders the revised home information architecture", async () => {
   assert.doesNotMatch(html, /date of birth|\bage\b/i);
 });
 
-test("keeps the standard case-study contract on the other seven pages", async () => {
+test("renders Quant first, consolidated PWR second, and no duplicate PWR home card", async () => {
+  const html = await routeHtml();
+  const quant = html.indexOf(">Quant Platform<");
+  const pwr = html.indexOf(">PWR-Scan<");
+  const osint = html.indexOf(">Open Source Intelligence<");
+
+  assert.ok(quant >= 0, "Quant Platform card is missing");
+  assert.ok(pwr > quant, "PWR-Scan must follow Quant Platform");
+  assert.ok(osint > pwr, "the existing project order after PWR changed");
+  assert.doesNotMatch(html, /href="\/projects\/pwr-scan-validation\/?"/);
+  assert.doesNotMatch(html, /https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan/);
+});
+
+test("renders the architecture-only Quant Platform page from the sanitized snapshot", async () => {
+  const html = await routeHtml(quantRoute);
+
+  for (const marker of [
+    "Architecture model",
+    "Work in progress",
+    "No live portfolio output",
+    "One request · one frozen context",
+    "Five operational domains",
+    "Complete pair or fail",
+    "Market Price Service",
+    "Historical Return Evaluator",
+    "Reuse without lookahead",
+    "Product selection pending",
+    "deployment units · ",
+    "logical children",
+    "validated views · QP-001—012",
+    quantSnapshot.provenance.sourceSha256.slice(0, 12),
+  ]) assert.ok(html.includes(marker), `Quant Platform is missing ${marker}`);
+
+  assert.match(html, /<table[^>]*>.*?<caption>/s);
+  assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
+  assert.doesNotMatch(html, /github\.com\/Moon-Young-Choi\/.*quant/i);
+  assert.doesNotMatch(html, /live returns?|deployed service|realized profit/i);
+});
+
+test("renders all 49 formal PWR declarations, foundations, boundaries, and the static legacy alias", async () => {
+  const [html, legacy, home] = await Promise.all([routeHtml(pwrRoute), routeHtml(pwrLegacyRoute), routeHtml()]);
+
+  assert.equal(pwrEvidence.proofEntries.length, 49);
+  assert.equal(pwrEvidence.appendixSections.length, 14);
+  assert.equal(pwrEvidence.foundations.length, 15);
+  for (const entry of pwrEvidence.proofEntries) {
+    assert.equal((html.match(new RegExp(`id="${entry.id}"`, "g")) ?? []).length, 1, `${entry.id} must render once`);
+  }
+  for (const foundation of pwrEvidence.foundations) {
+    assert.equal((html.match(new RegExp(`id="${foundation.id}"`, "g")) ?? []).length, 1, `${foundation.id} must render once`);
+  }
+  for (const marker of [
+    "Proof-led statistical system",
+    "Finite-sample randomization",
+    "Minimax",
+    "Engineering closeout",
+    "Publication-scale validation",
+    "Negative evidence",
+    "ROC AUC 0.4843",
+    "PDF not published",
+  ]) assert.ok(html.includes(marker), `PWR theory page is missing ${marker}`);
+
+  assert.match(html, /<math[\s>]/);
+  assert.match(html, /<table[^>]*>.*?<caption>/s);
+  assert.match(html, /href="https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan"/);
+  assert.doesNotMatch(home, /https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan/);
+  assert.ok(legacy.includes("Proof-led statistical system"));
+  assert.match(legacy, /rel="canonical"[^>]*href="\/projects\/pwr-scan\/"|href="\/projects\/pwr-scan\/"[^>]*rel="canonical"/);
+  assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
+});
+
+test("keeps the standard case-study contract on the remaining five pages", async () => {
   for (const route of standardRoutes) {
     const html = await routeHtml(route);
     const method = html.indexOf("02 / Method");

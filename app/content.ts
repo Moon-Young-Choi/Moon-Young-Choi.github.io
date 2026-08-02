@@ -8,7 +8,7 @@ export type Formula = {
 
 export type CaseStudy = {
   kind: "work" | "project";
-  presentation: "standard" | "arbitrage-lab";
+  presentation: "standard" | "quant-platform" | "pwr-theory" | "arbitrage-lab";
   number: string;
   slug: string;
   title: string;
@@ -178,127 +178,127 @@ export const workStudies: CaseStudy[] = [
 export const projectStudies: CaseStudy[] = [
   {
     kind: "project",
-    presentation: "standard",
+    presentation: "quant-platform",
     number: "01",
-    slug: "pwr-scan",
-    title: "PWR-Scan",
+    slug: "quant-platform",
+    title: "Quant Platform",
     accent: "lime",
-    shape: "scan",
-    eyebrow: "Pooled-Whitened Randomization Scan",
+    shape: "quant-platform",
+    eyebrow: "Point-in-time portfolio architecture",
     summary:
-      "A local research workstation for detecting a structured covariance increase when its frequency interval and direction are both unknown.",
-    tags: ["Python", "Covariance", "Randomization"],
+      "An in-progress LikeC4 architecture that pins one forecast context, keeps A/B evidence separate, isolates price normalization from mature-return evaluation, and exposes only the optimized portfolio.",
+    tags: ["LikeC4", "GCP MVP", "Point-in-time"],
     stack: [
-      { group: "Core", items: ["Python", "NumPy", "SciPy"] },
-      { group: "API & audio", items: ["FastAPI", "Pydantic", "SoundFile"] },
-      { group: "Interface", items: ["Next.js", "React", "TypeScript"] },
+      { group: "Architecture", items: ["LikeC4", "GCP project boundaries"] },
+      { group: "Evidence", items: ["DART", "FSC stock prices", "Point-in-time contracts"] },
+      { group: "Decision", items: ["Request-scoped calibration", "Portfolio optimization boundary"] },
     ],
     facts: [
-      ["Scope", "CPU-first · local only"],
-      ["Inputs", "Feature matrices · audio"],
-      ["Decision", "One global p-value"],
-      ["Status", "Research software"],
+      ["Status", "Architecture snapshot"],
+      ["Domains", "Five operational boundaries"],
+      ["Time contract", "One latest-complete As-of"],
+      ["Model views", "12 validated views"],
     ],
-    flow: ["Frequency features", "Pooled whitening", "Multiscale scan", "Randomization rank"],
+    flow: ["Protected request", "As-of resolution", "Calibration & forecast", "Final portfolio only"],
     formulas: [
       {
-        label: "Local and global statistic",
-        expression: String.raw`T_B=\lambda_{\max}\!\left[\widehat\Sigma_{P,B}^{-1/2}(\widehat\Sigma_{1,B}-\widehat\Sigma_{0,B})\widehat\Sigma_{P,B}^{-1/2}\right],\quad S=\max_{B\in\mathcal B}\frac{T_B}{a_B}`,
-        note: "The pooled covariance supplies a label-invariant metric; the maximum scans both unknown interval and unknown positive direction.",
+        label: "Pinned forecast context",
+        expression: String.raw`C=(\mathcal U,h,t_{\mathrm{asof}},v_A,v_B,v_D,v_E)`,
+        note: "One request fixes the asset universe, horizon, common point-in-time cutoff, and compatible algorithm, decoder, and evidence-contract versions.",
       },
       {
-        label: "Monte Carlo randomization",
-        expression: String.raw`\widehat p_R=\frac{1+\sum_{r=1}^{R}\mathbf 1\{S(g_rD)\ge S(D)\}}{R+1}`,
-        note: "The +1 correction includes the observed assignment and prevents zero p-values in the sampled orbit.",
+        label: "Complete-pair contract",
+        expression: String.raw`\operatorname{resolve}(C)\in\{(A_C,B_C),\operatorname{fail}\}`,
+        note: "A partial algorithm pair never reaches calibration or portfolio optimization.",
       },
     ],
     sections: [
       {
-        title: "Decision rule",
+        title: "One request, one time boundary",
         paragraphs: [
-          "Each candidate block compares two second-moment matrices after whitening by their pooled matrix. The largest eigenvalue selects the strongest positive covariance direction inside that block; a multiscale penalty accounts for direction dimension and the number of possible locations.",
-          "The entire maximum statistic—not separate block p-values—is recalculated across valid label transformations. Under the stated exchangeability law, the resulting orbit rank controls the finite-sample global false-alarm probability.",
+          "The architecture resolves a common latest-complete cutoff before historical calibration or current forecasting begins.",
+          "Algorithm A and B retain separate evidence requirements while sharing the same target, horizon, cutoff, and pinned version context.",
         ],
       },
       {
-        title: "Theory and implementation boundary",
+        title: "Architecture evidence boundary",
         paragraphs: [
-          "For the balanced Gaussian benchmark, the separation scale combines an unknown-direction cost and an unknown-location cost: √(b/n)+√(log M/n). Operational extensions such as ridge whitening and audio preprocessing are recorded separately because the same power theorem does not transfer automatically.",
-          "The repository includes feature and audio modes, fixed and multiscale interval libraries, several randomization designs, synthetic fixtures, and a machine-readable numerical audit. It is not a safety or certification system.",
+          "The current artifact is a LikeC4 architecture model rather than a deployed platform. It defines ownership, time compatibility, failure behavior, and five GCP project boundaries without selecting concrete cloud products.",
+          "No live data integration, algorithm performance, portfolio return, or running optimization service is claimed.",
         ],
       },
     ],
     validation: [
-      "Freeze centering, transformations, block library, and randomization unit before inference.",
-      "Recompute the same analysis map for every allowed label transformation.",
-      "Separate finite-sample level claims from Gaussian power assumptions.",
-      "Record numerical tolerances, hashes, candidate order, and applicable guarantees.",
+      "Pin one compatibility manifest and Forecast Context for the complete request.",
+      "Resolve a cutoff complete for both algorithms without merging their evidence contracts.",
+      "Keep FSC access inside Market Price Service and calculate mature labels only in Historical Return Evaluator.",
+      "Reject partial A/B pairs, immature calibration labels, and look-ahead reuse.",
+      "Delete request-scoped evidence on completion, failure, or timeout.",
     ],
     boundary:
-      "Exact randomization requires label invariance of the full analysis unit; covariance equality alone is insufficient for general non-Gaussian data.",
-    github: "https://github.com/Moon-Young-Choi/pwr-scan",
+      "This is a work-in-progress architecture snapshot. It does not demonstrate implemented services, live portfolio output, selected cloud products, or investment performance.",
   },
   {
     kind: "project",
-    presentation: "standard",
+    presentation: "pwr-theory",
     number: "02",
-    slug: "pwr-scan-validation",
-    title: "PWR-Scan Validation",
+    slug: "pwr-scan",
+    title: "PWR-Scan",
     accent: "ink",
-    shape: "validation",
-    eyebrow: "Theory-first validation suite",
+    shape: "pwr-proof",
+    eyebrow: "Pooled-Whitened Randomization Scan",
     summary:
-      "An executable claim map linking algebraic identities, randomization calibration, simulation designs, and figure provenance.",
-    tags: ["Python", "Validation", "Simulation"],
+      "A proof-first randomization scan for a localized positive covariance change with unknown interval and direction, paired with an independent validation oracle and explicit evidence boundaries.",
+    tags: ["Python", "Randomization", "Minimax theory"],
     stack: [
-      { group: "Core", items: ["Python", "NumPy", "SciPy", "pandas"] },
-      { group: "Visualization", items: ["Matplotlib", "Plotly"] },
-      { group: "Verification", items: ["pytest"] },
+      { group: "Runtime", items: ["Python", "NumPy", "SciPy", "FastAPI"] },
+      { group: "Independent validation", items: ["pytest", "pandas", "deterministic oracle"] },
+      { group: "Evidence", items: ["Exact orbits", "Monte Carlo randomization", "SHA-256 provenance"] },
     ],
     facts: [
-      ["Completed", "V0 reference audit"],
-      ["In progress", "V1 global level"],
-      ["Planned", "V2 — V6"],
-      ["Unit", "Independent cluster"],
+      ["Theory", "Finite-sample and minimax manuscript"],
+      ["Engineering", "v0.2.2 closeout complete"],
+      ["Publication validation", "Pending"],
+      ["External validity", "Not established"],
     ],
-    flow: ["Claim", "Frozen design", "Executable check", "Evidence status"],
+    flow: ["Pooled whitening", "Multiscale block scan", "Randomization rank", "Claim ledger"],
     formulas: [
+      {
+        label: "Pooled-whitened scan",
+        expression: String.raw`S_{\mathrm{PWR}}=\max_{B\in\mathcal B}\frac{\lambda_{\max}\!\left[\widehat\Sigma_{P,B}^{-1/2}(\widehat\Sigma_{1,B}-\widehat\Sigma_{0,B})\widehat\Sigma_{P,B}^{-1/2}\right]}{a_B}`,
+        note: "The statistic searches an unknown positive covariance direction and interval in one global decision function.",
+      },
       {
         label: "Full-orbit level",
         expression: String.raw`p_{\mathcal G}(D)=\frac{1}{|\mathcal G|}\sum_{g\in\mathcal G}\mathbf 1\{S(gD)\ge S(D)\},\qquad \Pr_0\!\left(p_{\mathcal G}\le\alpha\right)\le\alpha`,
-        note: "Validity follows from invariance under the allowed transformation group, with ties retained in the upper tail.",
-      },
-      {
-        label: "Benchmark separation rate",
-        expression: String.raw`\theta_n^*\asymp \sqrt{\frac{b}{n}}+\sqrt{\frac{\log M}{n}}`,
-        note: "This rate belongs to the specified balanced Gaussian parameter space, not to every audio or covariance problem.",
+        note: "The guarantee follows from full-law exchangeability of the inference units, not covariance equality alone.",
       },
     ],
     sections: [
       {
-        title: "A claim is a testable object",
+        title: "Proof before performance",
         paragraphs: [
-          "The suite treats a theorem, its executable statistic, its simulation cell, and its resulting figure as one chain. V0 audits deterministic identities and small full orbits. Later tracks are explicitly marked development or planned until a locked result exists.",
-          "Two modes prevent scope drift: theorem_core fixes common centering, zero ridge, a frozen candidate library, and the correct randomization unit; exploratory admits operational changes but cannot inherit theorem-aligned figure status.",
+          "The manuscript separates finite-sample randomization validity from Gaussian power assumptions and connects the same decision rule to a direction-and-location minimax lower bound.",
+          "The public page exposes every assumption and proof dependency before showing implementation or empirical evidence.",
         ],
       },
       {
-        title: "Failure is part of the result",
+        title: "Evidence classes stay separate",
         paragraphs: [
-          "Null controls measure global level rather than per-block behavior. Structured alternatives test power and rate only under their declared model. Mismatch cells perturb rank, localization, and distributional assumptions without silently changing the claim being evaluated.",
-          "The current repository does not claim manuscript-level power, minimax, localization, or real-audio evidence. That visible boundary is intentional: a pending benchmark is different from a completed scientific result.",
+          "The v0.2.2 engineering closeout verifies execution, provenance, and deterministic audit paths; it is not a publication-scale power study.",
+          "The reported DCASE evaluation did not establish external validity. Its near-random AUC and zero sensitivity remain visible as a negative result rather than being promoted or omitted.",
         ],
       },
     ],
     validation: [
-      "V0: pooled-moment, Rayleigh, Roy, scan, and orbit-rank identities.",
-      "V1: finite-sample global level under exchangeable labels.",
-      "V2 — V5: power, rate, mismatch, and scale adaptation.",
-      "V6: paired waveform injection as external validation, not theorem evidence.",
+      "Independent oracle: pooled-moment, Roy/PWR, scan, and small full-orbit identities.",
+      "Engineering closeout: 56/56 execution rows and 246 implementation tests, without interpreting rejection counts as power.",
+      "Locked global-level and publication-scale power, rate, mismatch, and adaptation campaigns remain pending.",
+      "DCASE aggregate: ROC AUC 0.4843 and sensitivity 0; external validity is not established.",
     ],
     boundary:
-      "Only the deterministic V0 reference audit is complete. Development diagnostics remain separate from locked, paper-eligible results.",
-    github: "https://github.com/Moon-Young-Choi/pwr-scan-validation",
+      "Mathematical statements apply only under their displayed assumptions. Engineering tests, synthetic studies, and external-data performance are distinct evidence classes.",
+    github: "https://github.com/Moon-Young-Choi/pwr-scan",
   },
   {
     kind: "project",
@@ -551,6 +551,14 @@ export const projectStudies: CaseStudy[] = [
 ];
 
 export const allStudies = [...workStudies, ...projectStudies];
+
+export const projectAliases: Readonly<Record<string, string>> = {
+  "pwr-scan-validation": "pwr-scan",
+};
+
+export function resolveProjectSlug(slug: string) {
+  return projectAliases[slug] ?? slug;
+}
 
 export function findStudy(kind: "work" | "project", slug: string) {
   return allStudies.find((study) => study.kind === kind && study.slug === slug);

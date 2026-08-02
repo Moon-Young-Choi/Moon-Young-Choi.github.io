@@ -29,7 +29,7 @@ jobs:
         run: npm run build
 
       - name: Run unit and rendered-output tests
-        run: node --experimental-strip-types --test tests/arbitrage-showcase.test.mjs tests/arbitrage-universe.test.mjs tests/rendered-html.test.mjs tests/triangle-route-graphic.test.mjs
+        run: node --experimental-strip-types --test tests/arbitrage-showcase.test.mjs tests/arbitrage-universe.test.mjs tests/project-evidence.test.mjs tests/pwr-theory.test.mjs tests/rendered-html.test.mjs tests/triangle-route-graphic.test.mjs
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium

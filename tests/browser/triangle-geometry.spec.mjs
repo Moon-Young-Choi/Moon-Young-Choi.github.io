@@ -190,6 +190,8 @@ async function expectNoDocumentOverflow(page, width, route) {
 }
 
 test.describe("shared triangle route geometry", () => {
+  test.describe.configure({ timeout: 60_000 });
+
   for (const width of VIEWPORT_WIDTHS) {
     test(`${width}px keeps every variant connected without page overflow`, async ({ page }) => {
       await page.setViewportSize({ width, height: width <= 640 ? 1_600 : 1_200 });
@@ -204,7 +206,10 @@ test.describe("shared triangle route geometry", () => {
       const hero = page.locator('[data-triangle-route][data-variant="hero"]');
       const lab = page.locator('[data-triangle-route][data-variant="lab"]');
       await expect(hero).toBeVisible();
-      await expect(lab).toBeVisible();
+      // The lab mounts after its verified local universe artifact is decoded.
+      // Give the cold, parallel CI worker enough time without weakening the
+      // geometry assertion that follows.
+      await expect(lab).toBeVisible({ timeout: 15_000 });
 
       assertTriangleGeometry(await readTriangleGeometry(hero));
       const forward = await readTriangleGeometry(lab);

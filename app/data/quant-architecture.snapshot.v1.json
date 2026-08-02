@@ -1,0 +1,413 @@
+{
+  "schemaVersion": "quant-architecture.v1",
+  "provenance": {
+    "sourceFormat": "LikeC4",
+    "sourceArtifact": "trading-engine.c4",
+    "capturedOn": "2026-08-02",
+    "sourceSha256": "8856f34ff6e178c64f0c516fd84c4b207c03a56c4f1dd0d61f3766b502561472",
+    "computedModelSha256": "d4446c680ef714ee71b110af375a514c086eeb0f89f16883c8d8233440af65cb",
+    "publicFingerprint": "sha256:9330da368110677cb9840724398a0e7111e20b9708a03e96df34a5ca4ada4d74"
+  },
+  "summary": {
+    "domainCount": 5,
+    "componentCount": 23,
+    "deploymentUnitCount": 19,
+    "logicalComponentCount": 4,
+    "deploymentBoundaryCount": 5,
+    "flowPhaseCount": 6,
+    "viewCount": 12,
+    "invariantCount": 12
+  },
+  "flow": [
+    {
+      "id": "access",
+      "order": 1,
+      "title": "Access",
+      "owner": "Portfolio Experience",
+      "description": "A protected entry boundary accepts the asset universe, objective, and a supported forecast horizon."
+    },
+    {
+      "id": "as-of",
+      "order": 2,
+      "title": "As-of resolution",
+      "owner": "Data & Evidence",
+      "description": "One latest-complete cutoff is resolved against the separate observation requirements of both algorithms."
+    },
+    {
+      "id": "calibration",
+      "order": 3,
+      "title": "Calibration",
+      "owner": "Algorithm Weight Calibration",
+      "description": "Historical A/B forecasts and result-window prices are prepared through independent branches; only complete pairs with mature labels enter the request-specific sample."
+    },
+    {
+      "id": "forecast",
+      "order": 4,
+      "title": "Forecast",
+      "owner": "Algorithm Services",
+      "description": "Independent A and B services receive separate point-in-time bundles under one fixed Forecast Context."
+    },
+    {
+      "id": "cosmos",
+      "order": 5,
+      "title": "COSMOS",
+      "owner": "Decision & Portfolio",
+      "description": "The complete current A/B pair and request-specific weights are combined into a joint distribution."
+    },
+    {
+      "id": "portfolio",
+      "order": 6,
+      "title": "Portfolio",
+      "owner": "Decision & Portfolio",
+      "description": "The optimizer receives the joint distribution and request constraints; only the final portfolio crosses the response boundary."
+    }
+  ],
+  "domains": [
+    {
+      "id": "portfolio-experience",
+      "title": "Portfolio Experience",
+      "purpose": "Own the protected request and final-response boundary without persisting a portfolio request.",
+      "components": [
+        {
+          "id": "portfolio-console",
+          "title": "Portfolio Console",
+          "kind": "Web app",
+          "responsibility": "Collect the asset scope, objective, and common supported horizon; display only the final portfolio."
+        },
+        {
+          "id": "portfolio-request-api",
+          "title": "Portfolio Request API",
+          "kind": "API service",
+          "responsibility": "Validate the compatibility manifest, pin the Forecast Context, and return only the final result."
+        }
+      ]
+    },
+    {
+      "id": "data-evidence",
+      "title": "Data & Evidence",
+      "purpose": "Assemble algorithm-specific point-in-time evidence and provide normalized price series through one internally owned source path.",
+      "components": [
+        {
+          "id": "evidence-assembly",
+          "title": "Evidence Assembly Service",
+          "kind": "Service",
+          "responsibility": "Resolve readiness, plan source access, and assemble separate A/B bundles at one compatible cutoff."
+        },
+        {
+          "id": "market-price-service",
+          "title": "Market Price Service",
+          "kind": "Service",
+          "responsibility": "Own the FSC price path; normalize price series and report interval coverage or readiness without calculating returns."
+        },
+        {
+          "id": "dart-connector",
+          "title": "DART Source Connector",
+          "kind": "Job",
+          "responsibility": "Collect, parse, clean, and split disclosure responses only when requested by Evidence Assembly."
+        },
+        {
+          "id": "fsc-price-connector",
+          "title": "FSC Stock Price Connector",
+          "kind": "Job",
+          "responsibility": "Collect FSC daily-price responses only when invoked by Market Price Service; do not calculate returns."
+        },
+        {
+          "id": "exact-data-plane",
+          "title": "Exact Data Plane Service",
+          "kind": "Service",
+          "responsibility": "Prepare structured disclosure data as Exact Evidence without normalizing prices or calculating returns."
+        },
+        {
+          "id": "shared-evidence-encoder",
+          "title": "Shared Evidence Encoder Service",
+          "kind": "Service",
+          "responsibility": "Run only the common source encoder and produce Shared Latent Evidence; algorithm-specific decoding stays inside A/B."
+        },
+        {
+          "id": "request-workspace",
+          "title": "Request-Scoped Data Workspace",
+          "kind": "Ephemeral resource",
+          "responsibility": "Reuse compatible source responses, normalized prices, shared encoder outputs, and in-progress evidence within one request only."
+        }
+      ]
+    },
+    {
+      "id": "algorithm-services",
+      "title": "Algorithm Services",
+      "purpose": "Execute purpose-independent A/B forecasts under the same immutable Forecast Context.",
+      "components": [
+        {
+          "id": "conclusion-gateway",
+          "title": "Conclusion Request Gateway",
+          "kind": "Service",
+          "responsibility": "Accept current or historical contexts and return a complete A/B pair or an explicit failure."
+        },
+        {
+          "id": "evidence-coordinator",
+          "title": "Algorithm Evidence Coordinator",
+          "kind": "Service",
+          "responsibility": "Query separate requirements, coordinate the common cutoff, and deliver each bundle to its owning algorithm."
+        },
+        {
+          "id": "algorithm-a",
+          "title": "Algorithm A Service",
+          "kind": "Plugin boundary",
+          "responsibility": "Own A observation requirements and map its fixed context plus evidence bundle to Conclusion A.",
+          "children": [
+            {
+              "id": "embedded-decoder-a",
+              "title": "Embedded Decoder A",
+              "kind": "Logical child",
+              "responsibility": "Interpret Shared Latent and Exact Evidence inside the pinned Algorithm A service version."
+            },
+            {
+              "id": "forecast-function-a",
+              "title": "Forecast Function A",
+              "kind": "Logical child",
+              "responsibility": "Produce Conclusion A for the requested As-of and horizon without reading the portfolio objective."
+            }
+          ]
+        },
+        {
+          "id": "algorithm-b",
+          "title": "Algorithm B Service",
+          "kind": "Plugin boundary",
+          "responsibility": "Own B observation requirements and map its fixed context plus evidence bundle to Conclusion B.",
+          "children": [
+            {
+              "id": "embedded-decoder-b",
+              "title": "Embedded Decoder B",
+              "kind": "Logical child",
+              "responsibility": "Interpret Shared Latent and Exact Evidence inside the pinned Algorithm B service version."
+            },
+            {
+              "id": "forecast-function-b",
+              "title": "Forecast Function B",
+              "kind": "Logical child",
+              "responsibility": "Produce Conclusion B for the requested As-of and horizon without reading the portfolio objective."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weight-calibration",
+      "title": "Algorithm Weight Calibration",
+      "purpose": "Re-estimate A/B weights for each portfolio request from complete historical samples under pinned versions.",
+      "components": [
+        {
+          "id": "calibration-runner",
+          "title": "Calibration Runner",
+          "kind": "Job",
+          "responsibility": "Replay historical contexts and admit only complete A/B pairs whose outcome interval has matured."
+        },
+        {
+          "id": "historical-return-evaluator",
+          "title": "Historical Return Evaluator",
+          "kind": "Job",
+          "responsibility": "Request normalized historical prices only through Market Price Service and return a mature realized return or an invalid sample."
+        },
+        {
+          "id": "weight-optimizer",
+          "title": "Weight Optimizer",
+          "kind": "Job",
+          "responsibility": "Score candidate weights against complete samples for the current asset scope and horizon."
+        }
+      ]
+    },
+    {
+      "id": "decision-portfolio",
+      "title": "Decision & Portfolio",
+      "purpose": "Coordinate context resolution, calibration, the current forecast, distribution combination, and final optimization.",
+      "components": [
+        {
+          "id": "decision-coordinator",
+          "title": "Decision Request Coordinator",
+          "kind": "Service",
+          "responsibility": "Provide the single entry and exit for the decision boundary; direct access to source data is forbidden."
+        },
+        {
+          "id": "cosmos",
+          "title": "COSMOS Distribution Service",
+          "kind": "Service",
+          "responsibility": "Combine time- and version-compatible A/B conclusions with request-specific weights."
+        },
+        {
+          "id": "portfolio-optimizer",
+          "title": "Portfolio Optimization Service",
+          "kind": "Service",
+          "responsibility": "Calculate the final portfolio from the joint distribution and request objective or constraints."
+        }
+      ]
+    }
+  ],
+  "modelContract": {
+    "domainSourceIds": [
+      "quantPlatform.portfolioExperience",
+      "quantPlatform.dataEvidence",
+      "quantPlatform.algorithmServices",
+      "quantPlatform.decisionPortfolio",
+      "quantPlatform.algorithmWeightCalibration"
+    ],
+    "deploymentSourceIds": [
+      "portfolioExperienceProject",
+      "dataEvidenceProject",
+      "algorithmRuntime",
+      "portfolioDecisionProject",
+      "algorithmWeightCalibrationProject"
+    ],
+    "viewIds": [
+      "index",
+      "portfolioExperience",
+      "dataEvidence",
+      "algorithmServices",
+      "decisionPortfolio",
+      "algorithmWeightCalibration",
+      "evidenceAssemblyFlow",
+      "algorithmConclusionFlow",
+      "historicalCalibrationSampleFlow",
+      "calibrationFlow",
+      "portfolioOptimizationFlow",
+      "gcpProjectTopology"
+    ],
+    "invariantIds": [
+      "QP-001",
+      "QP-002",
+      "QP-003",
+      "QP-004",
+      "QP-005",
+      "QP-006",
+      "QP-007",
+      "QP-008",
+      "QP-009",
+      "QP-010",
+      "QP-011",
+      "QP-012"
+    ]
+  },
+  "contracts": [
+    {
+      "id": "forecast-context",
+      "title": "Immutable Forecast Context",
+      "rule": "Asset universe, forecast horizon, resolved common As-of, and compatibility-manifest versions are pinned before calibration or current inference."
+    },
+    {
+      "id": "separate-evidence",
+      "title": "Separate A/B evidence",
+      "rule": "Observation requirements and bundle requests are never merged; each algorithm receives only its own evidence contract."
+    },
+    {
+      "id": "complete-pair",
+      "title": "Complete pair or fail",
+      "rule": "Every current or historical As-of returns both conclusions or a failure; partial pairs never enter COSMOS or calibration."
+    },
+    {
+      "id": "price-path-ownership",
+      "title": "One price path",
+      "rule": "Market Price Service is the sole internal owner of FSC price access; Historical Return Evaluator obtains normalized historical prices only through that service."
+    },
+    {
+      "id": "mature-label",
+      "title": "Mature labels only",
+      "rule": "A historical sample is eligible only after the full outcome interval has ended and the realized return is available."
+    },
+    {
+      "id": "anti-lookahead",
+      "title": "Anti-lookahead reuse",
+      "rule": "A response prepared at a later cutoff cannot satisfy an earlier As-of, even inside the same request."
+    },
+    {
+      "id": "request-cleanup",
+      "title": "Request-scoped cleanup",
+      "rule": "Temporary responses, evidence, and returns are removed on request completion, failure, or timeout and are not reused across requests."
+    }
+  ],
+  "lifecycle": [
+    {
+      "dataClass": "Source response",
+      "createdBy": "DART or FSC connector",
+      "reuseBoundary": "Same request, compatible source query and cutoff",
+      "cleanup": "Completion, failure, or timeout"
+    },
+    {
+      "dataClass": "Normalized price series",
+      "createdBy": "Market Price Service",
+      "reuseBoundary": "Same request, compatible time boundary and price-query scope",
+      "cleanup": "Completion, failure, or timeout"
+    },
+    {
+      "dataClass": "Algorithm evidence bundle",
+      "createdBy": "Evidence Assembly Service",
+      "reuseBoundary": "Same request, same algorithm contract and Forecast Context",
+      "cleanup": "Completion, failure, or timeout"
+    },
+    {
+      "dataClass": "Historical realized return",
+      "createdBy": "Historical Return Evaluator",
+      "reuseBoundary": "Matching target, Historical As-of, horizon, and current cutoff inside one request",
+      "cleanup": "Consumed by the matching sample; no workspace or cross-request persistence"
+    },
+    {
+      "dataClass": "A/B conclusion",
+      "createdBy": "Algorithm plugin services",
+      "reuseBoundary": "Exact target, horizon, As-of, and pinned versions",
+      "cleanup": "No cross-request persistence in the model"
+    }
+  ],
+  "deployments": [
+    {
+      "id": "portfolio-experience-project",
+      "title": "Portfolio Experience Project",
+      "purpose": "Isolate Portfolio Console and Portfolio Request API; ingress, authentication, and deployment automation remain outside the model."
+    },
+    {
+      "id": "data-evidence-project",
+      "title": "Data & Evidence Project",
+      "purpose": "Isolate DART evidence preparation, FSC price normalization, shared encoding, and the request-scoped workspace."
+    },
+    {
+      "id": "algorithm-runtime",
+      "title": "Algorithm Runtime Project",
+      "purpose": "Evidence coordination and independent Algorithm A/B plugin execution."
+    },
+    {
+      "id": "calibration-project",
+      "title": "Algorithm Weight Calibration Project",
+      "purpose": "Isolate historical sample assembly, Historical Return Evaluator, and request-scoped weight optimization."
+    },
+    {
+      "id": "portfolio-decision-project",
+      "title": "Portfolio Decision Project",
+      "purpose": "Decision coordination, COSMOS distribution combination, and portfolio optimization."
+    }
+  ],
+  "failureConditions": [
+    "No common latest-complete As-of satisfies both independent observation contracts.",
+    "Either current Algorithm A or Algorithm B conclusion is missing or incompatible.",
+    "The calibration window contains fewer than the configured minimum complete, mature samples.",
+    "The requested horizon is absent from the pinned compatibility manifest.",
+    "Historical price coverage is incomplete or the result window is not mature for enough calibration samples.",
+    "A source response, normalized price series, evidence bundle, return, or conclusion crosses its permitted time or request boundary.",
+    "The optimizer cannot produce a result that satisfies the request constraints."
+  ],
+  "boundary": {
+    "status": "work-in-progress",
+    "architectureModelOnly": true,
+    "livePortfolioOutput": false,
+    "implementedServiceClaim": false,
+    "publishedPerformanceClaim": false,
+    "publicRepository": false,
+    "cloudProductsSelected": false,
+    "sourceInputs": [
+      "DART OpenAPI disclosures",
+      "FSC daily stock-price OpenAPI"
+    ],
+    "outOfScope": [
+      "Algorithm A and B financial logic",
+      "Live portfolio recommendations",
+      "Trading or order execution",
+      "Named GCP products and production topology",
+      "Backtest, return, or benchmark claims"
+    ]
+  }
+}
