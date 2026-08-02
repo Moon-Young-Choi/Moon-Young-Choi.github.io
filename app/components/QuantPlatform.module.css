@@ -16,136 +16,149 @@
   inset: 58px 24px auto;
   height: 286px;
   margin: 0;
+  display: grid;
+  place-items: center;
   color: inherit;
 }
 
 .panelCanvas {
+  --flow-gap: clamp(30px, 5vw, 72px);
   position: relative;
+  width: min(92%, 680px);
   height: 232px;
-  border: 1px solid currentColor;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(150px, 1.4fr) 82px minmax(90px, .65fr);
+  align-items: center;
+  gap: var(--flow-gap);
+  overflow: visible;
 }
 
-.panelCanvas::before,
-.panelCanvas::after {
-  content: "";
-  position: absolute;
-  background: currentColor;
-  opacity: .34;
-}
-
-.panelCanvas::before { inset: 33.333% 0 auto; height: 1px; }
-.panelCanvas::after { inset: 66.666% 0 auto; height: 1px; }
-
-.panelCutoff {
-  position: absolute;
-  inset: 0 auto 0 12%;
-  width: 1px;
-  background: currentColor;
-}
-
-.panelCutoff span {
-  position: absolute;
-  top: 10px;
-  left: 8px;
-  font: 500 9px var(--font-mono);
-  letter-spacing: .08em;
-}
-
-.panelCutoff i {
-  position: absolute;
-  top: 43%;
-  left: -6px;
-  width: 13px;
-  height: 13px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  background: var(--card-bg, var(--paper));
+.evidencePair {
+  display: grid;
+  gap: 38px;
 }
 
 .panelRail {
-  position: absolute;
-  left: 19%;
-  width: 28%;
-  height: 46px;
-  border: 1px solid currentColor;
+  position: relative;
+  min-width: 0;
   display: grid;
-  grid-template-columns: 36px 1fr;
+  grid-template-columns: 34px repeat(4, minmax(20px, 1fr));
   align-items: center;
+  gap: 7px;
 }
 
-.panelRail[data-rail="a"] { top: 23%; }
-.panelRail[data-rail="b"] { bottom: 23%; }
-.panelRail b { align-self: stretch; display: grid; place-items: center; border-right: 1px solid currentColor; font: 500 13px var(--font-mono); }
-.panelRail span { padding-left: 10px; font: 500 8px var(--font-mono); text-transform: uppercase; letter-spacing: .06em; }
-.panelRail i { position: absolute; right: -28px; width: 28px; height: 1px; background: currentColor; }
-
-.panelCalibration,
-.panelCosmos {
+.panelRail::after {
+  content: "";
   position: absolute;
+  left: 100%;
+  top: calc(50% - 1px);
+  width: var(--flow-gap);
+  height: 2px;
+  background: currentColor;
+}
+
+.panelRail b,
+.panelRail > i {
+  aspect-ratio: 1;
   display: grid;
   place-items: center;
-  font: 500 9px var(--font-mono);
-  letter-spacing: .06em;
+  border: 1px solid currentColor;
 }
 
-.panelCalibration { left: 51%; top: calc(50% - 29px); width: 58px; height: 58px; border: 1px solid currentColor; border-radius: 50%; }
-.panelCalibration::after { content: ""; position: absolute; right: -30px; width: 30px; height: 1px; background: currentColor; }
-.panelCosmos { left: calc(67% - 24px); top: calc(50% - 24px); width: 48px; height: 48px; background: currentColor; color: var(--card-bg, var(--paper)); transform: rotate(45deg); }
-.panelCosmos::first-line { transform: rotate(-45deg); }
+.panelRail b {
+  font: 500 11px var(--font-mono);
+  text-transform: uppercase;
+}
+
+.panelRail[data-rail="a"] b { border-color: var(--blue); background: var(--blue); color: #fff; }
+.panelRail[data-rail="b"] b { border-color: var(--coral); background: var(--coral); }
+.panelRail[data-rail="a"] > i:nth-of-type(2),
+.panelRail[data-rail="a"] > i:nth-of-type(4) { background: var(--blue); }
+.panelRail[data-rail="b"] > i:nth-of-type(1),
+.panelRail[data-rail="b"] > i:nth-of-type(3) { background: var(--coral); }
+
+.panelCalibration {
+  position: relative;
+  width: 82px;
+  height: 82px;
+  display: grid;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  animation: quant-gate-breathe 7s ease-in-out infinite alternate;
+}
+
+.panelCalibration::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: calc(50% - 1px);
+  width: var(--flow-gap);
+  height: 2px;
+  background: currentColor;
+}
+
+.panelCalibration i {
+  width: 30px;
+  height: 30px;
+  display: block;
+  background: currentColor;
+  animation: quant-gate-rotate 9s linear infinite;
+}
 
 .panelAllocation {
-  position: absolute;
-  right: 5%;
-  top: 28%;
-  width: 16%;
-  height: 44%;
+  height: 96px;
   display: flex;
   align-items: flex-end;
-  gap: 5px;
-  border-bottom: 1px solid currentColor;
+  gap: 6px;
+  border-bottom: 2px solid currentColor;
 }
 
 .panelAllocation i { flex: 1; border: 1px solid currentColor; border-bottom: 0; }
-.panelAllocation i:nth-child(1) { height: 45%; }
-.panelAllocation i:nth-child(2) { height: 84%; background: currentColor; }
-.panelAllocation i:nth-child(3) { height: 62%; }
-.panelAllocation i:nth-child(4) { height: 30%; }
+.panelAllocation i:nth-child(1) { height: 38%; }
+.panelAllocation i:nth-child(2) { height: 72%; background: currentColor; }
+.panelAllocation i:nth-child(3) { height: 54%; }
+.panelAllocation i:nth-child(4) { height: 88%; background: var(--violet); }
+.panelAllocation i:nth-child(5) { height: 30%; }
 
 .panelSignal {
   position: absolute;
-  top: calc(50% - 4px);
+  z-index: 3;
   left: 12%;
-  width: 8px;
-  height: 8px;
+  top: calc(50% - 5px);
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: currentColor;
-  animation: quant-panel-signal 7s linear infinite;
+  animation: quant-evidence-signal 7.2s ease-in-out infinite;
 }
 
-.panelReadout {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border: 1px solid currentColor;
-  border-top: 0;
+.panelRail[data-rail="a"] .panelSignal { background: var(--blue); }
+.panelRail[data-rail="b"] .panelSignal { background: var(--coral); animation-delay: -3.6s; }
+
+.outputSignal {
+  left: 63%;
+  top: calc(50% - 5px);
+  background: var(--violet);
+  animation: quant-output-signal 5.4s ease-in-out infinite;
 }
 
-.panelReadout span {
-  min-width: 0;
-  padding: 11px 8px;
-  text-align: center;
-  font: 500 8px var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: .04em;
+@keyframes quant-evidence-signal {
+  0%, 12% { left: 12%; transform: scale(.7); }
+  72%, 100% { left: calc(100% + var(--flow-gap)); transform: scale(1); }
 }
 
-.panelReadout span + span { border-left: 1px solid currentColor; }
+@keyframes quant-output-signal {
+  0%, 18% { left: 60%; transform: scale(.7); }
+  78%, 100% { left: 88%; transform: scale(1); }
+}
 
-@keyframes quant-panel-signal {
-  0% { transform: translateX(0); }
-  28% { transform: translateX(16vw); }
-  65% { transform: translateX(33vw); }
-  100% { transform: translateX(49vw); }
+@keyframes quant-gate-rotate {
+  to { transform: rotate(180deg); }
+}
+
+@keyframes quant-gate-breathe {
+  to { transform: scale(.88); }
 }
 
 /* Dedicated architecture page */
@@ -508,11 +521,11 @@
 
 @media (max-width: 640px) {
   .projectPanel { inset: 58px 18px auto; }
-  .panelCalibration { left: 52%; width: 48px; height: 48px; top: calc(50% - 24px); }
-  .panelCosmos { font-size: 7px; }
-  .panelReadout span:nth-child(2) { display: none; }
-  .panelReadout { grid-template-columns: repeat(2, 1fr); }
-  .panelReadout span:last-child { border-left: 1px solid currentColor; }
+  .panelCanvas { --flow-gap: 24px; grid-template-columns: minmax(130px, 1.4fr) 68px minmax(76px, .65fr); }
+  .panelRail { grid-template-columns: 30px repeat(4, minmax(16px, 1fr)); gap: 5px; }
+  .panelCalibration { width: 68px; height: 68px; }
+  .panelCalibration i { width: 25px; height: 25px; }
+  .panelAllocation { height: 82px; gap: 4px; }
   .hero { padding-left: 18px; padding-right: 18px; }
   .heroMeta { display: grid; }
   .heroMeta > div { justify-content: flex-start; }
@@ -549,12 +562,14 @@
 
 @media (max-width: 420px) {
   .projectPanel { inset: 54px 12px auto; }
-  .panelCutoff { left: 9%; }
-  .panelRail { left: 16%; width: 30%; grid-template-columns: 28px 1fr; }
-  .panelRail span { font-size: 7px; }
-  .panelCalibration { left: 50%; }
-  .panelCosmos { left: calc(66% - 20px); width: 40px; height: 40px; top: calc(50% - 20px); }
-  .panelAllocation { right: 3%; width: 15%; }
+  .panelCanvas { --flow-gap: 16px; width: 100%; grid-template-columns: minmax(108px, 1.35fr) 58px minmax(62px, .65fr); }
+  .evidencePair { gap: 28px; }
+  .panelRail { grid-template-columns: 26px repeat(4, minmax(12px, 1fr)); gap: 4px; }
+  .panelRail b { font-size: 9px; }
+  .panelCalibration { width: 58px; height: 58px; }
+  .panelCalibration i { width: 22px; height: 22px; }
+  .panelAllocation { height: 70px; gap: 3px; }
+  .panelSignal { width: 8px; height: 8px; top: calc(50% - 4px); }
   .heroMeta strong { font-size: 8px; }
   .heroCopy h1 { font-size: clamp(57px, 21vw, 88px); }
   .heroSummary { font-size: 15px; }
@@ -585,5 +600,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .panelSignal,
+  .panelCalibration,
+  .panelCalibration i,
   .coverSignal { animation: none; }
 }

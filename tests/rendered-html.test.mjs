@@ -3,7 +3,6 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 const outputRoot = new URL("../dist/client/", import.meta.url);
-const showcase = JSON.parse(await readFile(new URL("../app/data/arbitrage-showcase.json", import.meta.url), "utf8"));
 const universeManifest = JSON.parse(await readFile(new URL("../app/data/arbitrage-universe-manifest.json", import.meta.url), "utf8"));
 const pwrEvidence = JSON.parse(await readFile(new URL("../app/data/pwr-theory-evidence.v1.json", import.meta.url), "utf8"));
 const quantSnapshot = JSON.parse(await readFile(new URL("../app/data/quant-architecture.snapshot.v1.json", import.meta.url), "utf8"));
@@ -203,7 +202,9 @@ test("renders the dedicated arbitrage lab and its precomputed controls", async (
   assert.match(html, /<table[^>]*>.*?<caption>/s);
   assert.match(html, /aria-live="polite"/);
   assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
-  assert.match(home, new RegExp(`>${universeManifest.triangleSetCount}<.*?> listed triangles.*?>${universeManifest.routeCount}<.*?> directional points.*?>${showcase.verification.passedTests}<.*?> engine tests`, "s"));
+  assert.match(home, /data-triangle-route="true"[^>]*data-variant="card"/);
+  assert.match(home, />KRW<.*?>BTC<.*?>ETH</s);
+  assert.doesNotMatch(home, /listed triangles.*directional points.*engine tests/s);
   assert.match(css, /@media \(max-width:\s*900px\)/);
   assert.match(css, /@media \(max-width:\s*640px\)/);
   assert.match(css, /@media \(max-width:\s*420px\)/);

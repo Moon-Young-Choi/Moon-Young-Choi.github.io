@@ -44,8 +44,7 @@
 .evidenceGrid span,
 .boundaryList span,
 .upgradeList > article > span,
-.footer span,
-.homePanelLabel {
+.footer span {
   font: 500 9px/1.35 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: .08em;
@@ -509,28 +508,21 @@
 .footer a { font: 400 clamp(25px, 4vw, 58px)/1 var(--font-display); letter-spacing: -.05em; text-transform: uppercase; }
 .footer > a { justify-self: end; font: 500 9px var(--font-mono); letter-spacing: .06em; }
 
-/* Dedicated home panel: the data view replaces the generic project shape. */
+/* Homepage route geometry: three assets, three executable legs. */
 .homePanel {
   min-width: 0;
   flex: 0 0 320px;
   margin: 18px 0 42px;
   display: grid;
-  grid-template-columns: minmax(250px, 1.2fr) minmax(180px, .8fr);
-  grid-template-rows: 245px 66px;
-  border: 1px solid currentColor;
+  place-items: center;
   pointer-events: none;
 }
 
-.homeTriangle { position: relative; border-right: 1px solid currentColor; }
-.homeBook { padding: 16px; display: grid; grid-template-rows: auto repeat(6, 1fr); gap: 8px; }
-.homePanelLabel { margin-bottom: 5px; }
-.homeBook i { display: block; width: var(--bar); min-width: 12%; height: 9px; }
-.homeBid { background: var(--blue); }
-.homeAsk { margin-left: auto; background: var(--coral); }
-.homeStats { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid currentColor; }
-.homeStats span { padding: 10px 14px; display: flex; align-items: center; gap: 8px; border-right: 1px solid currentColor; font: 8px/1.4 var(--font-mono); text-transform: uppercase; }
-.homeStats span:last-child { border-right: 0; }
-.homeStats b { font-size: 15px; }
+.homeTriangle {
+  position: relative;
+  width: min(72%, 440px);
+  height: 100%;
+}
 
 @media (max-width: 900px) {
   .hero { min-height: 0; padding: 24px 20px 0; }
@@ -567,7 +559,7 @@
   .boundaryList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .boundaryList li:nth-child(2) { border-right: 0; }
   .boundaryList li:nth-child(-n+2) { border-bottom: 1px solid var(--ink); }
-  .homePanel { flex-basis: 300px; grid-template-rows: 225px 66px; }
+  .homePanel { flex-basis: 300px; }
 }
 
 @media (max-width: 640px) {
@@ -622,15 +614,8 @@
   .boundaryList li:last-child { border-bottom: 0; }
   .footer { grid-template-columns: minmax(0, 1fr); padding: 34px 16px; }
   .footer > a { justify-self: start; }
-  .homePanel { flex: 0 0 auto; min-height: 0; margin: 10px 0 24px; grid-template-columns: minmax(0, 1fr); grid-template-rows: 210px 142px auto; }
-  .homeTriangle { border-right: 0; border-bottom: 1px solid currentColor; }
-  .homeBook { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: auto 1fr; align-items: end; }
-  .homePanelLabel { grid-column: 1 / -1; }
-  .homeBook i { width: 100% !important; height: var(--bar); min-height: 9px; }
-  .homeAsk { margin: 0; }
-  .homeStats { grid-column: auto; grid-template-columns: minmax(0, 1fr); }
-  .homeStats span { min-height: 40px; border-right: 0; border-bottom: 1px solid currentColor; }
-  .homeStats span:last-child { border-bottom: 0; }
+  .homePanel { flex: 0 0 250px; min-height: 0; margin: 10px 0 24px; }
+  .homeTriangle { width: min(82%, 340px); }
 }
 
 @media (max-width: 420px) {
@@ -644,6 +629,8 @@
   .bookTable th, .bookTable td { padding-inline: 6px; font-size: 9px; }
   .guardStamp strong { font-size: 66px; }
   .upgradeList article { grid-template-columns: 35px minmax(0, 1fr); }
+  .homePanel { flex-basis: 220px; }
+  .homeTriangle { width: min(86%, 290px); }
 }
 
 @media (max-width: 320px) {

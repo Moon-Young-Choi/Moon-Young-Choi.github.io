@@ -89,10 +89,10 @@
 .lab .signal { animation-duration: 4s; }
 
 .card {
-  --edge-width: 1px;
-  --node-size: 55px;
-  --side-max: 210px;
-  --signal-size: 10px;
+  --edge-width: 2px;
+  --node-size: 64px;
+  --side-max: 300px;
+  --signal-size: 11px;
 }
 
 .card .node {
@@ -100,13 +100,18 @@
   display: grid;
   place-items: center;
   place-content: center;
-  background: var(--violet);
+  background: var(--paper);
 }
 
-.card .node strong { font: 500 9px var(--font-mono); }
+.card .node1 { background: var(--lime); }
+.card .node2 { border-color: var(--blue); background: var(--blue); color: #fff; }
+.card .node3 { background: var(--coral); }
+.card .node strong { font: 500 10px var(--font-mono); }
 .card .node small { display: none; }
-.card .signal { background: var(--lime); animation-duration: 4.2s; }
-.card .edge12 .signal, .card .edge31 .signal { display: none; }
+.card .signal { animation-duration: 5.4s; }
+.card .edge12 .signal { background: var(--blue); }
+.card .edge23 .signal { background: var(--lime); }
+.card .edge31 .signal { background: var(--coral); }
 
 @keyframes edge-signal {
   from { left: 8%; }
@@ -114,13 +119,13 @@
 }
 
 @media (max-width: 900px) {
-  .card { --side-max: 190px; }
+  .card { --side-max: 280px; }
 }
 
 @media (max-width: 640px) {
   .hero { --node-size: 70px; }
   .lab { --node-size: 88px; --side-max: 266px; }
-  .card { --side-max: 170px; }
+  .card { --node-size: 58px; --side-max: 230px; }
 }
 
 @media (max-width: 420px) {
@@ -129,6 +134,7 @@
   .lab .node { padding: 8px; }
   .lab .node small { display: none; }
   .lab .node strong { font-size: 16px; }
+  .card { --node-size: 54px; --side-max: 205px; }
 }
 
 @media (max-width: 320px) {

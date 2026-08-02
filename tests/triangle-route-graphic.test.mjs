@@ -42,8 +42,12 @@ test("anchors three equal edges to a single non-crossing coordinate system", asy
   assert.match(css, /@media \(max-width:\s*640px\)/);
   assert.match(css, /@media \(max-width:\s*420px\)/);
   assert.match(css, /\.card\s+\.node\s*\{[^}]*place-content:\s*center/s);
+  assert.match(css, /\.card\s+\.edge12\s+\.signal\s*\{[^}]*var\(--blue\)/s);
+  assert.match(css, /\.card\s+\.edge23\s+\.signal\s*\{[^}]*var\(--lime\)/s);
+  assert.match(css, /\.card\s+\.edge31\s+\.signal\s*\{[^}]*var\(--coral\)/s);
+  assert.doesNotMatch(css, /\.card\s+\.edge(?:12|23|31)[^{]*\{[^}]*display:\s*none/s);
 
-  assert.doesNotMatch(legacyCss, /heroLineA|routeLineA|homeEdgeA|routeReverse|homeSignal/);
+  assert.doesNotMatch(legacyCss, /heroLineA|routeLineA|homeEdgeA|routeReverse|homeSignal|homeBook|homeStats/);
 });
 
 test("exports static hero and card variants and hydrates the lab variant", async () => {
