@@ -143,9 +143,10 @@ test("ships an accessible proof renderer and isolated responsive visual system",
     readFile(new URL("../app/components/PwrTheoryPage.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/PwrTheoryProjectPanel.module.css", import.meta.url), "utf8"),
   ]);
-  for (const marker of ["htmlAndMathml", "Back to contents", "aria-label", "<table>", "<caption", "PDF not published", "Negative evidence", "proofEntriesFor", "Selected proof-dependency spine", "Pooled-whitening transformation", "Proof–code-path–study status matrix", "Code-path / trace mapping", "do not verify that the displayed assumptions hold empirically"]) {
+  for (const marker of ["htmlAndMathml", "aria-label", "<table>", "<caption", "PDF not published", "Negative evidence", "proofEntriesFor", "Selected proof-dependency spine", "Pooled-whitening transformation", "Proof–code-path–study status matrix", "Empirical appendix", "The mathematical argument ends above"]) {
     assert.ok(page.includes(marker), `page renderer is missing ${marker}`);
   }
+  assert.doesNotMatch(page, /EvidencePips|Assumptions, proof chain and boundary|<details open=/);
   assert.doesNotMatch(page, /["']src\/pwrscan\//);
   assert.doesNotMatch(page, /\.pdf|<svg|<canvas|<img/i);
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);

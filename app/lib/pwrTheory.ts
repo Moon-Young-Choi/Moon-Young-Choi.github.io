@@ -111,9 +111,9 @@ export const pwrTheorySections: readonly PwrTheorySection[] = [
   { id: "rate-optimality", number: "10", title: "Matched minimax rate", shortTitle: "Rate match", description: "The permutation-calibrated upper rate and Gaussian information lower rate agree to constants." },
   { id: "mismatch", number: "11", title: "Model mismatch", shortTitle: "Mismatch", description: "Operator-norm error subtracts explicitly from usable signal; it is not hidden in a robustness slogan." },
   { id: "multiscale", number: "12", title: "Adaptive multiscale scan", shortTitle: "Multiscale", description: "A shifted geometric cover adapts over unknown interval width with an explicit scale-search cost." },
-  { id: "algorithm", number: "13", title: "Proof to executable algorithm", shortTitle: "Algorithm", description: "Every numerical rule, preprocessing choice and permutation operation belongs to the registered analysis function." },
-  { id: "validation", number: "14", title: "Evidence and claim boundary", shortTitle: "Evidence", description: "Proof, code-path mapping, trace coverage, locked studies and external validity remain separate evidence grades." },
-  { id: "appendix", number: "15", title: "Foundations and Appendix B", shortTitle: "Appendix B", description: "The detailed concentration, randomization-tail and minimax mixture chain is indexed without publishing the source PDF." },
+  { id: "algorithm", number: "E1", title: "Executable specification", shortTitle: "Implementation", description: "The registered numerical analysis is mapped to code only after the mathematical chain is complete." },
+  { id: "validation", number: "E2", title: "Empirical evidence and claim boundary", shortTitle: "Evidence", description: "Computational checks, locked studies and external validity remain distinct from theorem-level proof." },
+  { id: "appendix", number: "A/B", title: "Foundations and proof appendix", shortTitle: "Appendices", description: "The supporting linear algebra, concentration, randomization-tail and minimax mixture chain is compressed into a continuous reference section." },
 ];
 
 export function proofEntriesFor(sectionId: string): PwrProofEntryV1[] {

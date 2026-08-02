@@ -20,7 +20,7 @@ for (const width of widths) {
   });
 }
 
-test("PWR contents, proof details, dependency links and MathML remain keyboard operable", async ({ page }) => {
+test("PWR contents, continuous proof chain, dependency links and MathML remain keyboard operable", async ({ page }) => {
   await page.goto("/projects/pwr-scan/");
   await expect(page.getByRole("heading", { name: "Contents" })).toBeVisible();
   await expect(page.locator("article[data-kind]")).toHaveCount(49);
@@ -28,15 +28,18 @@ test("PWR contents, proof details, dependency links and MathML remain keyboard o
 
   const theorem = page.locator("#theorem-5-5");
   await theorem.scrollIntoViewIfNeeded();
-  const details = theorem.locator("details");
-  const summary = details.locator("summary");
-  await summary.focus();
-  if (!(await details.evaluate((node) => node.open))) await summary.press("Enter");
-  await expect(theorem.getByRole("heading", { name: "Core proof steps" })).toBeVisible();
+  await expect(theorem.getByText("Proof.", { exact: true })).toBeVisible();
+  await expect(theorem.locator("details")).toHaveCount(0);
   const dependency = theorem.getByRole("link", { name: /Lemma 5\.4/ });
   await dependency.focus();
   await dependency.press("Enter");
   await expect(page.locator("#lemma-5-4")).toBeInViewport();
+
+  const order = await page.evaluate(() => ({
+    appendix: document.querySelector("#appendix")?.getBoundingClientRect().top ?? 0,
+    empirical: document.querySelector("#empirical-part-title")?.getBoundingClientRect().top ?? 0,
+  }));
+  expect(order.empirical).toBeGreaterThan(order.appendix);
 });
 
 test("legacy PWR path renders the consolidated page with one canonical target", async ({ page }) => {

@@ -130,6 +130,9 @@ test("renders all 49 formal PWR declarations, foundations, boundaries, and the s
     "PDF not published",
   ]) assert.ok(html.includes(marker), `PWR theory page is missing ${marker}`);
 
+  assert.ok(html.indexOf('id="empirical-part-title"') > html.indexOf('id="appendix"'), "empirical evidence must follow the complete mathematical appendix");
+  assert.doesNotMatch(html, /Assumptions, proof chain and boundary|Code-path \/ trace mapping/);
+
   assert.match(html, /<math[\s>]/);
   assert.match(html, /<table[^>]*>.*?<caption>/s);
   assert.match(html, /href="https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan"/);
