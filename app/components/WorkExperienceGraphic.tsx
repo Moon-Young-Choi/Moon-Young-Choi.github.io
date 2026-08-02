@@ -4,25 +4,22 @@ type GraphicProps = {
   variant?: "panel" | "hero";
 };
 
-function ShipWire({ thermal = false }: { thermal?: boolean }) {
-  return (
-    <div className={`${styles.shipTrack} ${thermal ? styles.thermalShip : styles.visibleShip}`}>
-      <span className={styles.shipCuboid}>
-        <i /><i /><i /><i /><b />
-      </span>
-    </div>
-  );
-}
+const correspondencePoints = Array.from({ length: 4 });
 
 export function AvikusProjectiveField({ variant = "panel" }: GraphicProps) {
   return (
     <div className={`${styles.graphic} ${styles.avikus} ${styles[variant]}`}>
-      <div className={styles.panoramaFrame}>
-        <span className={styles.horizon} />
-        <div className={styles.seaSurface}><i /><i /><i /></div>
-        <ShipWire />
-        <ShipWire thermal />
-        <div className={styles.thermalWindow}><span /></div>
+      <div className={styles.homographyField}>
+        <div className={`${styles.imagePlane} ${styles.referencePlane}`}>
+          {correspondencePoints.map((_, index) => <i key={`reference-${index}`} />)}
+        </div>
+        <div className={`${styles.imagePlane} ${styles.projectedPlane}`}>
+          {correspondencePoints.map((_, index) => <i key={`projected-${index}`} />)}
+        </div>
+        <div className={styles.correspondenceLinks}>
+          {correspondencePoints.map((_, index) => <span key={index} />)}
+        </div>
+        <span className={styles.overlapRegion} />
       </div>
     </div>
   );
