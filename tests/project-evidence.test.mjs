@@ -78,17 +78,26 @@ test("Quant homepage cover renders a fitted joint-distribution mesh", async () =
     readFile(new URL("../app/components/QuantPlatformProjectPanel.module.css", import.meta.url), "utf8"),
   ]);
 
-  for (const marker of ["surfaceHeight", "projectSurface", "surfaceCells", "meshLines", "styles.surfaceMesh", "styles.panelSignal"]) {
+  for (const marker of [
+    "surfaceHeight",
+    "animatedHeight",
+    "projectSurface",
+    "projectedPatchArea",
+    "createSurfaceFrame",
+    "surfaceCells",
+    "meshLines",
+    "requestAnimationFrame",
+    "backgroundColor",
+    "styles.surfaceMesh",
+    "styles.panelSignal",
+  ]) {
     assert.ok(panel.includes(marker), `Quant probability-surface cover is missing ${marker}`);
   }
   assert.doesNotMatch(panel, /styles\.(axes|floor)/);
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
-  assert.match(css, /\.surfaceCell\[data-tone="4"\]/);
-  assert.match(css, /@keyframes quant-mesh-breathe/);
-  assert.match(css, /quant-mesh-breathe 4\.2s/);
-  assert.match(css, /rotateX\(8deg\)[\s\S]*scaleY\(\.86\)/);
-  assert.match(css, /@keyframes quant-color-drift/);
-  assert.match(css, /@keyframes quant-wire-drift/);
-  assert.match(css, /@keyframes quant-peak-pulse/);
+  assert.match(panel, /hsl\(\$\{hue\.toFixed\(2\)\}/);
+  assert.match(panel, /x:\s*point\.x[\s\S]*y:\s*point\.baseY\s*-\s*z\s*\*\s*Z_PROJECTION/);
+  assert.doesNotMatch(css, /quant-mesh-breathe|quant-color-drift|quant-wire-drift|quant-peak-pulse/);
+  assert.doesNotMatch(css, /rotateX|rotateZ|scaleX|scaleY/);
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.panel/);
 });

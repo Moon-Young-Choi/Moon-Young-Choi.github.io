@@ -19,12 +19,6 @@ export function EventEdgeProjectPanel() {
   return (
     <figure className={styles.panel} aria-labelledby="eventedge-panel-caption">
       <div className={styles.market} aria-hidden="true">
-        <div className={styles.quoteStrip}>
-          <div data-quote="bid"><span>Best bid</span><b>59.5</b></div>
-          <div data-quote="spread"><span>Spread</span><b>1.0</b></div>
-          <div data-quote="ask"><span>Best ask</span><b>60.5</b></div>
-        </div>
-
         <div className={styles.orderBook}>
           <div className={styles.bookSide} data-side="ask">
             {asks.map(([price, width, size], index) => (
@@ -51,7 +45,7 @@ export function EventEdgeProjectPanel() {
       </div>
 
       <figcaption className={styles.visuallyHidden} id="eventedge-panel-caption">
-        A vertical derivatives order book with sell asks above the spread and buy bids below it, preceded by best bid, spread, and best ask quotes.
+        A vertical derivatives order book with sell asks above the spread and buy bids below it.
       </figcaption>
     </figure>
   );

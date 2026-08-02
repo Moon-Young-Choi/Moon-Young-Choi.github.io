@@ -32,9 +32,7 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  transform-origin: 52% 76%;
-  will-change: transform;
-  animation: quant-mesh-breathe 4.2s cubic-bezier(.45, 0, .3, 1) infinite;
+  contain: layout paint;
 }
 
 .surfaceCell,
@@ -44,26 +42,17 @@
 }
 
 .surfaceCell {
-  opacity: .9;
-  animation: quant-color-drift 3.1s ease-in-out infinite alternate;
+  opacity: .94;
+  will-change: top, height, clip-path, background-color;
 }
-.surfaceCell[data-tone="0"] { background: var(--blue); }
-.surfaceCell[data-tone="1"] { background: color-mix(in srgb, var(--blue) 63%, var(--violet)); }
-.surfaceCell[data-tone="2"] { background: var(--violet); }
-.surfaceCell[data-tone="3"] { background: color-mix(in srgb, var(--violet) 48%, var(--coral)); }
-.surfaceCell[data-tone="4"] { background: var(--coral); }
-.surfaceCell[data-tone="1"] { animation-delay: -1.2s; }
-.surfaceCell[data-tone="2"] { animation-delay: -2.4s; }
-.surfaceCell[data-tone="3"] { animation-delay: -3.6s; }
-.surfaceCell[data-tone="4"] { animation-delay: -4.8s; }
 
 .meshLine {
   z-index: 3;
   height: 1px;
   background: currentColor;
-  opacity: .74;
+  opacity: .76;
   transform-origin: left center;
-  animation: quant-wire-drift 2.7s ease-in-out infinite alternate;
+  will-change: top, width, transform;
 }
 
 .panelSignal {
@@ -75,25 +64,7 @@
   border: 1px solid currentColor;
   border-radius: 50%;
   background: var(--lime);
-  animation: quant-peak-pulse 2.2s ease-in-out infinite alternate;
-}
-
-@keyframes quant-mesh-breathe {
-  0%, 100% { transform: perspective(560px) rotateX(-2deg) rotateZ(-1.5deg) translate(-3px, -3px) scaleX(.97) scaleY(1.04); }
-  46% { transform: perspective(560px) rotateX(8deg) rotateZ(3deg) translate(7px, 8px) scaleX(1.065) scaleY(.86); }
-  72% { transform: perspective(560px) rotateX(3deg) rotateZ(-2deg) translate(-5px, 3px) scaleX(.985) scaleY(.95); }
-}
-
-@keyframes quant-color-drift {
-  to { opacity: 1; filter: saturate(1.34) brightness(1.17) contrast(1.06); }
-}
-
-@keyframes quant-wire-drift {
-  to { opacity: 1; filter: brightness(1.3); }
-}
-
-@keyframes quant-peak-pulse {
-  to { transform: scale(2.05); background: var(--paper); }
+  will-change: top;
 }
 
 @media (max-width: 900px) {

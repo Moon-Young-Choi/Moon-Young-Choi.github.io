@@ -25,34 +25,10 @@
 .market {
   width: min(84%, 540px);
   height: 246px;
-  display: grid;
-  grid-template-rows: 48px 1fr;
-  gap: 10px;
 }
-
-.quoteStrip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border: 1px solid currentColor;
-}
-
-.quoteStrip > div {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 7px 10px;
-}
-
-.quoteStrip > div + div { border-left: 1px solid currentColor; }
-.quoteStrip span { font: 500 6px/1 var(--font-mono); text-transform: uppercase; letter-spacing: .05em; }
-.quoteStrip b { font: 500 15px/1 var(--font-mono); }
-.quoteStrip [data-quote="bid"] { background: var(--blue); color: #fff; }
-.quoteStrip [data-quote="spread"] { background: var(--ink); color: var(--paper); }
-.quoteStrip [data-quote="ask"] { background: var(--paper); }
 
 .orderBook {
+  height: 100%;
   min-height: 0;
   display: grid;
   grid-template-rows: 1fr 24px 1fr;
@@ -131,18 +107,14 @@
 
 @media (max-width: 640px) {
   .panel { flex-basis: 236px; height: 236px; margin: 10px 0 22px; }
-  .market { width: min(88%, 460px); height: 208px; grid-template-rows: 44px 1fr; }
-  .quoteStrip > div { padding-inline: 7px; }
-  .quoteStrip b { font-size: 12px; }
+  .market { width: min(88%, 460px); height: 208px; }
   .level { grid-template-columns: 34px minmax(0, 1fr) 26px; gap: 6px; }
   .level i { height: 8px; }
 }
 
 @media (max-width: 420px) {
   .panel { flex-basis: 216px; height: 216px; }
-  .market { width: 92%; height: 190px; grid-template-rows: 40px 1fr; gap: 7px; }
-  .quoteStrip span { font-size: 5px; }
-  .quoteStrip b { font-size: 10px; }
+  .market { width: 92%; height: 190px; }
   .level { grid-template-columns: 29px minmax(0, 1fr) 22px; gap: 4px; }
   .level b, .level span { font-size: 6px; }
   .spreadBand { gap: 6px; }

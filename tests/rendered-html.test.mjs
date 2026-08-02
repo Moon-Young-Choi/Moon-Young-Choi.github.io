@@ -85,9 +85,10 @@ test("renders the six projects in the revised order while keeping position color
   assert.ok(bayesian > arbitrage, "Bayesian Ad Targeting must occupy project position 06");
   assert.match(html, /href="\/projects\/eventedge-derivatives\/" class="project-card coral"/);
   assert.match(html, /href="\/projects\/bayesian-ad-targeting\/" class="project-card paper"/);
-  for (const marker of ["styles.quoteStrip", "styles.orderBook", "styles.bookSide", "styles.level", "styles.spreadBand", "data-side=\"ask\"", "data-side=\"bid\""]) {
+  for (const marker of ["styles.orderBook", "styles.bookSide", "styles.level", "styles.spreadBand", "data-side=\"ask\"", "data-side=\"bid\""]) {
     assert.ok(eventEdgePanel.includes(marker), `EventEdge market cover is missing ${marker}`);
   }
+  assert.doesNotMatch(eventEdgePanel, /styles\.quoteStrip|data-quote=|Best bid|Best ask/);
   assert.doesNotMatch(eventEdgePanel, /styles\.(chart|pricePath|ticker)|data-eventedge-signal|<span\s*\/>/);
   assert.doesNotMatch(html, /href="\/projects\/pwr-scan-validation\/?"/);
   assert.doesNotMatch(html, /https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan/);

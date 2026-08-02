@@ -146,9 +146,44 @@ test("EventEdge cover stacks sell asks above buy bids in a dot-free animated boo
   await expect(bids).toHaveCount(4);
   expect(await asks.locator("b").allTextContents()).toEqual(["62.0", "61.5", "61.0", "60.5"]);
   expect(await bids.locator("b").allTextContents()).toEqual(["59.5", "59.0", "58.5", "58.0"]);
+  await expect(page.locator('[class*="quoteStrip"], [data-quote]')).toHaveCount(0);
   expect(await asks.first().locator("i").evaluate((node) => getComputedStyle(node).animationName)).toContain("eventedge-depth");
   await expect(orderBook.locator('[data-eventedge-signal], [class*="ticker"]')).toHaveCount(0);
   await expect(page.locator('[class*="chart"], [class*="pricePath"], [data-eventedge-signal]')).toHaveCount(0);
+});
+
+test("Quant cover holds its planar grid fixed while height, wire geometry, and area color evolve", async ({ page }) => {
+  await page.goto("/");
+  const panel = page.locator("#quant-panel-caption").locator("..");
+
+  const readFrame = () => panel.evaluate((node) => {
+    const peak = node.querySelector('[class*="panelSignal"]');
+    const cells = [...node.querySelectorAll('[class*="surfaceCell"]')];
+    return {
+      peakLeft: Number.parseFloat(peak.style.left),
+      peakTop: Number.parseFloat(peak.style.top),
+      cells: cells.map((cell) => ({
+        left: Number.parseFloat(cell.style.left),
+        width: Number.parseFloat(cell.style.width),
+        top: Number.parseFloat(cell.style.top),
+        color: cell.style.backgroundColor,
+      })),
+    };
+  });
+
+  const before = await readFrame();
+  await page.waitForTimeout(720);
+  const after = await readFrame();
+
+  expect(Math.abs(after.peakLeft - before.peakLeft)).toBeLessThan(0.0001);
+  expect(Math.abs(after.peakTop - before.peakTop)).toBeGreaterThan(0.05);
+  expect(after.cells).toHaveLength(100);
+  for (let index = 0; index < after.cells.length; index += 1) {
+    expect(Math.abs(after.cells[index].left - before.cells[index].left)).toBeLessThan(0.0001);
+    expect(Math.abs(after.cells[index].width - before.cells[index].width)).toBeLessThan(0.0001);
+  }
+  expect(after.cells.some((cell, index) => Math.abs(cell.top - before.cells[index].top) > 0.05)).toBe(true);
+  expect(after.cells.some((cell, index) => cell.color !== before.cells[index].color)).toBe(true);
 });
 
 test("reduced-motion preference removes explanatory cover animation", async ({ page }) => {
