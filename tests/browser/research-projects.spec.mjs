@@ -239,13 +239,25 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   const gridStyles = await workCards.nth(0).locator('[class*="signalGrid"]').evaluate((node) => ({
     backgroundPosition: getComputedStyle(node).backgroundPosition,
     backgroundSize: getComputedStyle(node).backgroundSize,
+    borderColor: getComputedStyle(node).borderTopColor,
     zIndex: getComputedStyle(node).zIndex,
+    ownShipCell: (() => {
+      const grid = node.getBoundingClientRect();
+      const ownShip = node.parentElement.querySelector('[class*="ownShip"]').getBoundingClientRect();
+      return {
+        x: (ownShip.left + ownShip.width / 2 - grid.left) / (grid.width / 8),
+        y: (ownShip.top + ownShip.height / 2 - grid.top) / (grid.height / 8),
+      };
+    })(),
   }));
-  expect(gridStyles).toEqual({
-    backgroundPosition: "50% 50%, 50% 50%",
+  expect(gridStyles).toMatchObject({
+    backgroundPosition: "0px 0px, 0px 0px",
     backgroundSize: "12.5% 12.5%, 12.5% 12.5%",
+    borderColor: "rgb(255, 255, 255)",
     zIndex: "1",
   });
+  expect(gridStyles.ownShipCell.x).toBeCloseTo(4, 3);
+  expect(gridStyles.ownShipCell.y).toBeCloseTo(4, 3);
 
   const homographyAnimation = await workCards.nth(0).locator('[class*="signalWave"]').first().evaluate((node) => getComputedStyle(node).animationName);
   const commandAnimation = await workCards.nth(1).locator('[class*="commandRoutes"] i').first().evaluate((node) => getComputedStyle(node).animationName);

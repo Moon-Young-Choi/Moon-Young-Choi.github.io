@@ -240,7 +240,7 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.doesNotMatch(graphicSource, /opticalField|wavefrontField|apertureOne|apertureTwo|refractiveLens|refractedBands|caustic|mosaicField|mosaicSpiral|spiralTile|spiralPoints|spiralTiles|homographyField|referencePlane|inputFrames|inputFrameOne|inputFrameTwo|inputFrameThree|correspondenceLinks|linkSetOne|linkSetTwo|linkSetThree|overlapRegion|projectionGrid|packetOrbit|panoramaFrame|thermalWindow|shipCuboid|outputCluster|wordCluster|slideCluster|sheetCluster/);
   assert.match(graphicCss, /@keyframes target-transmit/);
   assert.match(graphicCss, /@keyframes signal-wave/);
-  assert.match(graphicCss, /\.signalGrid\s*\{[^}]*background-position:\s*50% 50%;[^}]*background-size:\s*12\.5% 12\.5%;/s);
+  assert.match(graphicCss, /\.signalGrid\s*\{[^}]*border:\s*1px solid #fff;[^}]*linear-gradient\(to right, #fff 1px,[^}]*linear-gradient\(to bottom, #fff 1px,[^}]*background-position:\s*0 0;[^}]*background-size:\s*12\.5% 12\.5%;/s);
   assert.doesNotMatch(graphicCss, /@keyframes ownship-receive|\.ownShip::after/);
   assert.match(graphicCss, /\.targetPoint\s*\{[^}]*width:\s*12px;[^}]*height:\s*12px;[^}]*background:\s*#fff;/s);
   assert.match(graphicCss, /\.ownShip\s*\{[^}]*width:\s*15px;[^}]*height:\s*15px;[^}]*border:\s*2px solid var\(--ink\);[^}]*background:\s*var\(--lime\);/s);
