@@ -45,7 +45,7 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             </div>
             <figure className={styles.heroFigure} aria-labelledby="avikus-field-caption">
               <AvikusProjectiveField variant="hero" />
-              <figcaption id="avikus-field-caption">Seven target points transmit one at a time; each coral circular wave disappears when it reaches the central blue own-ship receiver.</figcaption>
+              <figcaption id="avikus-field-caption">Seven unevenly spaced target points transmit in sequence; paired coral ripples disappear as they reach the Lime-and-Ink own-ship receiver.</figcaption>
             </figure>
           </div>
           <div className={styles.factDock}>
@@ -92,7 +92,7 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
               <div className={styles.splitFeature}>
                 <figure className={styles.featureFigure} aria-labelledby="alignment-caption">
                   <AvikusProjectiveField variant="hero" />
-                  <figcaption id="alignment-caption">Each target turns coral only while transmitting. Its circle expands by the exact target-to-own-ship distance and vanishes on receipt.</figcaption>
+                  <figcaption id="alignment-caption">Each white target turns Coral only while transmitting. Two distance-scaled rings follow in sequence and vanish on contact with the central receiver.</figcaption>
                 </figure>
                 <div>
                   <div className={styles.formula}>

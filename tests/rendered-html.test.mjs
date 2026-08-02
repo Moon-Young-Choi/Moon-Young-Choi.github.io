@@ -230,16 +230,20 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(home, />MainGate</);
   assert.match(home, />Partners Inc\.</);
 
-  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "signalField", "signalTarget", "targetPoint", "signalWave", "ownShip", "signalTargets", "commandRoutes", "conversationAgent", "taskAgent", "workAgent", "researchAgent"]) {
+  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "signalField", "signalTarget", "targetPoint", "signalWave", "primaryWave", "secondaryWave", "ownShip", "signalTargets", "commandRoutes", "conversationAgent", "taskAgent", "workAgent", "researchAgent"]) {
     assert.ok(graphicSource.includes(marker) || graphicCss.includes(marker), `work graphic is missing ${marker}`);
+  }
+  for (const coordinate of ["41.6, y: 40.0", "30.1, y: 40.7", "36.9, y: 21.9", "82.6, y: 34.8", "87.6, y: 63.7", "6.5, y: 61.6", "98.0, y: 51.7"]) {
+    assert.ok(graphicSource.includes(coordinate), `Avikus signal field is missing coordinate ${coordinate}`);
   }
   assert.doesNotMatch(graphicSource, /<svg|<canvas/i);
   assert.doesNotMatch(graphicSource, /opticalField|wavefrontField|apertureOne|apertureTwo|refractiveLens|refractedBands|caustic|mosaicField|mosaicSpiral|spiralTile|spiralPoints|spiralTiles|homographyField|referencePlane|inputFrames|inputFrameOne|inputFrameTwo|inputFrameThree|correspondenceLinks|linkSetOne|linkSetTwo|linkSetThree|overlapRegion|projectionGrid|packetOrbit|panoramaFrame|thermalWindow|shipCuboid|outputCluster|wordCluster|slideCluster|sheetCluster/);
   assert.match(graphicCss, /@keyframes target-transmit/);
   assert.match(graphicCss, /@keyframes signal-wave/);
-  assert.match(graphicCss, /@keyframes ownship-receive/);
-  assert.match(graphicCss, /\.ownShip\s*\{[^}]*border:\s*0;/s);
-  assert.match(graphicCss, /\.ownShip::after\s*\{[^}]*border:\s*2px solid var\(--ink\);/s);
+  assert.doesNotMatch(graphicCss, /@keyframes ownship-receive|\.ownShip::after/);
+  assert.match(graphicCss, /\.targetPoint\s*\{[^}]*width:\s*12px;[^}]*height:\s*12px;[^}]*background:\s*#fff;/s);
+  assert.match(graphicCss, /\.ownShip\s*\{[^}]*width:\s*15px;[^}]*height:\s*15px;[^}]*border:\s*2px solid var\(--ink\);[^}]*background:\s*var\(--lime\);/s);
+  assert.match(graphicCss, /\.secondaryWave\s*\{[^}]*animation-delay:\s*calc\(var\(--signal-delay\) \+ \.17s\);/s);
   assert.match(graphicCss, /@keyframes command-flow/);
   for (const fill of ["background: var(--paper)", "background: var(--coral)", "background: var(--blue)", "background: var(--ink)"]) {
     assert.ok(graphicCss.includes(fill), `FINBURH agent palette is missing ${fill}`);

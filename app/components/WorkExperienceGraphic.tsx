@@ -6,17 +6,16 @@ type GraphicProps = {
 };
 
 const signalTargets = [
-  { x: 24, y: 31 },
-  { x: 48, y: 20 },
-  { x: 73, y: 28 },
-  { x: 78, y: 53 },
-  { x: 67, y: 77 },
-  { x: 35, y: 75 },
-  { x: 22, y: 58 },
+  { x: 41.6, y: 40.0 },
+  { x: 30.1, y: 40.7 },
+  { x: 36.9, y: 21.9 },
+  { x: 82.6, y: 34.8 },
+  { x: 87.6, y: 63.7 },
+  { x: 6.5, y: 61.6 },
+  { x: 98.0, y: 51.7 },
 ];
 
-const signalCycleSeconds = 7.7;
-const signalSlotSeconds = signalCycleSeconds / signalTargets.length;
+const signalSlotSeconds = 1.35;
 type SignalTargetStyle = CSSProperties & Record<`--${string}`, string>;
 
 export function AvikusProjectiveField({ variant = "panel" }: GraphicProps) {
@@ -33,11 +32,12 @@ export function AvikusProjectiveField({ variant = "panel" }: GraphicProps) {
                 "--target-x": `${target.x}%`,
                 "--target-y": `${target.y}%`,
                 "--wave-diameter": `${reach * 2}%`,
-                "--signal-delay": `${index * signalSlotSeconds}s`,
+                "--signal-delay": `${(index * signalSlotSeconds).toFixed(2)}s`,
               } as SignalTargetStyle}
             >
               <i className={styles.targetPoint} />
-              <i className={styles.signalWave} />
+              <i className={`${styles.signalWave} ${styles.primaryWave}`} />
+              <i className={`${styles.signalWave} ${styles.secondaryWave}`} />
             </span>
           );
         })}

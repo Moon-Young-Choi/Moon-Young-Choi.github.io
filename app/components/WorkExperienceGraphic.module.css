@@ -20,10 +20,7 @@
 
 .signalTarget {
   position: absolute;
-  left: var(--target-x);
-  top: var(--target-y);
-  width: 0;
-  height: 0;
+  inset: 0;
 }
 
 .targetPoint,
@@ -35,48 +32,43 @@
 
 .targetPoint {
   z-index: 3;
-  width: 8px;
-  height: 8px;
-  background: var(--ink);
+  left: var(--target-x);
+  top: var(--target-y);
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+  background: #fff;
   transform: translate(-50%, -50%);
-  animation: target-transmit 7.7s linear var(--signal-delay) infinite both;
+  animation: target-transmit 9.45s linear var(--signal-delay) infinite both;
 }
 
 .signalWave {
   z-index: 2;
-  left: 0;
-  top: 0;
+  left: var(--target-x);
+  top: var(--target-y);
   width: var(--wave-diameter);
   aspect-ratio: 1;
+  box-sizing: border-box;
   border: 2px solid var(--coral);
+  background: transparent;
   opacity: 0;
   transform: translate(-50%, -50%) scale(.03);
-  animation: signal-wave 7.7s linear var(--signal-delay) infinite both;
+  animation: signal-wave 9.45s linear infinite both;
 }
+
+.primaryWave { animation-delay: var(--signal-delay); }
+.secondaryWave { animation-delay: calc(var(--signal-delay) + .17s); }
 
 .ownShip {
   z-index: 4;
   left: 50%;
   top: 50%;
-  width: 10px;
-  height: 10px;
-  border: 0;
-  background: var(--blue);
-  transform: translate(-50%, -50%);
-}
-
-.ownShip::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 24px;
-  height: 24px;
+  width: 15px;
+  height: 15px;
+  box-sizing: border-box;
   border: 2px solid var(--ink);
-  border-radius: 50%;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(.5);
-  animation: ownship-receive 1.1s ease-out infinite;
+  background: var(--lime);
+  transform: translate(-50%, -50%);
 }
 
 /* FINBURH: four agent geometries and the command paths between them. */
@@ -153,20 +145,14 @@
 .workAgent i:nth-child(3) { animation-delay: -.24s; }
 
 @keyframes target-transmit {
-  0%, .6%, 13.4%, 100% { background: var(--ink); transform: translate(-50%, -50%) scale(1); }
-  1%, 12.8% { background: var(--coral); transform: translate(-50%, -50%) scale(1.42); }
+  0%, .31%, 11.12%, 100% { background: #fff; }
+  .32%, 11.11% { background: var(--coral); }
 }
 @keyframes signal-wave {
-  0%, .8% { opacity: 0; transform: translate(-50%, -50%) scale(.03); }
-  1% { opacity: .9; transform: translate(-50%, -50%) scale(.03); }
-  12.5% { opacity: .72; transform: translate(-50%, -50%) scale(1); }
-  12.9%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
-}
-@keyframes ownship-receive {
-  0%, 80% { opacity: 0; transform: translate(-50%, -50%) scale(.5); }
-  86% { opacity: .9; transform: translate(-50%, -50%) scale(.72); }
-  94% { opacity: .62; transform: translate(-50%, -50%) scale(1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.12); }
+  0%, .52% { opacity: 0; transform: translate(-50%, -50%) scale(.03); }
+  .53% { opacity: .92; transform: translate(-50%, -50%) scale(.03); }
+  8.99% { opacity: .68; transform: translate(-50%, -50%) scale(1); }
+  9%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
 }
 @keyframes command-flow { 0%, 12% { left: 0; opacity: 0; } 24% { opacity: 1; } 76% { opacity: 1; } 90%, 100% { left: calc(100% - 8px); opacity: 0; } }
 @keyframes agent-breathe { 50% { transform: scale(.92); } }
@@ -185,8 +171,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .graphic *, .graphic *::before, .graphic *::after { animation: none !important; transition: none !important; }
-  .targetPoint { background: var(--ink); transform: translate(-50%, -50%); }
+  .targetPoint { background: #fff; transform: translate(-50%, -50%); }
   .signalWave { display: none; }
-  .ownShip::after { display: none; }
   .commandRoutes span i { left: calc(100% - 8px); opacity: .8; }
 }

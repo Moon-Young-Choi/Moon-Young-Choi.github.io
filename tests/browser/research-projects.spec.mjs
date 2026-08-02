@@ -223,7 +223,9 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(0).locator('[class*="signalField"]')).toHaveCount(1);
   await expect(workCards.nth(0).locator('[class*="signalTarget"]')).toHaveCount(7);
   await expect(workCards.nth(0).locator('[class*="targetPoint"]')).toHaveCount(7);
-  await expect(workCards.nth(0).locator('[class*="signalWave"]')).toHaveCount(7);
+  await expect(workCards.nth(0).locator('[class*="signalWave"]')).toHaveCount(14);
+  await expect(workCards.nth(0).locator('[class*="primaryWave"]')).toHaveCount(7);
+  await expect(workCards.nth(0).locator('[class*="secondaryWave"]')).toHaveCount(7);
   await expect(workCards.nth(0).locator('[class*="ownShip"]')).toHaveCount(1);
   await expect(workCards.nth(0).locator('[class*="correspondenceLinks"], [class*="imagePlane"]')).toHaveCount(0);
   await expect(workCards.nth(1).locator('[class*="commandRoutes"]')).toHaveCount(1);
@@ -238,14 +240,47 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   expect(homographyAnimation).not.toBe("none");
   expect(commandAnimation).not.toBe("none");
 
-  const signalDelays = await workCards.nth(0).locator('[class*="signalWave"]').evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).animationDelay));
-  expect(new Set(signalDelays).size).toBe(7);
-  const ownShipStyles = await workCards.nth(0).locator('[class*="ownShip"]').evaluate((node) => ({
-    borderWidth: getComputedStyle(node).borderTopWidth,
-    receiveBorderWidth: getComputedStyle(node, "::after").borderTopWidth,
-    receiveAnimation: getComputedStyle(node, "::after").animationName,
+  const targetGeometry = await workCards.nth(0).locator('[class*="signalTarget"]').evaluateAll((nodes) => nodes.map((node) => {
+    const style = getComputedStyle(node);
+    return {
+      x: Number.parseFloat(style.getPropertyValue("--target-x")),
+      y: Number.parseFloat(style.getPropertyValue("--target-y")),
+      waveDiameter: Number.parseFloat(style.getPropertyValue("--wave-diameter")),
+    };
   }));
-  expect(ownShipStyles).toEqual({ borderWidth: "0px", receiveBorderWidth: "2px", receiveAnimation: expect.stringContaining("ownship-receive") });
+  const radii = targetGeometry.map(({ x, y }) => Math.hypot(x - 50, y - 50));
+  const angles = targetGeometry.map(({ x, y }) => Math.atan2(y - 50, x - 50));
+  expect(new Set(radii.map((value) => value.toFixed(4))).size).toBe(7);
+  expect(new Set(angles.map((value) => value.toFixed(4))).size).toBe(7);
+  expect(Math.min(...radii)).toBeLessThan(15);
+  expect(Math.max(...radii)).toBeGreaterThan(45);
+  const pairDistances = targetGeometry.flatMap((left, leftIndex) => targetGeometry.slice(leftIndex + 1).map((right) => Math.hypot(left.x - right.x, left.y - right.y)));
+  expect(Math.min(...pairDistances)).toBeLessThan(12);
+  expect(targetGeometry.some(({ x }) => x < 10)).toBe(true);
+  expect(targetGeometry.some(({ x }) => x > 95)).toBe(true);
+  targetGeometry.forEach((target, index) => expect(target.waveDiameter / 2, `target ${index + 1} wave radius`).toBeCloseTo(radii[index], 5));
+
+  const primaryDelays = await workCards.nth(0).locator('[class*="primaryWave"]').evaluateAll((nodes) => nodes.map((node) => Number.parseFloat(getComputedStyle(node).animationDelay)));
+  const secondaryDelays = await workCards.nth(0).locator('[class*="secondaryWave"]').evaluateAll((nodes) => nodes.map((node) => Number.parseFloat(getComputedStyle(node).animationDelay)));
+  expect(new Set(primaryDelays).size).toBe(7);
+  expect(new Set(secondaryDelays).size).toBe(7);
+  primaryDelays.forEach((delay, index) => {
+    expect(delay).toBeCloseTo(index * 1.35, 5);
+    expect(secondaryDelays[index] - delay).toBeCloseTo(.17, 5);
+  });
+  const targetPointStyles = await workCards.nth(0).locator('[class*="targetPoint"]').first().evaluate((node) => ({
+    width: getComputedStyle(node).width,
+    height: getComputedStyle(node).height,
+  }));
+  expect(targetPointStyles).toEqual({ width: "12px", height: "12px" });
+  const ownShipStyles = await workCards.nth(0).locator('[class*="ownShip"]').evaluate((node) => ({
+    width: getComputedStyle(node).width,
+    height: getComputedStyle(node).height,
+    borderWidth: getComputedStyle(node).borderTopWidth,
+    borderColor: getComputedStyle(node).borderTopColor,
+    background: getComputedStyle(node).backgroundColor,
+  }));
+  expect(ownShipStyles).toEqual({ width: "15px", height: "15px", borderWidth: "2px", borderColor: "rgb(18, 19, 16)", background: "rgb(217, 255, 83)" });
 
   const agentNodes = [
     workCards.nth(1).locator('[class*="conversationAgent"]'),
@@ -288,5 +323,11 @@ test("reduced-motion preference freezes both work-card graphic systems", async (
   expect(count).toBeGreaterThan(0);
   for (let index = 0; index < count; index += 1) {
     await expect(movingNodes.nth(index)).toHaveCSS("animation-name", "none");
+  }
+  const avikusCard = page.locator(".experience-grid .project-card").first();
+  await expect(avikusCard.locator('[class*="signalWave"]')).toHaveCount(14);
+  await expect(avikusCard.locator('[class*="signalWave"]').first()).toHaveCSS("display", "none");
+  for (const target of await avikusCard.locator('[class*="targetPoint"]').all()) {
+    await expect(target).toHaveCSS("background-color", "rgb(255, 255, 255)");
   }
 });
