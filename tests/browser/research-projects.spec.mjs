@@ -221,6 +221,7 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(1).getByText("MainGate", { exact: true })).toBeVisible();
   await expect(workCards.nth(1).getByText("Partners Inc.", { exact: true })).toBeVisible();
   await expect(workCards.nth(0).locator('[class*="signalField"]')).toHaveCount(1);
+  await expect(workCards.nth(0).locator('[class*="signalGrid"]')).toHaveCount(1);
   await expect(workCards.nth(0).locator('[class*="signalTarget"]')).toHaveCount(7);
   await expect(workCards.nth(0).locator('[class*="targetPoint"]')).toHaveCount(7);
   await expect(workCards.nth(0).locator('[class*="signalWave"]')).toHaveCount(14);
@@ -234,6 +235,17 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(1).locator('[class*="workAgent"] i')).toHaveCount(3);
   await expect(workCards.nth(1).locator('[class*="researchAgent"]')).toHaveCount(1);
   await expect(workCards.locator("svg, canvas, pre, code")).toHaveCount(0);
+
+  const gridStyles = await workCards.nth(0).locator('[class*="signalGrid"]').evaluate((node) => ({
+    backgroundPosition: getComputedStyle(node).backgroundPosition,
+    backgroundSize: getComputedStyle(node).backgroundSize,
+    zIndex: getComputedStyle(node).zIndex,
+  }));
+  expect(gridStyles).toEqual({
+    backgroundPosition: "50% 50%, 50% 50%",
+    backgroundSize: "12.5% 12.5%, 12.5% 12.5%",
+    zIndex: "1",
+  });
 
   const homographyAnimation = await workCards.nth(0).locator('[class*="signalWave"]').first().evaluate((node) => getComputedStyle(node).animationName);
   const commandAnimation = await workCards.nth(1).locator('[class*="commandRoutes"] i').first().evaluate((node) => getComputedStyle(node).animationName);

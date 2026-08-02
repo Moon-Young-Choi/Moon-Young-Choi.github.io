@@ -22,6 +22,7 @@ export function AvikusProjectiveField({ variant = "panel" }: GraphicProps) {
   return (
     <div className={`${styles.graphic} ${variant === "hero" ? styles.hero : ""}`}>
       <div className={styles.signalField} aria-hidden="true">
+        <i className={styles.signalGrid} />
         {signalTargets.map((target, index) => {
           const reach = Math.hypot(target.x - 50, target.y - 50);
           return (
