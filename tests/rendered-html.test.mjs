@@ -85,8 +85,8 @@ test("renders the six projects in the revised order while keeping position color
   assert.ok(bayesian > arbitrage, "Bayesian Ad Targeting must occupy project position 06");
   assert.match(html, /href="\/projects\/eventedge-derivatives\/" class="project-card coral"/);
   assert.match(html, /href="\/projects\/bayesian-ad-targeting\/" class="project-card paper"/);
-  for (const marker of ["market.cpp", "PublicSnapshot", "risk.", "evaluate", "commit_atomic", "data-eventedge-signal"]) {
-    assert.ok(eventEdgePanel.includes(marker), `EventEdge codebase cover is missing ${marker}`);
+  for (const marker of ["terminalStates", "styles.statePlane", "styles.hiddenState", "styles.orderRail", "styles.fillGate", "data-eventedge-signal"]) {
+    assert.ok(eventEdgePanel.includes(marker), `EventEdge geometric cover is missing ${marker}`);
   }
   assert.doesNotMatch(html, /href="\/projects\/pwr-scan-validation\/?"/);
   assert.doesNotMatch(html, /https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan/);

@@ -22,196 +22,268 @@
   pointer-events: none;
 }
 
-.editor {
-  width: min(100%, 680px);
-  height: 248px;
-  display: grid;
-  grid-template-rows: 35px 1fr 28px;
-  border: 1px solid var(--ink);
-  background: var(--ink);
-  color: var(--paper);
-  box-shadow: 10px 10px 0 color-mix(in srgb, var(--ink) 24%, transparent);
+.diagram {
+  position: relative;
+  width: min(96%, 660px);
+  height: 238px;
 }
 
-.editorBar,
-.statusBar {
+.cutoff {
+  position: absolute;
+  left: 4%;
+  top: 9%;
+  width: 9%;
+  height: 82%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 0 12px;
-  font: 500 7px/1 var(--font-mono);
-  letter-spacing: .06em;
+}
+
+.cutoff::before {
+  content: "";
+  position: absolute;
+  left: calc(50% - .5px);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: currentColor;
+}
+
+.cutoff::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(50% - .5px);
+  width: 92%;
+  height: 1px;
+  background: currentColor;
+}
+
+.cutoff i {
+  position: relative;
+  z-index: 1;
+  width: 11px;
+  height: 11px;
+  display: block;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: var(--lime);
+}
+
+.cutoff i:nth-child(3) {
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+}
+
+.cutoff span {
+  position: absolute;
+  z-index: 2;
+  left: calc(50% - 4px);
+  top: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lime);
+}
+
+.evidenceRail {
+  position: absolute;
+  left: 17%;
+  width: 41%;
+  height: 52px;
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.evidenceRail[data-rail="a"] { top: 25%; }
+.evidenceRail[data-rail="b"] { bottom: 25%; }
+
+.evidenceRail::before,
+.evidenceRail::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  height: 1px;
+  background: currentColor;
+}
+
+.evidenceRail::before { left: -10%; right: 0; top: 50%; }
+.evidenceRail::after { left: 100%; top: 50%; width: 20%; }
+
+.evidenceRail b {
+  position: relative;
+  z-index: 2;
+  width: 38px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: var(--lime);
+  font: 600 10px/1 var(--font-mono);
   text-transform: uppercase;
 }
 
-.editorBar {
-  border-bottom: 1px solid color-mix(in srgb, var(--paper) 34%, transparent);
-}
+.evidenceRail[data-rail="a"] b { background: var(--blue); color: #fff; border-color: var(--blue); }
+.evidenceRail[data-rail="b"] b { background: var(--coral); border-color: currentColor; }
 
-.editorBar span {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.editorBar i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--blue);
-  box-shadow: 11px 0 0 var(--coral), 22px 0 0 var(--violet);
-  margin-right: 22px;
-}
-
-.editorBar b { font-weight: 500; }
-
-.workspace {
-  min-height: 0;
+.evidenceRail > div {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: 116px minmax(0, 1fr);
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  gap: clamp(5px, 1vw, 11px);
 }
 
-.fileTree {
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-  padding: 17px 12px;
-  border-right: 1px solid color-mix(in srgb, var(--paper) 34%, transparent);
-  background: color-mix(in srgb, var(--paper) 5%, var(--ink));
-  color: color-mix(in srgb, var(--paper) 72%, transparent);
-  font: 500 7px/1 var(--font-mono);
-  letter-spacing: .04em;
-}
-
-.fileTree span,
-.fileTree b {
+.evidenceRail > div i {
+  aspect-ratio: 1;
   display: block;
-  font-weight: 500;
-}
-
-.fileTree b {
-  margin-left: -12px;
-  padding: 5px 8px 5px 22px;
-  border-left: 3px solid var(--lime);
-  background: color-mix(in srgb, var(--paper) 12%, var(--ink));
-  color: var(--paper);
-}
-
-.code {
-  position: relative;
-  min-width: 0;
-  padding: 12px 0;
-  overflow: hidden;
-  background-image: linear-gradient(to right, transparent 0, transparent 45px, color-mix(in srgb, var(--paper) 14%, transparent) 45px, color-mix(in srgb, var(--paper) 14%, transparent) 46px, transparent 46px);
-}
-
-.codeLine {
-  position: relative;
-  display: grid;
-  grid-template-columns: 45px minmax(0, 1fr);
-  align-items: center;
-  min-height: 23px;
-  padding-right: 10px;
-  white-space: nowrap;
-}
-
-.codeLine[data-active="true"] {
-  background: color-mix(in srgb, var(--blue) 29%, transparent);
-}
-
-.codeLine > i {
-  padding-right: 10px;
-  color: color-mix(in srgb, var(--paper) 38%, transparent);
-  text-align: right;
-  font: 400 7px/1 var(--font-mono);
-  font-style: normal;
-}
-
-.codeLine code {
-  min-width: 0;
-  padding-left: 12px;
-  overflow: hidden;
-  color: var(--paper);
-  font: 500 clamp(8px, .83vw, 11px)/1.2 var(--font-mono);
-  text-overflow: clip;
-}
-
-.keyword { color: var(--violet); }
-.function { color: var(--lime); font-weight: 800; }
-.string { color: var(--coral); }
-.comment { color: color-mix(in srgb, var(--paper) 46%, transparent); }
-.plain { color: var(--paper); }
-
-.signal {
-  position: absolute;
-  left: min(70%, 410px);
-  top: 85px;
-  width: 2px;
-  height: 13px;
+  border: 1px solid currentColor;
   background: var(--lime);
-  animation: quant-code-cursor 1.1s steps(1, end) infinite;
 }
 
-.statusBar {
-  justify-content: flex-start;
-  gap: 0;
-  padding: 0;
-  border-top: 1px solid color-mix(in srgb, var(--paper) 34%, transparent);
+.evidenceRail[data-rail="a"] > div i:nth-child(2),
+.evidenceRail[data-rail="a"] > div i:nth-child(4) { background: var(--blue); border-color: var(--blue); }
+.evidenceRail[data-rail="b"] > div i:nth-child(1),
+.evidenceRail[data-rail="b"] > div i:nth-child(5) { background: var(--coral); }
+
+.calibrationGate {
+  position: absolute;
+  z-index: 3;
+  left: 65%;
+  top: 50%;
+  width: 82px;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: var(--lime);
 }
 
-.statusBar span {
-  height: 100%;
+.calibrationGate::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: calc(50% - .5px);
+  width: 125%;
+  height: 1px;
+  background: currentColor;
+}
+
+.calibrationGate span {
+  position: absolute;
+  width: 58%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.calibrationGate i {
+  width: 23%;
+  aspect-ratio: 1;
+  display: block;
+  background: currentColor;
+  transform: rotate(45deg);
+  animation: quant-gate-turn 8s linear infinite;
+}
+
+.allocation {
+  position: absolute;
+  z-index: 2;
+  right: 3%;
+  top: 26%;
+  width: 19%;
+  height: 50%;
   display: flex;
-  align-items: center;
-  padding: 0 12px;
-  border-right: 1px solid color-mix(in srgb, var(--paper) 24%, transparent);
+  align-items: flex-end;
+  gap: clamp(4px, .7vw, 8px);
+  border-bottom: 1px solid currentColor;
 }
 
-.statusBar span:first-child {
-  background: var(--blue);
-  color: #fff;
+.allocation i {
+  flex: 1;
+  min-width: 0;
+  display: block;
+  border: 1px solid currentColor;
+  border-bottom: 0;
+  background: var(--lime);
 }
 
-@keyframes quant-code-cursor {
-  0%, 48% { opacity: 1; }
-  49%, 100% { opacity: 0; }
+.allocation i[data-active="true"] { background: var(--violet); }
+
+.panelSignal {
+  position: absolute;
+  z-index: 4;
+  left: 10%;
+  top: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: quant-rail-flow 6.8s ease-in-out infinite;
+}
+
+.evidenceRail[data-rail="a"] .panelSignal { background: var(--blue); }
+.evidenceRail[data-rail="b"] .panelSignal { background: var(--coral); animation-delay: -3.4s; }
+
+.outputSignal {
+  left: 70%;
+  top: calc(50% - 5px);
+  width: 10px;
+  height: 10px;
+  background: var(--violet);
+  animation: quant-output-flow 5.2s ease-in-out infinite;
+}
+
+@keyframes quant-rail-flow {
+  0%, 12% { left: 8%; transform: scale(.7); }
+  76%, 100% { left: 108%; transform: scale(1.25); }
+}
+
+@keyframes quant-output-flow {
+  0%, 16% { left: 70%; transform: scale(.7); }
+  78%, 100% { left: 93%; transform: scale(1.2); }
+}
+
+@keyframes quant-gate-turn {
+  to { transform: rotate(405deg); }
 }
 
 @media (max-width: 900px) {
   .panel { position: relative; inset: auto; flex: 0 0 260px; height: 260px; margin: 12px 0 30px; }
-  .editor { width: min(96%, 650px); height: 226px; }
+  .diagram { width: min(96%, 640px); height: 226px; }
 }
 
 @media (max-width: 640px) {
   .panel { flex-basis: 236px; height: 236px; margin: 10px 0 22px; }
-  .editor { height: 210px; grid-template-rows: 32px 1fr 26px; box-shadow: 7px 7px 0 color-mix(in srgb, var(--ink) 24%, transparent); }
-  .workspace { grid-template-columns: 94px minmax(0, 1fr); }
-  .fileTree { padding-inline: 9px; gap: 9px; }
-  .fileTree b { margin-left: -9px; padding-left: 16px; }
-  .code { padding-block: 7px; }
-  .codeLine { min-height: 21px; grid-template-columns: 33px minmax(0, 1fr); }
-  .codeLine > i { padding-right: 7px; }
-  .codeLine code { padding-left: 8px; font-size: 8px; }
-  .signal { top: 72px; }
+  .diagram { height: 210px; }
+  .evidenceRail { grid-template-columns: 32px 1fr; gap: 7px; }
+  .evidenceRail b { width: 32px; }
+  .calibrationGate { width: 68px; }
 }
 
 @media (max-width: 420px) {
   .panel { flex-basis: 216px; height: 216px; }
-  .editor { width: calc(100% - 10px); height: 194px; grid-template-rows: 30px 1fr 24px; }
-  .editorBar { padding-inline: 9px; }
-  .editorBar b { display: none; }
-  .workspace { grid-template-columns: 76px minmax(0, 1fr); }
-  .fileTree { padding: 12px 6px; gap: 8px; font-size: 6px; }
-  .fileTree b { margin-left: -6px; padding: 4px 4px 4px 12px; }
-  .codeLine { min-height: 19px; grid-template-columns: 28px minmax(0, 1fr); }
-  .codeLine > i { font-size: 6px; padding-right: 5px; }
-  .codeLine code { padding-left: 6px; font-size: 6.5px; }
-  .statusBar { font-size: 5.5px; }
-  .statusBar span { padding-inline: 7px; }
-  .signal { top: 64px; height: 10px; }
+  .diagram { width: 100%; height: 194px; transform: scale(.97); }
+  .evidenceRail { left: 16%; width: 42%; height: 40px; grid-template-columns: 27px 1fr; gap: 5px; }
+  .evidenceRail b { width: 27px; font-size: 8px; }
+  .evidenceRail > div { gap: 4px; }
+  .calibrationGate { left: 65%; width: 58px; }
+  .allocation { right: 1%; width: 18%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .signal { animation: none; opacity: 1; }
+  .panel *,
+  .panel *::before,
+  .panel *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
