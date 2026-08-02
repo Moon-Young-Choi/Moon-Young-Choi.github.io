@@ -2,6 +2,8 @@ import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import katex from "katex";
 import type { CaseStudy } from "@/app/content";
+import { PwrEmpiricalConsole } from "@/app/components/PwrEmpiricalConsole";
+import { PwrStudyTabs } from "@/app/components/PwrStudyTabs";
 import {
   proofEntriesFor,
   pwrTheoryEvidence,
@@ -209,12 +211,10 @@ function MultiscaleVisual() {
   );
 }
 
-function Contents() {
+function TheoryContents() {
   const readingOrder = [
     ...pwrTheorySections.slice(0, 12),
     pwrTheorySections.find((section) => section.id === "appendix")!,
-    pwrTheorySections.find((section) => section.id === "algorithm")!,
-    pwrTheorySections.find((section) => section.id === "validation")!,
   ];
   const list = (
     <ol>
@@ -223,8 +223,8 @@ function Contents() {
   );
   return (
     <>
-      <aside className={styles.desktopContents} id="contents"><nav aria-label="PWR-Scan contents"><h2>Contents</h2>{list}</nav></aside>
-      <details className={styles.mobileContents}><summary>Contents · 15 sections</summary><nav aria-label="PWR-Scan mobile contents">{list}</nav></details>
+      <aside className={styles.desktopContents} id="theory-contents"><nav aria-label="PWR-Scan theory contents"><h2>Theory contents</h2>{list}</nav></aside>
+      <details className={styles.mobileContents}><summary>Theory contents · 13 sections</summary><nav aria-label="PWR-Scan theory mobile contents">{list}</nav></details>
     </>
   );
 }
@@ -242,53 +242,6 @@ function IntroSection() {
       <ProofDependencyVisual />
       <Equation equation={{ id: "eq-experiment", label: "Experiment", tex: "H_0^E:\\ D\\overset d=gD\\ (\\forall g\\in\\mathcal G)\\qquad\\text{vs.}\\qquad H_1:\\max_{B\\in\\mathcal B}\\tau_B>0", alt: "the exchangeability null versus a positive pooled population root on at least one candidate block" }} />
       <div className={styles.boundaryCallout}><strong>Non-negotiable distinction</strong><p><InlineMath expression="H_0^{cov}:\\Sigma_0=\\Sigma_1" label="covariance equality null" /> does not imply the exchangeability null outside the stated common-law experiment. The exact p-value belongs to the latter.</p></div>
-    </SectionShell>
-  );
-}
-
-function AlgorithmSection() {
-  const section = pwrTheorySections.find((item) => item.id === "algorithm")!;
-  const rows = [
-    ["Candidate family", "Construct before analysis", "Definition 4.4; Theorem 7.1", "runtime/src/pwrscan/candidates.py"],
-    ["Preprocessing", "Apply the identical complete function to every assignment", "Theorem 5.5", "runtime/src/pwrscan/features.py"],
-    ["Local root", "Symmetric pooled whitening; largest eigenvalue", "Definition 4.1; Proposition 4.2", "runtime/src/pwrscan/statistics.py"],
-    ["Global scan", "Maximize T_B/a_B once", "Definition 4.5", "runtime/src/pwrscan/statistics.py"],
-    ["Randomization", "Move whole clusters within allowed strata", "Assumptions 3.1 and 5.1", "runtime/src/pwrscan/randomization.py"],
-    ["Monte Carlo", "Retain +1 correction and registered R", "Definition 5.7; Theorem 5.8", "runtime/src/pwrscan/randomization.py"],
-    ["Audit", "Record candidate hash, orbit seed, statistic and p-value", "Evidence boundary", "runtime/src/pwrscan/audit.py"],
-  ];
-  return (
-    <SectionShell {...section} eyebrow="Empirical appendix">
-      <div className={styles.flowRail} aria-label="PWR executable analysis flow">
-        {['Cluster features', 'Pre-fixed blocks', 'Pooled roots', 'Normalized max', 'Orbit rank', 'Audit record'].map((item, index) => <div key={item}><span>{String(index + 1).padStart(2, '0')}</span><b>{item}</b></div>)}
-      </div>
-      <div className={styles.tableWrap}><table><caption>Proof requirement to executable invariant</caption><thead><tr><th>Surface</th><th>Invariant</th><th>Theory source</th><th>Implementation mapping</th></tr></thead><tbody>{rows.map((row) => <tr key={row[0]}>{row.map((cell, index) => index === 0 ? <th key={cell}>{cell}</th> : <td key={cell}>{index === 3 ? <code>{cell}</code> : cell}</td>)}</tr>)}</tbody></table></div>
-      <div className={styles.boundaryCallout}><strong>Numerical boundary</strong><p>A data-selected ridge, block family, centering rule or quality filter becomes part of the statistic. It must be frozen or re-executed inside every orbit element; otherwise Theorem 5.5 does not describe the implementation.</p></div>
-    </SectionShell>
-  );
-}
-
-function ValidationSection() {
-  const section = pwrTheorySections.find((item) => item.id === "validation")!;
-  const verification = pwrTheoryEvidence.verification;
-  return (
-    <SectionShell {...section} eyebrow="Empirical appendix">
-      <div className={styles.evidenceHero}>
-        <div><span>Engineering closeout</span><strong>{verification.engineeringCloseout}</strong><p>{verification.engineeringRuns} runs · {verification.computationalTests} computational tests</p></div>
-        <div><span>Publication-scale validation</span><strong>{verification.publicationScaleValidation}</strong><p>V1 locked level + V2–V5 power, rate, mismatch and adaptation</p></div>
-        <div><span>Repository evidence</span><strong>{pwrTheoryEvidence.provenance.targetRelease}</strong><p>commit {pwrTheoryEvidence.provenance.releaseCommit.slice(0, 12)} · evidence {pwrTheoryEvidence.provenance.integrationEvidenceFingerprint.slice(0, 12)}…</p></div>
-        <div data-negative="true"><span>External DCASE check</span><strong>Negative evidence</strong><p>{`ROC AUC ${verification.dcase.rocAuc} · sensitivity ${verification.dcase.sensitivity}`}</p></div>
-      </div>
-      <div className={styles.tableWrap}><table><caption>Proof–code-path–study status matrix</caption><thead><tr><th>Evidence grade</th><th>Status</th><th>What it supports</th><th>What it does not support</th></tr></thead><tbody>
-        <tr><th>Mathematical proof</th><td>Complete under displayed assumptions</td><td>Finite-sample validity, Gaussian power and rate statements in the manuscript</td><td>Unstated data regimes or empirical performance</td></tr>
-        <tr><th>Code-path mapping</th><td>Mapped, partial, or not applicable per formal object</td><td>Named runtime and independent-oracle computation paths</td><td>Empirical satisfaction of a theorem&apos;s assumptions or real-data performance</td></tr>
-        <tr><th>Engineering closeout</th><td>Complete</td><td>{verification.engineeringRuns} execution rows and {verification.computationalTests} computational tests</td><td>Power replicates or publication precision</td></tr>
-        <tr><th>Locked result</th><td>Pending</td><td>Registered V1–V5 questions and frozen boundaries</td><td>A completed level, power, rate, mismatch or adaptation campaign</td></tr>
-        <tr><th>External data</th><td>Negative · validity not established</td><td>Transparent DCASE failure evidence</td><td>Real-audio discrimination or deployment readiness</td></tr>
-      </tbody></table></div>
-      <div className={styles.tableWrap}><table><caption>Registered validation campaigns</caption><thead><tr><th>Track</th><th>Question</th><th>Status</th></tr></thead><tbody>{verification.campaigns.map((campaign) => <tr key={campaign.id}><th>{campaign.id}</th><td>{campaign.label}</td><td><span className={styles.statusPending}>{campaign.status}</span></td></tr>)}</tbody></table></div>
-      <div className={styles.claimBoundary}><h3>Claims ledger</h3><ol>{pwrTheoryEvidence.claimsBoundary.map((claim) => <li key={claim}>{claim}</li>)}</ol></div>
-      <p className={styles.negativeNote}>{verification.dcase.interpretation}</p>
     </SectionShell>
   );
 }
@@ -315,61 +268,69 @@ function AppendixSection() {
 }
 
 export function PwrTheoryPage({ study }: { study: CaseStudy }) {
+  const theory = (
+    <article className={styles.theoryView}>
+      <header className={styles.hero}>
+        <div className={styles.heroMeta}><span>Project / {study.number}</span><span>Proof-led statistical system</span><span>Results conditional on displayed assumptions</span></div>
+        <div className={styles.heroGrid}>
+          <div>
+            <p>Pooled-whitened randomization scan</p>
+            <h1>PWR<br />SCAN</h1>
+            <p className={styles.heroSummary}>Finite-sample randomization, Gaussian permutation power and a matching minimax rate — joined as one explicit proof chain.</p>
+          </div>
+          <div className={styles.heroProof} aria-hidden="true">
+            <div className={styles.heroMatrix}>{Array.from({ length: 49 }, (_, index) => <i key={index} data-hot={Math.abs(Math.floor(index / 7) - (index % 7)) < 2} />)}</div>
+            <div className={styles.heroWindow}>B*</div>
+            <div className={styles.heroRoot}><span>λmax</span><b>τ − η</b></div>
+            <div className={styles.heroOrbit}>{Array.from({ length: 8 }, (_, index) => <i key={index} data-observed={index === 6} />)}</div>
+          </div>
+        </div>
+        <dl className={styles.heroFacts}>
+          <div><dt>Formal objects</dt><dd>{pwrTheorySummary.proofObjectCount}</dd></div>
+          <div><dt>Guarantee classes</dt><dd>{pwrTheorySummary.guaranteeCount}</dd></div>
+          <div><dt>Appendix B sections</dt><dd>{pwrTheorySummary.appendixSectionCount}</dd></div>
+          <div><dt>Evidence SHA-256</dt><dd>{pwrTheorySummary.fingerprintShort}…</dd></div>
+        </dl>
+      </header>
+
+      <div className={styles.bodyGrid}>
+        <TheoryContents />
+        <div className={styles.monograph}>
+          <IntroSection />
+          {pwrTheorySections.slice(1, 12).map((section) => (
+            <SectionShell key={section.id} {...section}>
+              {section.id === "acoustic-bridge" && <SignalBridgeVisual />}
+              {section.id === "statistic" && <WhiteningVisual />}
+              {section.id === "exact-validity" && <OrbitVisual />}
+              {section.id === "rate-optimality" && <RateVisual />}
+              {section.id === "multiscale" && <MultiscaleVisual />}
+              <ProofCards sectionId={section.id} />
+            </SectionShell>
+          ))}
+          <AppendixSection />
+        </div>
+      </div>
+    </article>
+  );
+  const verification = pwrTheoryEvidence.verification;
+  const empirical = <PwrEmpiricalConsole evidence={{
+    release: pwrTheoryEvidence.provenance.targetRelease,
+    commit: pwrTheoryEvidence.provenance.releaseCommit,
+    fingerprint: pwrTheoryEvidence.provenance.integrationEvidenceFingerprint,
+    engineeringRuns: verification.engineeringRuns,
+    computationalTests: verification.computationalTests,
+    campaigns: verification.campaigns,
+    dcase: verification.dcase,
+  }} />;
+
   return (
     <main className={styles.page}>
       <header className={styles.nav}>
         <Link href="/" className={styles.wordmark}>MYC / 26</Link>
-        <nav aria-label="PWR-Scan page navigation"><a href="#contents">Contents</a><a href="#exact-validity">Exactness</a><a href="#rate-optimality">Minimax</a><a href="#validation">Evidence</a></nav>
+        <span className={styles.navContext}>PWR-Scan · proof and study console</span>
         <Link href="/#projects">Close ×</Link>
       </header>
-
-      <article>
-        <header className={styles.hero}>
-          <div className={styles.heroMeta}><span>Project / {study.number}</span><span>Proof-led statistical system</span><span>No deployed detector claim</span></div>
-          <div className={styles.heroGrid}>
-            <div>
-              <p>Pooled-whitened randomization scan</p>
-              <h1>PWR<br />SCAN</h1>
-              <p className={styles.heroSummary}>Finite-sample randomization, Gaussian permutation power and a matching minimax rate — joined as one explicit proof chain.</p>
-            </div>
-            <div className={styles.heroProof} aria-hidden="true">
-              <div className={styles.heroMatrix}>{Array.from({ length: 49 }, (_, index) => <i key={index} data-hot={Math.abs(Math.floor(index / 7) - (index % 7)) < 2} />)}</div>
-              <div className={styles.heroWindow}>B*</div>
-              <div className={styles.heroRoot}><span>λmax</span><b>τ − η</b></div>
-              <div className={styles.heroOrbit}>{Array.from({ length: 8 }, (_, index) => <i key={index} data-observed={index === 6} />)}</div>
-            </div>
-          </div>
-          <dl className={styles.heroFacts}>
-            <div><dt>Formal objects</dt><dd>{pwrTheorySummary.proofObjectCount}</dd></div>
-            <div><dt>Guarantee classes</dt><dd>{pwrTheorySummary.guaranteeCount}</dd></div>
-            <div><dt>Appendix B sections</dt><dd>{pwrTheorySummary.appendixSectionCount}</dd></div>
-            <div><dt>Evidence SHA-256</dt><dd>{pwrTheorySummary.fingerprintShort}…</dd></div>
-          </dl>
-        </header>
-
-        <div className={styles.bodyGrid}>
-          <Contents />
-          <div className={styles.monograph}>
-            <IntroSection />
-            {pwrTheorySections.slice(1, 12).map((section) => (
-              <SectionShell key={section.id} {...section}>
-                {section.id === "acoustic-bridge" && <SignalBridgeVisual />}
-                {section.id === "statistic" && <WhiteningVisual />}
-                {section.id === "exact-validity" && <OrbitVisual />}
-                {section.id === "rate-optimality" && <RateVisual />}
-                {section.id === "multiscale" && <MultiscaleVisual />}
-                <ProofCards sectionId={section.id} />
-              </SectionShell>
-            ))}
-            <AppendixSection />
-            <section className={styles.empiricalPart} aria-labelledby="empirical-part-title">
-              <header><span>Empirical appendix</span><h2 id="empirical-part-title">Implementation and evidence</h2><p>The mathematical argument ends above. What follows reports executable correspondence, computational checks, pending studies and the negative external result without treating them as proof.</p></header>
-              <AlgorithmSection />
-              <ValidationSection />
-            </section>
-          </div>
-        </div>
-      </article>
+      <PwrStudyTabs theory={theory} empirical={empirical} />
 
       <footer className={styles.footer}>
         <div><span>Public source</span><a href={pwrTheoryEvidence.provenance.repository} target="_blank" rel="noreferrer">Open consolidated PWR-Scan repository ↗</a></div>

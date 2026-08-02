@@ -101,13 +101,13 @@ test("renders the architecture-only Quant Platform page from the sanitized snaps
     quantSnapshot.provenance.sourceSha256.slice(0, 12),
   ]) assert.ok(html.includes(marker), `Quant Platform is missing ${marker}`);
 
-  assert.match(html, /<table[^>]*>.*?<caption>/s);
+  assert.match(html, /<table[^>]*>.*?<caption(?:\s[^>]*)?>/s);
   assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
   assert.doesNotMatch(html, /github\.com\/Moon-Young-Choi\/.*quant/i);
   assert.doesNotMatch(html, /live returns?|deployed service|realized profit/i);
 });
 
-test("renders all 49 formal PWR declarations, foundations, boundaries, and the static legacy alias", async () => {
+test("renders the default PWR theory panel, client empirical shell, and the static legacy alias", async () => {
   const [html, legacy, home] = await Promise.all([routeHtml(pwrRoute), routeHtml(pwrLegacyRoute), routeHtml()]);
 
   assert.equal(pwrEvidence.proofEntries.length, 49);
@@ -122,24 +122,35 @@ test("renders all 49 formal PWR declarations, foundations, boundaries, and the s
   for (const marker of [
     "Proof-led statistical system",
     "Finite-sample randomization",
-    "Minimax",
-    "Engineering closeout",
-    "Publication-scale validation",
-    "Negative evidence",
-    "ROC AUC 0.4843",
+    "PWR-Scan · proof and study console",
+    "PWR-Scan theory contents",
+    "pwr-theory-tab",
+    "pwr-empirical-tab",
+    "Loading verified synthetic study",
     "PDF not published",
   ]) assert.ok(html.includes(marker), `PWR theory page is missing ${marker}`);
 
-  assert.ok(html.indexOf('id="empirical-part-title"') > html.indexOf('id="appendix"'), "empirical evidence must follow the complete mathematical appendix");
+  assert.match(html, /id="pwr-theory-panel"[^>]*role="tabpanel"/);
+  assert.match(html, /id="pwr-empirical-panel"[^>]*role="tabpanel"[^>]*hidden/);
   assert.doesNotMatch(html, /Assumptions, proof chain and boundary|Code-path \/ trace mapping/);
 
   assert.match(html, /<math[\s>]/);
-  assert.match(html, /<table[^>]*>.*?<caption>/s);
+  assert.match(html, /<table[^>]*>.*?<caption(?:\s[^>]*)?>/s);
   assert.match(html, /href="https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan"/);
   assert.doesNotMatch(home, /https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan/);
   assert.ok(legacy.includes("Proof-led statistical system"));
   assert.match(legacy, /rel="canonical"[^>]*href="\/projects\/pwr-scan\/"|href="\/projects\/pwr-scan\/"[^>]*rel="canonical"/);
   assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
+});
+
+test("copies the authenticated local PWR synthetic study artifact", async () => {
+  const artifact = new URL("data/pwr-empirical-demo.v1.json", outputRoot);
+  await access(artifact);
+  const data = JSON.parse(await readFile(artifact, "utf8"));
+  assert.equal(data.schemaVersion, "pwr-empirical-demo.v1");
+  assert.equal(data.provenance.dataClass, "synthetic");
+  assert.equal(data.rows.length, 1008);
+  assert.equal(data.boundary.performanceClaim, false);
 });
 
 test("keeps the standard case-study contract on the remaining five pages", async () => {

@@ -143,7 +143,7 @@ test("ships an accessible proof renderer and isolated responsive visual system",
     readFile(new URL("../app/components/PwrTheoryPage.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/PwrTheoryProjectPanel.module.css", import.meta.url), "utf8"),
   ]);
-  for (const marker of ["htmlAndMathml", "aria-label", "<table>", "<caption", "PDF not published", "Negative evidence", "proofEntriesFor", "Selected proof-dependency spine", "Pooled-whitening transformation", "Proof–code-path–study status matrix", "Empirical appendix", "The mathematical argument ends above"]) {
+  for (const marker of ["htmlAndMathml", "aria-label", "<table>", "<caption", "PDF not published", "proofEntriesFor", "Selected proof-dependency spine", "Pooled-whitening transformation", "PwrStudyTabs", "PwrEmpiricalConsole", "TheoryContents"]) {
     assert.ok(page.includes(marker), `page renderer is missing ${marker}`);
   }
   assert.doesNotMatch(page, /EvidencePips|Assumptions, proof chain and boundary|<details open=/);
@@ -152,6 +152,7 @@ test("ships an accessible proof renderer and isolated responsive visual system",
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
   for (const width of [900, 640, 420, 320]) assert.match(css, new RegExp(`@media \\(max-width:\\s*${width}px\\)`));
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(css, /\.studyTabs/);
   assert.match(panelCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
   assert.match(css, /overflow:\s*clip/);
 });

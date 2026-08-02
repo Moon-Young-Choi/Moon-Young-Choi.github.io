@@ -36,6 +36,26 @@
 .nav nav { display: flex; gap: 34px; }
 .nav > :last-child { justify-self: end; }
 .wordmark { font-weight: 500; }
+.navContext { justify-self: center; }
+
+.studyTabs {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  border-bottom: 1px solid var(--ink);
+  background: var(--paper);
+}
+.studyTabs button { min-width: 0; padding: 0 3.2vw; display: flex; align-items: center; justify-content: space-between; gap: 18px; border: 0; border-right: 1px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink); font: 500 12px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.studyTabs button:last-child { border-right: 0; }
+.studyTabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.studyTabs button[aria-selected="true"] span { color: var(--lime); }
+.studyTabs button:focus-visible { position: relative; z-index: 1; outline: 3px solid var(--blue); outline-offset: -6px; }
+.studyTabs span { font-size: 8px; opacity: .72; }
+.studyTabs + [role="tabpanel"]:focus { outline: none; }
+.studyTabs ~ [role="tabpanel"][hidden] { display: none; }
 
 .hero { padding: 32px 3.2vw 0; background: var(--violet); border-bottom: 1px solid var(--ink); }
 .heroMeta { display: flex; justify-content: space-between; gap: 20px; font: 500 8px/1.3 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
@@ -65,7 +85,7 @@
 .heroFacts dd { margin: 0; font-size: clamp(20px,2vw,34px); font-weight: 600; overflow-wrap: anywhere; }
 
 .bodyGrid { position: relative; display: grid; grid-template-columns: 248px minmax(0,1fr); align-items: start; }
-.desktopContents { position: sticky; top: 0; z-index: 10; height: 100vh; padding: 34px 22px; border-right: 1px solid var(--ink); background: var(--paper); overflow-y: auto; }
+.desktopContents { position: sticky; top: 72px; z-index: 10; height: calc(100vh - 72px); padding: 34px 22px; border-right: 1px solid var(--ink); background: var(--paper); overflow-y: auto; }
 .desktopContents h2 { margin: 0 0 24px; font: 500 9px var(--font-mono); text-transform: uppercase; }
 .desktopContents ol, .mobileContents ol { list-style: none; margin: 0; padding: 0; }
 .desktopContents li { border-top: 1px solid rgba(18,19,16,.22); }

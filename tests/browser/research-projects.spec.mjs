@@ -17,12 +17,27 @@ for (const width of widths) {
       expect(geometry.document, `${route} document overflow`).toBeLessThanOrEqual(geometry.viewport + 1);
       expect(geometry.body, `${route} body overflow`).toBeLessThanOrEqual(geometry.viewport + 1);
     }
+    await page.goto("/projects/pwr-scan/");
+    await page.getByRole("tab", { name: /empirical/i }).click();
+    await expect(page.getByText(/simulated study/i).first()).toBeVisible();
+    const empiricalGeometry = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      document: document.documentElement.scrollWidth,
+      body: document.body.scrollWidth,
+    }));
+    expect(empiricalGeometry.document, "PWR empirical document overflow").toBeLessThanOrEqual(empiricalGeometry.viewport + 1);
+    expect(empiricalGeometry.body, "PWR empirical body overflow").toBeLessThanOrEqual(empiricalGeometry.viewport + 1);
   });
 }
 
-test("PWR contents, continuous proof chain, dependency links and MathML remain keyboard operable", async ({ page }) => {
+test("PWR defaults to Theory and keeps its proof chain, contents and MathML operable", async ({ page }) => {
   await page.goto("/projects/pwr-scan/");
-  await expect(page.getByRole("heading", { name: "Contents" })).toBeVisible();
+  const theoryTab = page.getByRole("tab", { name: /theory/i });
+  const empiricalTab = page.getByRole("tab", { name: /empirical/i });
+  await expect(theoryTab).toHaveAttribute("aria-selected", "true");
+  await expect(empiricalTab).toHaveAttribute("aria-selected", "false");
+  await expect(page.getByRole("heading", { name: "Theory contents" })).toBeVisible();
+  await expect(page.locator("#pwr-empirical-panel")).toBeHidden();
   await expect(page.locator("article[data-kind]")).toHaveCount(49);
   await expect(page.locator("math").first()).toBeAttached();
 
@@ -34,12 +49,46 @@ test("PWR contents, continuous proof chain, dependency links and MathML remain k
   await dependency.focus();
   await dependency.press("Enter");
   await expect(page.locator("#lemma-5-4")).toBeInViewport();
+});
 
-  const order = await page.evaluate(() => ({
-    appendix: document.querySelector("#appendix")?.getBoundingClientRect().top ?? 0,
-    empirical: document.querySelector("#empirical-part-title")?.getBoundingClientRect().top ?? 0,
-  }));
-  expect(order.empirical).toBeGreaterThan(order.appendix);
+test("PWR tabs use the ARIA keyboard pattern without changing the URL", async ({ page }) => {
+  await page.goto("/projects/pwr-scan/");
+  const original = page.url();
+  const theoryTab = page.getByRole("tab", { name: /theory/i });
+  const empiricalTab = page.getByRole("tab", { name: /empirical/i });
+  await theoryTab.focus();
+  await theoryTab.press("ArrowRight");
+  await expect(empiricalTab).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("#pwr-theory-panel")).toBeHidden();
+  await expect(page.getByText(/simulated study/i).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Empirical contents" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Theory contents" })).toBeHidden();
+  expect(page.url()).toBe(original);
+  await empiricalTab.press("Home");
+  await expect(theoryTab).toHaveAttribute("aria-selected", "true");
+  expect(page.url()).toBe(original);
+});
+
+test("PWR empirical controls select precomputed rows and update charts and tables together", async ({ page }) => {
+  await page.goto("/projects/pwr-scan/");
+  await page.getByRole("tab", { name: /empirical/i }).click();
+  await expect(page.getByText(/simulated study/i).first()).toBeVisible();
+  const live = page.locator('[aria-live="polite"]');
+  await expect(live).toContainText("Localized spike");
+  const initial = await live.textContent();
+  await page.getByRole("button", { name: "128", exact: true }).click();
+  await page.getByRole("button", { name: "0.2", exact: true }).click();
+  await page.locator('input[type="range"]').fill("1");
+  await page.getByRole("button", { name: "499", exact: true }).click();
+  await expect(live).toContainText("n 128 per group");
+  await expect(live).toContainText("effect 1.00");
+  await expect(live).toContainText("mismatch 0.20");
+  await expect(live).toContainText("499 permutations");
+  expect(await live.textContent()).not.toBe(initial);
+  await expect(page.getByRole("figure")).toHaveCount(5);
+  await expect(page.getByText("Data table", { exact: true })).toHaveCount(5);
+  await expect(page.getByText("V1 pending", { exact: false })).toBeVisible();
+  await expect(page.getByText("ROC AUC 0.4843", { exact: false })).toBeVisible();
 });
 
 test("legacy PWR path renders the consolidated page with one canonical target", async ({ page }) => {

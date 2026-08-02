@@ -9,7 +9,7 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "vinext start",
-    "test": "npm run build && node --experimental-strip-types --test tests/rendered-html.test.mjs tests/project-evidence.test.mjs tests/pwr-theory.test.mjs tests/arbitrage-showcase.test.mjs tests/arbitrage-universe.test.mjs tests/triangle-route-graphic.test.mjs",
+    "test": "npm run build && node --experimental-strip-types --test tests/rendered-html.test.mjs tests/project-evidence.test.mjs tests/pwr-theory.test.mjs tests/pwr-empirical.test.mjs tests/arbitrage-showcase.test.mjs tests/arbitrage-universe.test.mjs tests/triangle-route-graphic.test.mjs",
     "test:arbitrage-universe": "node --experimental-strip-types --test tests/arbitrage-universe.test.mjs",
     "test:browser": "npm run build && playwright test",
     "test:browser:built": "playwright test",
@@ -17,6 +17,8 @@
     "sync:arbitrage-universe": "node scripts/sync-arbitrage-universe.mjs",
     "sync:quant-platform": "node scripts/sync-quant-platform.mjs",
     "sync:pwr-theory": "node scripts/sync-pwr-theory.mjs",
+    "sync:pwr-empirical": "node scripts/sync-pwr-empirical.mjs --write",
+    "sync:pwr-empirical:check": "node scripts/sync-pwr-empirical.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
