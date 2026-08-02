@@ -1,7 +1,9 @@
 .page {
   --accent: var(--lime);
   --hero-ink: var(--ink);
+  max-width: 100%;
   min-height: 100vh;
+  overflow-x: clip;
   background: var(--accent);
   color: var(--hero-ink);
 }
