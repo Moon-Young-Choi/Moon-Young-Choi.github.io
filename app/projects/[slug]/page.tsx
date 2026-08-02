@@ -5,6 +5,7 @@ import { ArbitrageLabPage } from "@/app/components/ArbitrageLabPage";
 import { EventEdgePage } from "@/app/components/EventEdgePage";
 import { PwrTheoryPage } from "@/app/components/PwrTheoryPage";
 import { QuantPlatformPage } from "@/app/components/QuantPlatformPage";
+import { BayesianTargetingPage } from "@/app/components/BayesianTargetingPage";
 import { findStudy, projectAliases, projectStudies, resolveProjectSlug } from "@/app/content";
 
 export function generateStaticParams() {
@@ -34,5 +35,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   if (study.presentation === "pwr-theory") return <PwrTheoryPage study={study} />;
   if (study.presentation === "arbitrage-lab") return <ArbitrageLabPage study={study} />;
   if (study.presentation === "eventedge-market") return <EventEdgePage study={study} />;
+  if (study.presentation === "bayesian-math") return <BayesianTargetingPage study={study} />;
   return <CaseStudyPage study={study} />;
 }

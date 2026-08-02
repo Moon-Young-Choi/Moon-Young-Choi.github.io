@@ -8,6 +8,7 @@ const routes = [
   "/projects/quant-platform/",
   "/projects/pwr-scan/",
   "/projects/eventedge-derivatives/",
+  "/projects/bayesian-ad-targeting/",
 ];
 
 for (const width of widths) {

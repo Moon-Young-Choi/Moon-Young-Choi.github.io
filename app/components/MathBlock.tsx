@@ -5,7 +5,7 @@ export function MathBlock({ expression }: { expression: string }) {
     displayMode: true,
     throwOnError: false,
     strict: false,
-    output: "html",
+    output: "htmlAndMathml",
   });
 
   return <div className="math-render" dangerouslySetInnerHTML={{ __html: html }} />;

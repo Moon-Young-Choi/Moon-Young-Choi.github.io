@@ -24,11 +24,9 @@ const pwrLegacyRoute = "projects/pwr-scan-validation";
 const eventEdgeRoute = "projects/eventedge-derivatives";
 const standardRoutes = [
   "projects/open-source-intelligence",
-  "projects/bayesian-ad-targeting",
 ];
 const expectedStack = {
   "projects/open-source-intelligence": ["Python", "PyTorch", "Transformers", "NumPy", "SafeTensors", "DART", "FSC/KRX", "pytest"],
-  "projects/bayesian-ad-targeting": ["Python", "NumPy", "pandas", "Beta–Bernoulli inference", "Thompson Sampling"],
   "projects/triangular-arbitrage-detector": ["Node.js", "JavaScript", "Axios", "WebSocket", "Upbit REST/WebSocket", "Node test runner"],
   "projects/eventedge-derivatives": ["C++", "Linux CLI", "Monte Carlo simulation", "CVaR", "order-book simulation", "exact-enumeration/CFR validation"],
 };
