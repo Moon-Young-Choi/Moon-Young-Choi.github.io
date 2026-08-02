@@ -41,6 +41,7 @@ test("anchors three equal edges to a single non-crossing coordinate system", asy
   assert.match(css, /@media \(max-width:\s*900px\)/);
   assert.match(css, /@media \(max-width:\s*640px\)/);
   assert.match(css, /@media \(max-width:\s*420px\)/);
+  assert.match(css, /\.card\s+\.node\s*\{[^}]*place-content:\s*center/s);
 
   assert.doesNotMatch(legacyCss, /heroLineA|routeLineA|homeEdgeA|routeReverse|homeSignal/);
 });
