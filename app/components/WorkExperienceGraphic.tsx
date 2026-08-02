@@ -4,32 +4,17 @@ type GraphicProps = {
   variant?: "panel" | "hero";
 };
 
-const correspondencePoints = Array.from({ length: 4 });
-const inputFrameClasses = [styles.inputFrameOne, styles.inputFrameTwo, styles.inputFrameThree];
-const linkSetClasses = [styles.linkSetOne, styles.linkSetTwo, styles.linkSetThree];
+const ribbonTileClasses = [styles.tileOne, styles.tileTwo, styles.tileThree, styles.tileFour, styles.tileFive];
 
 export function AvikusProjectiveField({ variant = "panel" }: GraphicProps) {
   return (
     <div className={`${styles.graphic} ${variant === "hero" ? styles.hero : ""}`}>
-      <div className={styles.homographyField}>
-        <div className={`${styles.imagePlane} ${styles.referencePlane}`}>
-          {correspondencePoints.map((_, index) => <i key={`reference-${index}`} />)}
-        </div>
-        <div className={styles.inputFrames}>
-          {inputFrameClasses.map((frameClass, frameIndex) => (
-            <div className={`${styles.imagePlane} ${styles.inputFrame} ${frameClass}`} key={frameClass}>
-              {correspondencePoints.map((_, pointIndex) => <i key={`input-${frameIndex}-${pointIndex}`} />)}
-            </div>
+      <div className={styles.mosaicField}>
+        <div className={styles.mosaicRibbon}>
+          {ribbonTileClasses.map((tileClass) => (
+            <i className={`${styles.ribbonTile} ${tileClass}`} key={tileClass} />
           ))}
         </div>
-        <div className={styles.correspondenceLinks}>
-          {linkSetClasses.map((linkClass) => (
-            <div className={`${styles.linkSet} ${linkClass}`} key={linkClass}>
-              {correspondencePoints.map((_, index) => <span key={index} />)}
-            </div>
-          ))}
-        </div>
-        <span className={styles.overlapRegion} />
       </div>
     </div>
   );

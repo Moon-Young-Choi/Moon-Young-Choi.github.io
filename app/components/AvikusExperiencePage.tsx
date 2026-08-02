@@ -45,7 +45,7 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             </div>
             <figure className={styles.heroFigure} aria-labelledby="avikus-field-caption">
               <AvikusProjectiveField variant="hero" />
-              <figcaption id="avikus-field-caption">Three source frames take turns becoming the active coral plane; each four-point lock is absorbed into one growing black panorama.</figcaption>
+              <figcaption id="avikus-field-caption">Five planar tiles form one mosaic ribbon. A coral alignment wave moves left to right, locking each seam before the ribbon stretches into a panoramic field.</figcaption>
             </figure>
           </div>
           <div className={styles.factDock}>
@@ -88,11 +88,11 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             <div className={styles.sectionLabel}>02 / Alignment path</div>
             <div className={styles.sectionBody}>
               <span className={styles.reconstruction}>Architecture reconstruction · no internal imagery</span>
-              <h2 id="alignment-title">Three source frames. Sequential projective locks. One panorama.</h2>
+              <h2 id="alignment-title">Five planar tiles. One alignment wave. One panorama.</h2>
               <div className={styles.splitFeature}>
                 <figure className={styles.featureFigure} aria-labelledby="alignment-caption">
                   <AvikusProjectiveField variant="hero" />
-                  <figcaption id="alignment-caption">Only the active source exposes coral correspondence vectors. Each lock disappears into the expanding mosaic until one uninterrupted outline remains.</figcaption>
+                  <figcaption id="alignment-caption">The coral activation passes from tile to tile as each offset face settles into the shared ribbon; the completed mosaic then widens as one continuous field.</figcaption>
                 </figure>
                 <div>
                   <div className={styles.formula}>

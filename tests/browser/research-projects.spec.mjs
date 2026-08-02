@@ -219,12 +219,10 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(0).locator('img[src="/brand/avikus.png"]')).toHaveCount(1);
   await expect(workCards.nth(1).getByText("MainGate", { exact: true })).toBeVisible();
   await expect(workCards.nth(1).getByText("Partners Inc.", { exact: true })).toBeVisible();
-  await expect(workCards.nth(0).locator('[class*="homographyField"]')).toHaveCount(1);
-  await expect(workCards.nth(0).locator('[class*="referencePlane"]')).toHaveCount(1);
-  await expect(workCards.nth(0).locator('[class*="inputFrames"] > [class*="inputFrame"]')).toHaveCount(3);
-  await expect(workCards.nth(0).locator('[class*="correspondenceLinks"] [class*="linkSet"]')).toHaveCount(3);
-  await expect(workCards.nth(0).locator('[class*="correspondenceLinks"] span')).toHaveCount(12);
-  await expect(workCards.nth(0).locator('[class*="imagePlane"] i')).toHaveCount(16);
+  await expect(workCards.nth(0).locator('[class*="mosaicField"]')).toHaveCount(1);
+  await expect(workCards.nth(0).locator('[class*="mosaicRibbon"]')).toHaveCount(1);
+  await expect(workCards.nth(0).locator('[class*="mosaicRibbon"] > [class*="ribbonTile"]')).toHaveCount(5);
+  await expect(workCards.nth(0).locator('[class*="correspondenceLinks"], [class*="imagePlane"]')).toHaveCount(0);
   await expect(workCards.nth(1).locator('[class*="commandRoutes"]')).toHaveCount(1);
   await expect(workCards.nth(1).locator('[class*="conversationAgent"]')).toHaveCount(1);
   await expect(workCards.nth(1).locator('[class*="taskAgent"]')).toHaveCount(1);
@@ -232,7 +230,7 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(1).locator('[class*="researchAgent"]')).toHaveCount(1);
   await expect(workCards.locator("svg, canvas, pre, code")).toHaveCount(0);
 
-  const homographyAnimation = await workCards.nth(0).locator('[class*="inputFrameOne"]').evaluate((node) => getComputedStyle(node).animationName);
+  const homographyAnimation = await workCards.nth(0).locator('[class*="tileOne"]').evaluate((node) => getComputedStyle(node).animationName);
   const commandAnimation = await workCards.nth(1).locator('[class*="commandRoutes"] i').first().evaluate((node) => getComputedStyle(node).animationName);
   expect(homographyAnimation).not.toBe("none");
   expect(commandAnimation).not.toBe("none");
@@ -273,7 +271,7 @@ test("dedicated work pages expose public-safe evidence and table alternatives", 
 test("reduced-motion preference freezes both work-card graphic systems", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  const movingNodes = page.locator('.experience-grid [class*="inputFrame"], .experience-grid [class*="referencePlane"], .experience-grid [class*="commandRoutes"] i, .experience-grid [class*="conversationAgent"], .experience-grid [class*="taskAgent"]');
+  const movingNodes = page.locator('.experience-grid [class*="mosaicRibbon"], .experience-grid [class*="ribbonTile"], .experience-grid [class*="commandRoutes"] i, .experience-grid [class*="conversationAgent"], .experience-grid [class*="taskAgent"]');
   const count = await movingNodes.count();
   expect(count).toBeGreaterThan(0);
   for (let index = 0; index < count; index += 1) {
