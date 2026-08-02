@@ -232,13 +232,16 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(home, />MainGate</);
   assert.match(home, />Partners Inc\.</);
 
-  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "homographyField", "referencePlane", "projectedPlane", "correspondenceLinks", "overlapRegion", "commandRoutes", "conversationAgent", "taskAgent", "workAgent", "researchAgent"]) {
+  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "homographyField", "referencePlane", "inputFrames", "inputFrameOne", "inputFrameTwo", "inputFrameThree", "correspondenceLinks", "linkSetOne", "linkSetTwo", "linkSetThree", "overlapRegion", "commandRoutes", "conversationAgent", "taskAgent", "workAgent", "researchAgent"]) {
     assert.ok(graphicSource.includes(marker) || graphicCss.includes(marker), `work graphic is missing ${marker}`);
   }
   assert.doesNotMatch(graphicSource, /<svg|<canvas/i);
   assert.doesNotMatch(graphicSource, /projectionGrid|packetOrbit|panoramaFrame|thermalWindow|shipCuboid|outputCluster|wordCluster|slideCluster|sheetCluster/);
-  assert.match(graphicCss, /@keyframes projected-lock/);
-  assert.match(graphicCss, /@keyframes correspondence-contract/);
+  assert.match(graphicCss, /@keyframes panorama-assemble/);
+  assert.match(graphicCss, /@keyframes input-frame-one/);
+  assert.match(graphicCss, /@keyframes input-frame-two/);
+  assert.match(graphicCss, /@keyframes input-frame-three/);
+  assert.match(graphicCss, /@keyframes links-one/);
   assert.match(graphicCss, /@keyframes command-flow/);
   for (const fill of ["background: var(--paper)", "background: var(--coral)", "background: var(--blue)", "background: var(--ink)"]) {
     assert.ok(graphicCss.includes(fill), `FINBURH agent palette is missing ${fill}`);

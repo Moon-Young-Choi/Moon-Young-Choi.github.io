@@ -45,7 +45,7 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             </div>
             <figure className={styles.heroFigure} aria-labelledby="avikus-field-caption">
               <AvikusProjectiveField variant="hero" />
-              <figcaption id="avikus-field-caption">Four non-collinear correspondences pull a skewed coral image plane onto the black reference plane before both resolve as one panoramic strip.</figcaption>
+              <figcaption id="avikus-field-caption">Three source frames take turns becoming the active coral plane; each four-point lock is absorbed into one growing black panorama.</figcaption>
             </figure>
           </div>
           <div className={styles.factDock}>
@@ -88,11 +88,11 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             <div className={styles.sectionLabel}>02 / Alignment path</div>
             <div className={styles.sectionBody}>
               <span className={styles.reconstruction}>Architecture reconstruction · no internal imagery</span>
-              <h2 id="alignment-title">Four correspondences. One projective lock. Three runtime lanes.</h2>
+              <h2 id="alignment-title">Three source frames. Sequential projective locks. One panorama.</h2>
               <div className={styles.splitFeature}>
                 <figure className={styles.featureFigure} aria-labelledby="alignment-caption">
                   <AvikusProjectiveField variant="hero" />
-                  <figcaption id="alignment-caption">Circular target points and coral source points coincide as the correspondence vectors contract, abstracting homography estimation and panoramic alignment.</figcaption>
+                  <figcaption id="alignment-caption">Only the active source exposes coral correspondence vectors. Each lock disappears into the expanding mosaic until one uninterrupted outline remains.</figcaption>
                 </figure>
                 <div>
                   <div className={styles.formula}>

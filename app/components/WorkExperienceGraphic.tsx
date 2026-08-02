@@ -5,19 +5,29 @@ type GraphicProps = {
 };
 
 const correspondencePoints = Array.from({ length: 4 });
+const inputFrameClasses = [styles.inputFrameOne, styles.inputFrameTwo, styles.inputFrameThree];
+const linkSetClasses = [styles.linkSetOne, styles.linkSetTwo, styles.linkSetThree];
 
 export function AvikusProjectiveField({ variant = "panel" }: GraphicProps) {
   return (
-    <div className={`${styles.graphic} ${styles.avikus} ${styles[variant]}`}>
+    <div className={`${styles.graphic} ${variant === "hero" ? styles.hero : ""}`}>
       <div className={styles.homographyField}>
         <div className={`${styles.imagePlane} ${styles.referencePlane}`}>
           {correspondencePoints.map((_, index) => <i key={`reference-${index}`} />)}
         </div>
-        <div className={`${styles.imagePlane} ${styles.projectedPlane}`}>
-          {correspondencePoints.map((_, index) => <i key={`projected-${index}`} />)}
+        <div className={styles.inputFrames}>
+          {inputFrameClasses.map((frameClass, frameIndex) => (
+            <div className={`${styles.imagePlane} ${styles.inputFrame} ${frameClass}`} key={frameClass}>
+              {correspondencePoints.map((_, pointIndex) => <i key={`input-${frameIndex}-${pointIndex}`} />)}
+            </div>
+          ))}
         </div>
         <div className={styles.correspondenceLinks}>
-          {correspondencePoints.map((_, index) => <span key={index} />)}
+          {linkSetClasses.map((linkClass) => (
+            <div className={`${styles.linkSet} ${linkClass}`} key={linkClass}>
+              {correspondencePoints.map((_, index) => <span key={index} />)}
+            </div>
+          ))}
         </div>
         <span className={styles.overlapRegion} />
       </div>
@@ -27,7 +37,7 @@ export function AvikusProjectiveField({ variant = "panel" }: GraphicProps) {
 
 export function FinburhDependencyLattice({ variant = "panel" }: GraphicProps) {
   return (
-    <div className={`${styles.graphic} ${styles.finburh} ${styles[variant]}`}>
+    <div className={`${styles.graphic} ${styles.finburh} ${variant === "hero" ? styles.hero : ""}`}>
       <div className={styles.commandRoutes}>
         <span className={styles.conversationRoute}><i /></span>
         <span className={styles.taskRoute}><i /></span>
