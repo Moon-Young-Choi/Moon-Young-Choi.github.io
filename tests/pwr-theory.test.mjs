@@ -150,9 +150,15 @@ test("ships an accessible proof renderer and isolated responsive visual system",
   assert.doesNotMatch(page, /["']src\/pwrscan\//);
   assert.doesNotMatch(page, /\.pdf|<svg|<canvas|<img/i);
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
+  assert.match(panel, /length:\s*49/);
+  assert.match(panel, /data-tone=/);
+  assert.match(panel, /styles\.scanWindow/);
+  assert.doesNotMatch(panel, /styles\.(header|footer|whitener|root|orbit)/);
   for (const width of [900, 640, 420, 320]) assert.match(css, new RegExp(`@media \\(max-width:\\s*${width}px\\)`));
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
   assert.match(css, /\.studyTabs/);
   assert.match(panelCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(panelCss, /@keyframes scan-diagonal/);
+  assert.match(panelCss, /@keyframes matrix-drift/);
   assert.match(css, /overflow:\s*clip/);
 });
