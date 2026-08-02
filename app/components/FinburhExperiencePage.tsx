@@ -44,7 +44,7 @@ export function FinburhExperiencePage({ study }: { study: CaseStudy }) {
             </div>
             <figure className={styles.heroFigure} aria-labelledby="finburh-lattice-caption">
               <FinburhDependencyLattice variant="hero" />
-              <figcaption id="finburh-lattice-caption">A conceptual dependency lattice: one request becomes a task DAG, evidence and assumptions enter the graph, and three editable artifact families form at the boundary.</figcaption>
+              <figcaption id="finburh-lattice-caption">A four-agent command geometry: conversation feeds task, task dispatches a stacked work group, and both task and work can request research.</figcaption>
             </figure>
           </div>
           <div className={styles.factDock}>
@@ -64,7 +64,7 @@ export function FinburhExperiencePage({ study }: { study: CaseStudy }) {
               <div className={styles.splitFeature}>
                 <figure className={`${styles.featureFigure} ${styles.latticeFigure}`} aria-labelledby="dag-caption">
                   <FinburhDependencyLattice variant="hero" />
-                  <figcaption id="dag-caption">The center pulse fans into Work-sized jobs. Evidence enters from the left; a failed node reverses and rejoins another route before outputs form.</figcaption>
+                  <figcaption id="dag-caption">Commands move from conversation to task, from task to the stacked work group, and from both task and work toward the shared research node.</figcaption>
                 </figure>
                 <div className={styles.workflowStatement}>
                   <span>Execution contract</span>

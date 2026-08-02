@@ -219,16 +219,20 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(0).locator('img[src="/brand/avikus.png"]')).toHaveCount(1);
   await expect(workCards.nth(1).getByText("MainGate", { exact: true })).toBeVisible();
   await expect(workCards.nth(1).getByText("Partners Inc.", { exact: true })).toBeVisible();
-  await expect(workCards.nth(0).locator('[class*="projectionGrid"]')).toHaveCount(2);
-  await expect(workCards.nth(0).locator('[class*="packetOrbit"]')).toHaveCount(1);
-  await expect(workCards.nth(1).locator('[class*="dependencyRoutes"]')).toHaveCount(1);
-  await expect(workCards.nth(1).locator('[class*="outputCluster"]')).toHaveCount(3);
+  await expect(workCards.nth(0).locator('[class*="panoramaFrame"]')).toHaveCount(1);
+  await expect(workCards.nth(0).locator('[class*="thermalWindow"]')).toHaveCount(1);
+  await expect(workCards.nth(0).locator('[class*="shipTrack"]')).toHaveCount(2);
+  await expect(workCards.nth(1).locator('[class*="commandRoutes"]')).toHaveCount(1);
+  await expect(workCards.nth(1).locator('[class*="conversationAgent"]')).toHaveCount(1);
+  await expect(workCards.nth(1).locator('[class*="taskAgent"]')).toHaveCount(1);
+  await expect(workCards.nth(1).locator('[class*="workAgent"] i')).toHaveCount(3);
+  await expect(workCards.nth(1).locator('[class*="researchAgent"]')).toHaveCount(1);
   await expect(workCards.locator("svg, canvas, pre, code")).toHaveCount(0);
 
-  const projectionAnimation = await workCards.nth(0).locator('[class*="gridA"]').evaluate((node) => getComputedStyle(node).animationName);
-  const dependencyAnimation = await workCards.nth(1).locator('[class*="conversationCore"]').evaluate((node) => getComputedStyle(node).animationName);
-  expect(projectionAnimation).not.toBe("none");
-  expect(dependencyAnimation).not.toBe("none");
+  const vesselAnimation = await workCards.nth(0).locator('[class*="shipCuboid"]').first().evaluate((node) => getComputedStyle(node).animationName);
+  const commandAnimation = await workCards.nth(1).locator('[class*="commandRoutes"] i').first().evaluate((node) => getComputedStyle(node).animationName);
+  expect(vesselAnimation).not.toBe("none");
+  expect(commandAnimation).not.toBe("none");
 });
 
 test("dedicated work pages expose public-safe evidence and table alternatives", async ({ page }) => {
@@ -257,7 +261,7 @@ test("dedicated work pages expose public-safe evidence and table alternatives", 
 test("reduced-motion preference freezes both work-card graphic systems", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  const movingNodes = page.locator('.experience-grid [class*="gridA"], .experience-grid [class*="gridB"], .experience-grid [class*="conversationCore"], .experience-grid [class*="routeSignal"]');
+  const movingNodes = page.locator('.experience-grid [class*="shipCuboid"], .experience-grid [class*="commandRoutes"] i, .experience-grid [class*="conversationAgent"], .experience-grid [class*="taskAgent"]');
   const count = await movingNodes.count();
   expect(count).toBeGreaterThan(0);
   for (let index = 0; index < count; index += 1) {

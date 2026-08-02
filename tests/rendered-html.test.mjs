@@ -232,12 +232,13 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(home, />MainGate</);
   assert.match(home, />Partners Inc\.</);
 
-  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "projectionGrid", "packetOrbit", "dependencyRoutes", "assumptionBranch", "wordCluster", "slideCluster", "sheetCluster"]) {
+  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "panoramaFrame", "thermalWindow", "shipCuboid", "commandRoutes", "conversationAgent", "taskAgent", "workAgent", "researchAgent"]) {
     assert.ok(graphicSource.includes(marker) || graphicCss.includes(marker), `work graphic is missing ${marker}`);
   }
   assert.doesNotMatch(graphicSource, /<svg|<canvas/i);
-  assert.match(graphicCss, /@keyframes projection-a/);
-  assert.match(graphicCss, /@keyframes route-dispatch/);
+  assert.doesNotMatch(graphicSource, /projectionGrid|packetOrbit|outputCluster|wordCluster|slideCluster|sheetCluster/);
+  assert.match(graphicCss, /@keyframes vessel-transit/);
+  assert.match(graphicCss, /@keyframes command-flow/);
   assert.match(graphicCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
   assert.match(pageCss, /@media \(max-width:\s*900px\)/);
   assert.match(pageCss, /@media \(max-width:\s*640px\)/);

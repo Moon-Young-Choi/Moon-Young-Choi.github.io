@@ -45,7 +45,7 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             </div>
             <figure className={styles.heroFigure} aria-labelledby="avikus-field-caption">
               <AvikusProjectiveField variant="hero" />
-              <figcaption id="avikus-field-caption">Conceptual reconstruction of NMEA observation gaps and two projective image planes converging into one alignment field.</figcaption>
+              <figcaption id="avikus-field-caption">Conceptual visible-light panorama with an infrared inset. The same moving vessel changes from black to red only inside the infrared field.</figcaption>
             </figure>
           </div>
           <div className={styles.factDock}>
@@ -88,11 +88,11 @@ export function AvikusExperiencePage({ study }: { study: CaseStudy }) {
             <div className={styles.sectionLabel}>02 / Alignment path</div>
             <div className={styles.sectionBody}>
               <span className={styles.reconstruction}>Architecture reconstruction · no internal imagery</span>
-              <h2 id="alignment-title">Two planes converge. Three runtime lanes stay separate.</h2>
+              <h2 id="alignment-title">One vessel geometry. Two spectral regions. Three runtime lanes.</h2>
               <div className={styles.splitFeature}>
                 <figure className={styles.featureFigure} aria-labelledby="alignment-caption">
                   <AvikusProjectiveField variant="hero" />
-                  <figcaption id="alignment-caption">Two projective grids search, lock correspondences and settle into one frame. The geometry abstracts homography estimation and GPU warp-and-blend.</figcaption>
+                  <figcaption id="alignment-caption">The shared waterline and vessel geometry remain continuous across the visible and infrared panorama regions, abstracting the aligned composite view.</figcaption>
                 </figure>
                 <div>
                   <div className={styles.formula}>
