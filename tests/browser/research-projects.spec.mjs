@@ -136,6 +136,36 @@ test("EventEdge selects precomputed decisions and keeps terminal truth locked un
   await expect(page.getByRole("table")).toHaveCount(6);
 });
 
+test("EventEdge cover keeps its marker on the polynomial and its order book dot-free", async ({ page }) => {
+  await page.goto("/");
+  const ticker = page.locator("[data-eventedge-signal]");
+  await expect(ticker).toHaveCount(1);
+  await page.waitForTimeout(120);
+
+  const deviation = await ticker.evaluate((node) => {
+    const controlPoints = [
+      [0, 0.72],
+      [0.25, 0.56],
+      [0.5, 0.66],
+      [0.75, 0.28],
+      [1, 0.22],
+    ];
+    const t = Number.parseFloat(node.style.left) / 100;
+    const observed = Number.parseFloat(node.style.top) / 100;
+    const expected = controlPoints.reduce((sum, [x, y], index) => {
+      let basis = 1;
+      for (let other = 0; other < controlPoints.length; other += 1) {
+        if (other !== index) basis *= (t - controlPoints[other][0]) / (x - controlPoints[other][0]);
+      }
+      return sum + y * basis;
+    }, 0);
+    return Math.abs(observed - expected);
+  });
+
+  expect(deviation).toBeLessThan(0.0001);
+  await expect(page.locator('[class*="orderBook"] span, [class*="orderBook"] b')).toHaveCount(0);
+});
+
 test("reduced-motion preference removes explanatory cover animation", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");

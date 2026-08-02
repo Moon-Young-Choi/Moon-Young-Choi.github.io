@@ -24,43 +24,43 @@
 
 .scene {
   position: relative;
-  width: min(94%, 630px);
-  height: 248px;
-  perspective: 720px;
+  width: min(96%, 630px);
+  aspect-ratio: 630 / 248;
 }
 
-.plane {
+.floor {
   position: absolute;
-  left: 14%;
-  right: 9%;
-  top: 23%;
-  bottom: 7%;
+  left: 6%;
+  top: 55%;
+  width: 88%;
+  height: 44%;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
   border: 1px solid currentColor;
+  opacity: .32;
   background-image:
-    linear-gradient(color-mix(in srgb, currentColor 45%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, currentColor 45%, transparent) 1px, transparent 1px);
-  background-size: 12.5% 16.66%;
-  transform: rotateX(62deg) rotateZ(-24deg);
-  transform-origin: 50% 70%;
+    linear-gradient(27deg, transparent 48.8%, currentColor 49%, currentColor 50%, transparent 50.2%),
+    linear-gradient(-27deg, transparent 48.8%, currentColor 49%, currentColor 50%, transparent 50.2%);
+  background-size: 11% 22%;
 }
 
 .axes {
   position: absolute;
   inset: 0;
+  z-index: 4;
 }
 
 .axes i {
   position: absolute;
-  left: 17%;
-  bottom: 18%;
+  left: 6%;
   display: block;
+  height: 2px;
   background: currentColor;
   transform-origin: left center;
 }
 
-.axes i:nth-child(1) { width: 74%; height: 2px; transform: rotate(-13deg); }
-.axes i:nth-child(2) { width: 53%; height: 2px; transform: rotate(-49deg); }
-.axes i:nth-child(3) { width: 2px; height: 69%; transform: none; transform-origin: center bottom; }
+.axes i:nth-child(1) { top: 77%; width: 45%; transform: rotate(11deg); }
+.axes i:nth-child(2) { top: 77%; width: 45%; transform: rotate(-11deg); }
+.axes i:nth-child(3) { top: 12%; width: 2px; height: 65%; transform: none; }
 
 .axes i::after {
   content: "";
@@ -74,96 +74,72 @@
   transform: rotate(45deg);
 }
 
-.axes i:nth-child(3)::after {
-  right: -3px;
-  top: -1px;
-  transform: rotate(-45deg);
-}
+.axes i:nth-child(3)::after { right: -3px; top: -1px; transform: rotate(-45deg); }
 
-.surface {
+.surfaceMesh {
   position: absolute;
+  inset: 0;
   z-index: 2;
-  left: 32%;
-  top: 5%;
-  width: 50%;
-  height: 76%;
-  transform: rotate(-8deg) skewX(-7deg);
-  transform-origin: center bottom;
-  animation: quant-surface-breathe 7s ease-in-out infinite alternate;
+  transform-origin: 50% 78%;
+  animation: quant-mesh-breathe 8s ease-in-out infinite alternate;
 }
 
-.contour {
+.surfaceCell,
+.meshLine {
   position: absolute;
-  left: 50%;
   display: block;
-  border: 2px solid currentColor;
-  border-radius: 50%;
-  transform: translateX(-50%);
-  background: color-mix(in srgb, var(--violet) 12%, transparent);
 }
 
-.contour:nth-child(1),
-.contour:nth-child(2) { border-color: var(--blue); }
-.contour:nth-child(3),
-.contour:nth-child(4),
-.contour:nth-child(5) { border-color: var(--violet); }
-.contour:nth-child(6),
-.contour:nth-child(7),
-.contour:nth-child(8) { border-color: currentColor; }
+.surfaceCell { opacity: .9; }
+.surfaceCell[data-tone="0"] { background: var(--blue); }
+.surfaceCell[data-tone="1"] { background: color-mix(in srgb, var(--blue) 63%, var(--violet)); }
+.surfaceCell[data-tone="2"] { background: var(--violet); }
+.surfaceCell[data-tone="3"] { background: color-mix(in srgb, var(--violet) 48%, var(--coral)); }
+.surfaceCell[data-tone="4"] { background: var(--coral); }
 
-.surface::before,
-.surface::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 50%;
-  bottom: 5%;
-  width: 1px;
-  height: 88%;
-  background: color-mix(in srgb, currentColor 55%, transparent);
-  transform-origin: center bottom;
+.meshLine {
+  z-index: 3;
+  height: 1px;
+  background: currentColor;
+  opacity: .74;
+  transform-origin: left center;
 }
-
-.surface::before { transform: rotate(-24deg); }
-.surface::after { transform: rotate(24deg); }
 
 .panelSignal {
   position: absolute;
-  z-index: 4;
-  left: calc(50% - 7px);
-  top: 5%;
-  width: 14px;
-  height: 14px;
+  z-index: 5;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border: 1px solid currentColor;
   border-radius: 50%;
-  background: currentColor;
+  background: var(--lime);
   animation: quant-peak-pulse 4.8s ease-in-out infinite alternate;
 }
 
-@keyframes quant-surface-breathe {
-  to { transform: rotate(-5deg) skewX(-5deg) scaleY(.92) scaleX(1.03); }
+@keyframes quant-mesh-breathe {
+  to { transform: scaleY(.97) translateY(2px); }
 }
 
 @keyframes quant-peak-pulse {
-  to { transform: scale(.58); background: var(--blue); }
+  to { transform: scale(1.65); background: var(--paper); }
 }
 
 @media (max-width: 900px) {
   .panel { position: relative; inset: auto; flex: 0 0 260px; height: 260px; margin: 12px 0 30px; }
-  .scene { width: min(94%, 600px); height: 228px; }
+  .scene { width: min(96%, 600px); }
 }
 
 @media (max-width: 640px) {
   .panel { flex-basis: 236px; height: 236px; margin: 10px 0 22px; }
-  .scene { height: 210px; }
-  .surface { left: 30%; width: 53%; }
+  .scene { width: 98%; }
+  .meshLine { height: .8px; }
 }
 
 @media (max-width: 420px) {
   .panel { flex-basis: 216px; height: 216px; }
-  .scene { width: 100%; height: 194px; transform: scale(.96); }
-  .plane { left: 11%; right: 5%; }
-  .axes i { left: 14%; }
-  .surface { left: 28%; width: 57%; }
+  .scene { width: 100%; transform: scale(.96); }
+  .panelSignal { width: 7px; height: 7px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,15 +1,46 @@
+"use client";
+
 import type { CSSProperties } from "react";
+import { useEffect, useRef } from "react";
 import styles from "@/app/components/EventEdgeProjectPanel.module.css";
 
-const priceSegments = [
-  { left: "5%", top: "78%", width: "16%", angle: "-35deg" },
-  { left: "18%", top: "61%", width: "14%", angle: "20deg" },
-  { left: "31%", top: "70%", width: "20%", angle: "-50deg" },
-  { left: "44%", top: "42%", width: "14%", angle: "16deg" },
-  { left: "57%", top: "49%", width: "18%", angle: "-43deg" },
-  { left: "70%", top: "25%", width: "14.5%", angle: "24deg" },
-  { left: "83%", top: "36%", width: "16%", angle: "-43deg" },
-];
+const polynomialControlPoints = [
+  [0, 0.72],
+  [0.25, 0.56],
+  [0.5, 0.66],
+  [0.75, 0.28],
+  [1, 0.22],
+] as const;
+
+function pricePolynomial(t: number) {
+  return polynomialControlPoints.reduce((sum, [x, y], index) => {
+    let basis = 1;
+    for (let other = 0; other < polynomialControlPoints.length; other += 1) {
+      if (other === index) continue;
+      basis *= (t - polynomialControlPoints[other][0]) / (x - polynomialControlPoints[other][0]);
+    }
+    return sum + y * basis;
+  }, 0);
+}
+
+const CHART_ASPECT = 1.85;
+const PRICE_SAMPLES = 80;
+const sampledPrice = Array.from({ length: PRICE_SAMPLES + 1 }, (_, index) => {
+  const t = index / PRICE_SAMPLES;
+  return { x: t * 100, y: pricePolynomial(t) * 100 };
+});
+
+const priceSegments = sampledPrice.slice(0, -1).map((point, index) => {
+  const next = sampledPrice[index + 1];
+  const dx = next.x - point.x;
+  const dy = (next.y - point.y) / CHART_ASPECT;
+  return {
+    left: point.x,
+    top: point.y,
+    width: Math.hypot(dx, dy),
+    angle: Math.atan2(dy, dx) * (180 / Math.PI),
+  };
+});
 
 const depth = [
   [42, 66],
@@ -22,6 +53,34 @@ const depth = [
 ];
 
 export function EventEdgeProjectPanel() {
+  const tickerRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const ticker = tickerRef.current;
+    if (!ticker) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const positionTicker = (t: number) => {
+      ticker.style.left = `${t * 100}%`;
+      ticker.style.top = `${pricePolynomial(t) * 100}%`;
+    };
+
+    if (reducedMotion) {
+      positionTicker(0.72);
+      return;
+    }
+
+    const startedAt = performance.now();
+    let frame = 0;
+    const animate = (now: number) => {
+      const t = ((now - startedAt) % 7000) / 7000;
+      positionTicker(t);
+      frame = window.requestAnimationFrame(animate);
+    };
+    frame = window.requestAnimationFrame(animate);
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
   return (
     <figure className={styles.panel} aria-labelledby="eventedge-panel-caption">
       <div className={styles.market} aria-hidden="true">
@@ -29,30 +88,28 @@ export function EventEdgeProjectPanel() {
           <div className={styles.pricePath}>
             {priceSegments.map((segment, index) => (
               <i key={index} style={{
-                left: segment.left,
-                top: segment.top,
-                width: segment.width,
-                "--angle": segment.angle,
-              } as CSSProperties} />
+                left: `${segment.left}%`,
+                top: `${segment.top}%`,
+                width: `${segment.width}%`,
+                transform: `rotate(${segment.angle}deg)`,
+              }} />
             ))}
           </div>
-          <span className={styles.ticker} />
+          <span className={styles.ticker} data-eventedge-signal ref={tickerRef} />
         </div>
 
         <div className={styles.orderBook}>
           {depth.map(([bid, ask], index) => (
             <div className={styles.depthLevel} key={index} style={{ "--delay": `${index * -0.23}s` } as CSSProperties}>
               <i className={styles.bid} style={{ width: `${bid}%` }} />
-              <span />
               <i className={styles.ask} style={{ width: `${ask}%` }} />
             </div>
           ))}
-          <b data-eventedge-signal />
         </div>
       </div>
 
       <figcaption className={styles.visuallyHidden} id="eventedge-panel-caption">
-        An animated derivatives price path beside a moving bid and ask order book.
+        A smooth polynomial derivatives price path with a marker constrained to the same function, beside a moving bid and ask order book.
       </figcaption>
     </figure>
   );
