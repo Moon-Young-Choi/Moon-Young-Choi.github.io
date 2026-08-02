@@ -136,34 +136,19 @@ test("EventEdge selects precomputed decisions and keeps terminal truth locked un
   await expect(page.getByRole("table")).toHaveCount(6);
 });
 
-test("EventEdge cover keeps its marker on the polynomial and its order book dot-free", async ({ page }) => {
+test("EventEdge cover stacks sell asks above buy bids in a dot-free animated book", async ({ page }) => {
   await page.goto("/");
-  const ticker = page.locator("[data-eventedge-signal]");
-  await expect(ticker).toHaveCount(1);
-  await page.waitForTimeout(120);
-
-  const deviation = await ticker.evaluate((node) => {
-    const controlPoints = [
-      [0, 0.72],
-      [0.25, 0.56],
-      [0.5, 0.66],
-      [0.75, 0.28],
-      [1, 0.22],
-    ];
-    const t = Number.parseFloat(node.style.left) / 100;
-    const observed = Number.parseFloat(node.style.top) / 100;
-    const expected = controlPoints.reduce((sum, [x, y], index) => {
-      let basis = 1;
-      for (let other = 0; other < controlPoints.length; other += 1) {
-        if (other !== index) basis *= (t - controlPoints[other][0]) / (x - controlPoints[other][0]);
-      }
-      return sum + y * basis;
-    }, 0);
-    return Math.abs(observed - expected);
-  });
-
-  expect(deviation).toBeLessThan(0.0001);
-  await expect(page.locator('[class*="orderBook"] span, [class*="orderBook"] b')).toHaveCount(0);
+  const orderBook = page.locator('[class*="orderBook"]');
+  await expect(orderBook).toHaveCount(1);
+  const asks = orderBook.locator('[data-side="ask"] [class*="level"]');
+  const bids = orderBook.locator('[data-side="bid"] [class*="level"]');
+  await expect(asks).toHaveCount(4);
+  await expect(bids).toHaveCount(4);
+  expect(await asks.locator("b").allTextContents()).toEqual(["62.0", "61.5", "61.0", "60.5"]);
+  expect(await bids.locator("b").allTextContents()).toEqual(["59.5", "59.0", "58.5", "58.0"]);
+  expect(await asks.first().locator("i").evaluate((node) => getComputedStyle(node).animationName)).toContain("eventedge-depth");
+  await expect(orderBook.locator('[data-eventedge-signal], [class*="ticker"]')).toHaveCount(0);
+  await expect(page.locator('[class*="chart"], [class*="pricePath"], [data-eventedge-signal]')).toHaveCount(0);
 });
 
 test("reduced-motion preference removes explanatory cover animation", async ({ page }) => {

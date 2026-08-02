@@ -28,59 +28,12 @@
   aspect-ratio: 630 / 248;
 }
 
-.floor {
-  position: absolute;
-  left: 6%;
-  top: 55%;
-  width: 88%;
-  height: 44%;
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  border: 1px solid currentColor;
-  opacity: .32;
-  background-image:
-    linear-gradient(27deg, transparent 48.8%, currentColor 49%, currentColor 50%, transparent 50.2%),
-    linear-gradient(-27deg, transparent 48.8%, currentColor 49%, currentColor 50%, transparent 50.2%);
-  background-size: 11% 22%;
-}
-
-.axes {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-}
-
-.axes i {
-  position: absolute;
-  left: 6%;
-  display: block;
-  height: 2px;
-  background: currentColor;
-  transform-origin: left center;
-}
-
-.axes i:nth-child(1) { top: 77%; width: 45%; transform: rotate(11deg); }
-.axes i:nth-child(2) { top: 77%; width: 45%; transform: rotate(-11deg); }
-.axes i:nth-child(3) { top: 12%; width: 2px; height: 65%; transform: none; }
-
-.axes i::after {
-  content: "";
-  position: absolute;
-  right: -1px;
-  top: -3px;
-  width: 7px;
-  height: 7px;
-  border-top: 2px solid currentColor;
-  border-right: 2px solid currentColor;
-  transform: rotate(45deg);
-}
-
-.axes i:nth-child(3)::after { right: -3px; top: -1px; transform: rotate(-45deg); }
-
 .surfaceMesh {
   position: absolute;
   inset: 0;
   z-index: 2;
-  transform-origin: 50% 78%;
+  transform-origin: 52% 76%;
+  will-change: transform;
   animation: quant-mesh-breathe 8s ease-in-out infinite alternate;
 }
 
@@ -90,12 +43,19 @@
   display: block;
 }
 
-.surfaceCell { opacity: .9; }
+.surfaceCell {
+  opacity: .9;
+  animation: quant-color-drift 6.8s ease-in-out infinite alternate;
+}
 .surfaceCell[data-tone="0"] { background: var(--blue); }
 .surfaceCell[data-tone="1"] { background: color-mix(in srgb, var(--blue) 63%, var(--violet)); }
 .surfaceCell[data-tone="2"] { background: var(--violet); }
 .surfaceCell[data-tone="3"] { background: color-mix(in srgb, var(--violet) 48%, var(--coral)); }
 .surfaceCell[data-tone="4"] { background: var(--coral); }
+.surfaceCell[data-tone="1"] { animation-delay: -1.2s; }
+.surfaceCell[data-tone="2"] { animation-delay: -2.4s; }
+.surfaceCell[data-tone="3"] { animation-delay: -3.6s; }
+.surfaceCell[data-tone="4"] { animation-delay: -4.8s; }
 
 .meshLine {
   z-index: 3;
@@ -103,6 +63,7 @@
   background: currentColor;
   opacity: .74;
   transform-origin: left center;
+  animation: quant-wire-drift 5.4s ease-in-out infinite alternate;
 }
 
 .panelSignal {
@@ -118,7 +79,16 @@
 }
 
 @keyframes quant-mesh-breathe {
-  to { transform: scaleY(.97) translateY(2px); }
+  from { transform: perspective(620px) rotateX(0deg) rotateZ(-.5deg) translateY(0) scale(1); }
+  to { transform: perspective(620px) rotateX(3deg) rotateZ(1.2deg) translateY(3px) scaleX(1.018) scaleY(.965); }
+}
+
+@keyframes quant-color-drift {
+  to { opacity: .98; filter: saturate(1.16) brightness(1.08); }
+}
+
+@keyframes quant-wire-drift {
+  to { opacity: .88; }
 }
 
 @keyframes quant-peak-pulse {

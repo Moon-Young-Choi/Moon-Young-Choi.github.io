@@ -78,12 +78,15 @@ test("Quant homepage cover renders a fitted joint-distribution mesh", async () =
     readFile(new URL("../app/components/QuantPlatformProjectPanel.module.css", import.meta.url), "utf8"),
   ]);
 
-  for (const marker of ["surfaceHeight", "projectSurface", "surfaceCells", "meshLines", "styles.floor", "styles.surfaceMesh", "styles.panelSignal"]) {
+  for (const marker of ["surfaceHeight", "projectSurface", "surfaceCells", "meshLines", "styles.surfaceMesh", "styles.panelSignal"]) {
     assert.ok(panel.includes(marker), `Quant probability-surface cover is missing ${marker}`);
   }
+  assert.doesNotMatch(panel, /styles\.(axes|floor)/);
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
   assert.match(css, /\.surfaceCell\[data-tone="4"\]/);
   assert.match(css, /@keyframes quant-mesh-breathe/);
+  assert.match(css, /@keyframes quant-color-drift/);
+  assert.match(css, /@keyframes quant-wire-drift/);
   assert.match(css, /@keyframes quant-peak-pulse/);
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.panel/);
 });

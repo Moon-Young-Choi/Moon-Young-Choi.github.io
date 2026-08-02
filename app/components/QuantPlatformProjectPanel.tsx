@@ -84,8 +84,6 @@ export function QuantPlatformProjectPanel() {
   return (
     <figure className={styles.panel} aria-labelledby="quant-panel-caption">
       <div className={styles.scene} aria-hidden="true">
-        <div className={styles.floor} />
-        <div className={styles.axes}><i /><i /><i /></div>
         <div className={styles.surfaceMesh}>
           {surfaceCells.map((cell, index) => (
             <i
