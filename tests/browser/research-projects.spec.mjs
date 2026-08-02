@@ -172,8 +172,12 @@ test("Quant cover holds its planar grid fixed while height, wire geometry, and a
   });
 
   const before = await readFrame();
-  await page.waitForTimeout(720);
-  const after = await readFrame();
+  const observedFrames = [before];
+  for (let sample = 0; sample < 3; sample += 1) {
+    await page.waitForTimeout(360);
+    observedFrames.push(await readFrame());
+  }
+  const after = observedFrames.at(-1);
 
   expect(Math.abs(after.peakLeft - before.peakLeft)).toBeLessThan(0.0001);
   expect(Math.abs(after.peakTop - before.peakTop)).toBeGreaterThan(0.05);
@@ -183,7 +187,10 @@ test("Quant cover holds its planar grid fixed while height, wire geometry, and a
     expect(Math.abs(after.cells[index].width - before.cells[index].width)).toBeLessThan(0.0001);
   }
   expect(after.cells.some((cell, index) => Math.abs(cell.top - before.cells[index].top) > 0.05)).toBe(true);
-  expect(after.cells.some((cell, index) => cell.color !== before.cells[index].color)).toBe(true);
+  const staticColors = after.cells
+    .map((_, index) => new Set(observedFrames.map((frame) => frame.cells[index].color)).size < 3 ? index : -1)
+    .filter((index) => index >= 0);
+  expect(staticColors, `Every patch must visibly change color; static indexes: ${staticColors.join(", ")}`).toEqual([]);
 });
 
 test("reduced-motion preference removes explanatory cover animation", async ({ page }) => {

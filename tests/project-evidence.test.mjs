@@ -81,8 +81,11 @@ test("Quant homepage cover renders a fitted joint-distribution mesh", async () =
   for (const marker of [
     "surfaceHeight",
     "animatedHeight",
+    "motionProfile",
+    "hashedUnit",
     "projectSurface",
     "projectedPatchArea",
+    "patchAreaRanges",
     "createSurfaceFrame",
     "surfaceCells",
     "meshLines",
@@ -97,6 +100,8 @@ test("Quant homepage cover renders a fitted joint-distribution mesh", async () =
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
   assert.match(panel, /hsl\(\$\{hue\.toFixed\(2\)\}/);
   assert.match(panel, /x:\s*point\.x[\s\S]*y:\s*point\.baseY\s*-\s*z\s*\*\s*Z_PROJECTION/);
+  assert.match(panel, /amplitude:\s*0\.095\s*\+\s*hashedUnit\(index,\s*1\)\s*\*\s*0\.11/);
+  assert.doesNotMatch(panel, /prominence|envelope/);
   assert.doesNotMatch(css, /quant-mesh-breathe|quant-color-drift|quant-wire-drift|quant-peak-pulse/);
   assert.doesNotMatch(css, /rotateX|rotateZ|scaleX|scaleY/);
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.panel/);

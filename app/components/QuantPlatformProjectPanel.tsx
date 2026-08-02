@@ -10,6 +10,15 @@ type SurfaceGridPoint = {
   x: number;
   baseY: number;
   baseZ: number;
+  motion: MotionProfile;
+};
+
+type MotionProfile = {
+  amplitude: number;
+  primaryRate: number;
+  secondaryRate: number;
+  primaryPhase: number;
+  secondaryPhase: number;
 };
 
 type SurfacePoint = { x: number; y: number; z: number };
@@ -34,22 +43,37 @@ function surfaceHeight(u: number, v: number) {
   return primary + shoulder + tilt - 0.08;
 }
 
-function createGridPoint(u: number, v: number): SurfaceGridPoint {
+function hashedUnit(index: number, salt: number) {
+  const raw = Math.sin((index + 1) * 12.9898 + salt * 78.233) * 43_758.5453;
+  return raw - Math.floor(raw);
+}
+
+function motionProfile(index: number): MotionProfile {
+  return {
+    amplitude: 0.095 + hashedUnit(index, 1) * 0.11,
+    primaryRate: 0.72 + hashedUnit(index, 2) * 0.5,
+    secondaryRate: 1.5 + hashedUnit(index, 3) * 0.85,
+    primaryPhase: hashedUnit(index, 4) * Math.PI * 2,
+    secondaryPhase: hashedUnit(index, 5) * Math.PI * 2,
+  };
+}
+
+function createGridPoint(u: number, v: number, index: number): SurfaceGridPoint {
   return {
     u,
     v,
     x: 50 + (u - v) * 22,
     baseY: 77 + (u + v) * 11,
     baseZ: surfaceHeight(u, v),
+    motion: motionProfile(index),
   };
 }
 
 function animatedHeight(point: SurfaceGridPoint, phase: number) {
-  const prominence = Math.max(0, Math.min(1, (point.baseZ + 0.1) / 0.92));
-  const envelope = 0.38 + prominence * 0.62;
-  const primaryWave = Math.sin(phase + point.u * 0.72 - point.v * 0.5);
-  const secondaryWave = Math.sin(phase * 1.4 - point.u * 1.7 - point.v * 1.15);
-  return point.baseZ + envelope * (primaryWave * 0.145 + secondaryWave * 0.04);
+  const { amplitude, primaryRate, secondaryRate, primaryPhase, secondaryPhase } = point.motion;
+  const primaryWave = Math.sin(phase * primaryRate + primaryPhase);
+  const secondaryWave = Math.sin(phase * secondaryRate + secondaryPhase);
+  return point.baseZ + amplitude * (primaryWave * 0.72 + secondaryWave * 0.28);
 }
 
 function projectSurface(point: SurfaceGridPoint, z: number): SurfacePoint {
@@ -64,7 +88,7 @@ const surfaceRows = Array.from({ length: GRID_SIZE }, (_, row) => {
   const v = -1 + (row / (GRID_SIZE - 1)) * 2;
   return Array.from({ length: GRID_SIZE }, (_, column) => {
     const u = -1 + (column / (GRID_SIZE - 1)) * 2;
-    return createGridPoint(u, v);
+    return createGridPoint(u, v, row * GRID_SIZE + column);
   });
 });
 
@@ -109,6 +133,27 @@ function projectedPatchArea(corners: SurfacePoint[]) {
   }, 0)) / 2;
 }
 
+function surfacePointsAt(phase: number) {
+  return surfacePoints.map((point) => projectSurface(point, animatedHeight(point, phase)));
+}
+
+const patchAreaRanges = (() => {
+  const ranges = surfaceCells.map(() => ({ minimum: Infinity, maximum: -Infinity }));
+  const sampleCount = 360;
+
+  for (let sample = 0; sample < sampleCount; sample += 1) {
+    const phase = (sample / (sampleCount - 1)) * Math.PI * 18;
+    const points = surfacePointsAt(phase);
+    surfaceCells.forEach((cell, index) => {
+      const area = projectedPatchArea(cell.pointIndexes.map((pointIndex) => points[pointIndex]));
+      ranges[index].minimum = Math.min(ranges[index].minimum, area);
+      ranges[index].maximum = Math.max(ranges[index].maximum, area);
+    });
+  }
+
+  return ranges;
+})();
+
 function cellGeometry(corners: SurfacePoint[], normalizedArea: number): CellGeometry {
   const left = Math.min(...corners.map((point) => point.x));
   const right = Math.max(...corners.map((point) => point.x));
@@ -143,17 +188,19 @@ function createMeshLine(start: SurfacePoint, end: SurfacePoint) {
 }
 
 function createSurfaceFrame(phase: number) {
-  const points = surfacePoints.map((point) => projectSurface(point, animatedHeight(point, phase)));
+  const points = surfacePointsAt(phase);
   const cellsWithArea = surfaceCells.map((cell) => {
     const corners = cell.pointIndexes.map((index) => points[index]);
     return { corners, area: projectedPatchArea(corners) };
   });
-  const minimumArea = Math.min(...cellsWithArea.map((cell) => cell.area));
-  const maximumArea = Math.max(...cellsWithArea.map((cell) => cell.area));
-  const areaRange = Math.max(maximumArea - minimumArea, Number.EPSILON);
 
   return {
-    cells: cellsWithArea.map(({ corners, area }) => cellGeometry(corners, (area - minimumArea) / areaRange)),
+    cells: cellsWithArea.map(({ corners, area }, index) => {
+      const range = patchAreaRanges[index];
+      const areaRange = Math.max(range.maximum - range.minimum, Number.EPSILON);
+      const normalizedArea = Math.max(0, Math.min(1, (area - range.minimum) / areaRange));
+      return cellGeometry(corners, normalizedArea);
+    }),
     lines: meshLines.map((line) => createMeshLine(points[line.start], points[line.end])),
     peak: points[surfacePeakIndex],
   };
@@ -252,7 +299,7 @@ export function QuantPlatformProjectPanel() {
       </div>
 
       <figcaption className={styles.visuallyHidden} id="quant-panel-caption">
-        A fitted joint-probability surface whose fixed planar grid moves only in height, with patch area mapped continuously from blue to red.
+        A fitted joint-probability surface whose fixed planar grid points follow independent smooth height paths, with each patch&apos;s relative projected area mapped continuously from blue to red.
       </figcaption>
     </figure>
   );
