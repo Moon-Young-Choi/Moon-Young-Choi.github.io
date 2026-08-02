@@ -34,7 +34,7 @@ type CellGeometry = {
 const GRID_SIZE = 11;
 const SCENE_ASPECT = 630 / 248;
 const Z_PROJECTION = 58;
-const CYCLE_MS = 3_600;
+const CYCLE_MS = 5_143;
 
 function surfaceHeight(u: number, v: number) {
   const primary = 0.88 * Math.exp(-2.15 * ((u - 0.22) ** 2 + 1.45 * (v + 0.12) ** 2));
@@ -161,8 +161,7 @@ function cellGeometry(corners: SurfacePoint[], normalizedArea: number): CellGeom
   const bottom = Math.max(...corners.map((point) => point.y));
   const width = Math.max(right - left, 0.01);
   const height = Math.max(bottom - top, 0.01);
-  const hue = 228 - normalizedArea * 222;
-  const lightness = 54 + normalizedArea * 7;
+  const lightness = normalizedArea * 100;
 
   return {
     left,
@@ -172,7 +171,7 @@ function cellGeometry(corners: SurfacePoint[], normalizedArea: number): CellGeom
     polygon: corners.map((point) => (
       `${((point.x - left) / width) * 100}% ${((point.y - top) / height) * 100}%`
     )).join(", "),
-    color: `hsl(${hue.toFixed(2)} 84% ${lightness.toFixed(2)}%)`,
+    color: `hsl(0 0% ${lightness.toFixed(2)}%)`,
   };
 }
 
@@ -299,7 +298,7 @@ export function QuantPlatformProjectPanel() {
       </div>
 
       <figcaption className={styles.visuallyHidden} id="quant-panel-caption">
-        A fitted joint-probability surface whose fixed planar grid points follow independent smooth height paths, with each patch&apos;s relative projected area mapped continuously from blue to red.
+        A fitted joint-probability surface whose fixed planar grid points follow independent smooth height paths, with each patch&apos;s relative projected area mapped continuously from black to white.
       </figcaption>
     </figure>
   );

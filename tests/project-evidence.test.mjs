@@ -98,7 +98,10 @@ test("Quant homepage cover renders a fitted joint-distribution mesh", async () =
   }
   assert.doesNotMatch(panel, /styles\.(axes|floor)/);
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
-  assert.match(panel, /hsl\(\$\{hue\.toFixed\(2\)\}/);
+  assert.match(panel, /const CYCLE_MS = 5_143/);
+  assert.match(panel, /const lightness = normalizedArea \* 100/);
+  assert.match(panel, /hsl\(0 0% \$\{lightness\.toFixed\(2\)\}%\)/);
+  assert.doesNotMatch(panel, /const hue|84%|blue to red/);
   assert.match(panel, /x:\s*point\.x[\s\S]*y:\s*point\.baseY\s*-\s*z\s*\*\s*Z_PROJECTION/);
   assert.match(panel, /amplitude:\s*0\.095\s*\+\s*hashedUnit\(index,\s*1\)\s*\*\s*0\.11/);
   assert.doesNotMatch(panel, /prominence|envelope/);
