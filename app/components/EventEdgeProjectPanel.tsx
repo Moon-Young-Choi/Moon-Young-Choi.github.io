@@ -1,37 +1,76 @@
 import styles from "@/app/components/EventEdgeProjectPanel.module.css";
 
-const matrix = [
-  [100, 0, 100],
-  [100, 0, 0],
-  [0, 100, 0],
-  [0, 100, 100],
-];
+const codeLines = [
+  [{ tone: "comment", text: "// freeze public state before pricing" }],
+  [
+    { tone: "keyword", text: "const " },
+    { tone: "type", text: "PublicSnapshot" },
+    { tone: "plain", text: " snapshot = freeze(game);" },
+  ],
+  [
+    { tone: "keyword", text: "auto " },
+    { tone: "plain", text: "states = " },
+    { tone: "function", text: "enumerate" },
+    { tone: "plain", text: "(snapshot);" },
+  ],
+  [
+    { tone: "keyword", text: "auto " },
+    { tone: "plain", text: "quotes = maker." },
+    { tone: "function", text: "publish" },
+    { tone: "plain", text: "(states);" },
+  ],
+  [
+    { tone: "keyword", text: "auto " },
+    { tone: "plain", text: "plan = risk." },
+    { tone: "function", text: "evaluate" },
+    { tone: "plain", text: "(quotes, portfolio);" },
+  ],
+  [
+    { tone: "keyword", text: "if " },
+    { tone: "plain", text: "(plan.feasible()) " },
+    { tone: "function", text: "commit_atomic" },
+    { tone: "plain", text: "(plan);" },
+  ],
+  [{ tone: "comment", text: "// settle · reconcile · audit" }],
+] as const;
 
 export function EventEdgeProjectPanel() {
   return (
     <div className={styles.panel} aria-hidden="true">
-      <div className={styles.canvas}>
-        <div className={styles.publicState}><span>Public state</span><i /><i /><i /></div>
-        <div className={styles.hiddenState}><span>Hidden</span><b>?</b></div>
-        <div className={styles.matrix}>
-          <div className={styles.matrixHead}><span>State</span><span>WA</span><span>WB</span><span>VOL</span></div>
-          {matrix.map((row, index) => (
-            <div className={styles.matrixRow} key={index}>
-              <b>S{index + 1}</b>
-              {row.map((value, column) => <i data-on={value === 100} key={column} />)}
-            </div>
-          ))}
+      <div className={styles.editor}>
+        <div className={styles.editorBar}>
+          <span><i />eventedge / src / market.cpp</span>
+          <b>C++ · PRIVATE</b>
         </div>
-        <div className={styles.book}>
-          <span>Bid</span><span>Ask</span>
-          {[42, 64, 86, 58, 32].map((height, index) => <i className={styles.bid} key={`b${index}`} style={{ height: `${height}%` }} />)}
-          {[29, 49, 77, 92, 54].map((height, index) => <i className={styles.ask} key={`a${index}`} style={{ height: `${height}%` }} />)}
+
+        <div className={styles.workspace}>
+          <div className={styles.fileTree}>
+            <span>⌄ src</span>
+            <b>market.cpp</b>
+            <span>risk.cpp</span>
+            <span>settle.cpp</span>
+          </div>
+
+          <div className={styles.code}>
+            {codeLines.map((line, index) => (
+              <div className={styles.codeLine} data-active={index === 4} key={index}>
+                <i>{String(index + 1).padStart(2, "0")}</i>
+                <code>
+                  {line.map((token, tokenIndex) => (
+                    <span className={styles[token.tone]} key={tokenIndex}>{token.text}</span>
+                  ))}
+                </code>
+              </div>
+            ))}
+            <i className={styles.signal} data-eventedge-signal />
+          </div>
         </div>
-        <div className={styles.riskCompare}>
-          <div><span>A</span><i style={{ width: "92%" }} /><b>REJECT</b></div>
-          <div><span>B</span><i style={{ width: "31%" }} /><b>φ .50</b></div>
+
+        <div className={styles.statusBar}>
+          <span>SNAPSHOT LOCKED</span>
+          <span>ATOMIC PACKAGE</span>
+          <span>TRADING OFF</span>
         </div>
-        <i className={styles.signal} data-eventedge-signal />
       </div>
     </div>
   );

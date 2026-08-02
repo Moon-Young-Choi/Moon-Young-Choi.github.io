@@ -72,20 +72,16 @@ test("Quant architecture snapshot is sanitized and accepted by the offline sync 
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
 });
 
-test("Quant homepage cover reduces separate evidence rails into one animated allocation", async () => {
+test("Quant homepage cover presents the architecture as a compact codebase view", async () => {
   const [panel, css] = await Promise.all([
     readFile(new URL("../app/components/QuantPlatformProjectPanel.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/QuantPlatform.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/QuantPlatformProjectPanel.module.css", import.meta.url), "utf8"),
   ]);
 
-  assert.match(panel, /\["a",\s*"b"\]/);
-  assert.match(panel, /styles\.panelCalibration/);
-  assert.match(panel, /styles\.panelAllocation/);
-  assert.match(panel, /styles\.outputSignal/);
-  assert.doesNotMatch(panel, /styles\.(panelCutoff|panelCosmos|panelReadout)/);
+  for (const marker of ["pipeline.py", "resolve_as_of", "pair_or_fail", "mature_labels", "cosmos.", "allocate", "data-quant-signal"]) {
+    assert.ok(panel.includes(marker), `Quant codebase cover is missing ${marker}`);
+  }
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
-  assert.match(css, /@keyframes quant-evidence-signal/);
-  assert.match(css, /@keyframes quant-output-signal/);
-  assert.match(css, /@keyframes quant-gate-rotate/);
-  assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.panelCalibration/);
+  assert.match(css, /@keyframes quant-code-cursor/);
+  assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*\.signal/);
 });

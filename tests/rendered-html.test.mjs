@@ -69,6 +69,7 @@ test("renders the revised home information architecture", async () => {
 
 test("renders the six projects in the revised order while keeping position colors", async () => {
   const html = await routeHtml();
+  const eventEdgePanel = await readFile(new URL("../app/components/EventEdgeProjectPanel.tsx", import.meta.url), "utf8");
   const quant = html.indexOf(">Quant Platform<");
   const pwr = html.indexOf(">PWR-Scan<");
   const osint = html.indexOf(">Open Source Intelligence<");
@@ -84,6 +85,9 @@ test("renders the six projects in the revised order while keeping position color
   assert.ok(bayesian > arbitrage, "Bayesian Ad Targeting must occupy project position 06");
   assert.match(html, /href="\/projects\/eventedge-derivatives\/" class="project-card coral"/);
   assert.match(html, /href="\/projects\/bayesian-ad-targeting\/" class="project-card paper"/);
+  for (const marker of ["market.cpp", "PublicSnapshot", "risk.", "evaluate", "commit_atomic", "data-eventedge-signal"]) {
+    assert.ok(eventEdgePanel.includes(marker), `EventEdge codebase cover is missing ${marker}`);
+  }
   assert.doesNotMatch(html, /href="\/projects\/pwr-scan-validation\/?"/);
   assert.doesNotMatch(html, /https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan/);
 });
