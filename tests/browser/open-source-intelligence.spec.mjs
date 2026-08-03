@@ -2,16 +2,15 @@ import { expect, test } from "@playwright/test";
 
 const route = "/projects/open-source-intelligence/";
 
-test("OSINT exposes MathML, tables, evidence boundaries, and canonical metadata", async ({ page }) => {
+test("OSINT exposes MathML, its numeric result table, paper boundary, and canonical metadata", async ({ page }) => {
   await page.goto(route);
   await expect(page.getByRole("heading", { name: "Open Source Intelligence" })).toBeVisible();
   await expect(page.locator("math").first()).toBeAttached();
-  await expect(page.getByRole("table", { name: "Observed tensor ledger" })).toBeVisible();
-  await expect(page.getByRole("table", { name: "Fixed IRVS test metrics" })).toBeVisible();
-  await expect(page.locator('[data-evidence-boundary="true"]')).toHaveCount(1);
+  await expect(page.getByRole("table", { name: /Fixed IRVS TEST averages/ })).toBeVisible();
+  await expect(page.getByText("Evidence boundary", { exact: true })).toBeVisible();
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", route);
 
-  const repository = page.getByRole("link", { name: /Project repository/ }).first();
+  const repository = page.getByRole("link", { name: /Source repository/ }).first();
   await repository.focus();
   await expect(repository).toBeFocused();
 });

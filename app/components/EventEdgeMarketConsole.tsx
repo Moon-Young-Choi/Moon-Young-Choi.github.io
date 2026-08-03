@@ -89,7 +89,7 @@ function DecisionComparison({ selected, alternate }: { selected: EventEdgeDecisi
   );
 }
 
-export function EventEdgeMarketConsole() {
+export function EventEdgeMarketConsole({ variant = "full" }: { variant?: "full" | "paper" }) {
   const [data, setData] = useState<EventEdgeDemoV1 | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [perspectiveId, setPerspectiveId] = useState<EventEdgePerspectiveId>("user");
@@ -132,6 +132,39 @@ export function EventEdgeMarketConsole() {
   const alternate = data.decisionRows.find((row) => row.id === eventEdgeDecisionId(perspectiveId, alternateCandidateId, notional, profileId))!;
   const books = Object.fromEntries((data.orderBooks.filter((book) => book.profileId === profileId)).map((book) => [book.contractId, book])) as Record<EventEdgeContractId, EventEdgeBookV1>;
   const comparisonMax = Math.max(1, ...selected.oldMetrics.outcomes.flatMap((outcome) => [Math.abs(outcome.pnl)]), ...selected.requestedMetrics.outcomes.flatMap((outcome) => [Math.abs(outcome.pnl)]), ...selected.executedMetrics.outcomes.flatMap((outcome) => [Math.abs(outcome.pnl)]));
+
+  if (variant === "paper") return (
+    <section className={styles.paperConsole} id="market-console" aria-label="EventEdge reconstructed market console">
+      <div className={styles.paperControls}>
+        <Segmented label="Perspective" options={data.market.perspectives.map(({ id, label }) => ({ value: id, label }))} value={perspectiveId} onChange={setPerspectiveId} />
+        <Segmented label="Candidate" options={data.market.candidates.map(({ id, label }) => ({ value: id, label }))} value={candidateId} onChange={setCandidateId} />
+        <Segmented label="Requested notional" options={data.market.controls.notionals.map((value) => ({ value, label: controlLabel(value) }))} value={notional} onChange={setNotional} />
+        <Segmented label="Book profile" options={data.market.profiles.map(({ id, label }) => ({ value: id, label }))} value={profileId} onChange={(value) => { setProfileId(value); setRevealed(false); }} />
+        <Segmented label="Terminal state" options={data.market.states.map(({ id }) => ({ value: id, label: id }))} value={stateId} onChange={(value) => { setStateId(value); setRevealed(false); }} />
+        <div className={styles.revealControl}><span>Information gate</span><button aria-pressed={revealed} onClick={() => setRevealed((current) => !current)} type="button">{revealed ? "HIDE TERMINAL" : "REVEAL & SETTLE"}</button></div>
+      </div>
+      <p className={styles.liveResult} aria-live="polite">{candidate.label}; {profile.label}; {notional.toFixed(1)} requested; {(selected.fillRatio * 100).toFixed(0)}% filled; {selected.decision === "conditional-commit" ? "conditional commit" : "rejected"}; executed objective {signed(selected.executedMetrics.objective)}.</p>
+      <div className={styles.paperDecisionGrid}>
+        <div>
+          <div className={styles.paperKpis}>
+            <div><span>Standalone edge</span><strong>{signed(selected.standaloneEdge)}</strong></div>
+            <div><span>Common fill</span><strong>{selected.fillRatio.toFixed(2)}</strong></div>
+            <div><span>Executed J</span><strong>{signed(selected.executedMetrics.objective)}</strong></div>
+            <div data-decision={selected.decision}><span>Risk decision</span><strong>{selected.decision === "conditional-commit" ? "COMMIT" : "REJECT"}</strong></div>
+          </div>
+          <DecisionComparison alternate={alternate} selected={selected} />
+        </div>
+        <div className={styles.paperStates}>
+          <table><caption>Scenario weights and payoffs</caption><thead><tr><th>State</th><th>{perspective.label}</th><th>True</th><th>WA</th><th>WB</th><th>VOL</th></tr></thead><tbody>{data.market.states.map((state) => <tr data-selected={state.id === stateId} key={state.id}><th>{state.id}</th><td>{(perspective.weights[state.id] * 100).toFixed(0)}%</td><td>{revealed ? `${(state.trueWeight * 100).toFixed(0)}%` : "LOCKED"}</td><td>{state.payoffs.WA}</td><td>{state.payoffs.WB}</td><td>{state.payoffs.VOL}</td></tr>)}</tbody></table>
+          <p>{selected.reason}</p>
+        </div>
+      </div>
+      <div className={styles.paperExecution}>
+        <div><span>Execution</span><strong>{selected.filledNotional.toFixed(2)} filled · {selected.legs.length} legs</strong><small>{selected.passesObjective ? "Objective passes" : "Objective fails"} · {selected.passesLossLimit ? "Loss limit passes" : "Loss limit fails"}</small></div>
+        <div><span>Settlement</span><strong data-revealed={revealed}>{revealed ? `${selectedState.label} · ${signed(settlement.userRealizedPnl)} user PnL` : "TRUE STATE LOCKED"}</strong><small>{revealed ? (settlement.positionConservation && settlement.cashConservation && settlement.pnlConservation ? "All invariants pass" : "Invariant failure") : "Reveal only after decision"}</small></div>
+      </div>
+    </section>
+  );
 
   return (
     <section className={styles.console} id="market-console" aria-labelledby="eventedge-console-title">

@@ -641,9 +641,11 @@ function RouteDetail({
 function ArbitrageMarketConsoleLoaded({
   source,
   initialSnapshot,
+  variant,
 }: {
   source: ArbitrageUniverseDataSource;
   initialSnapshot: ArbitrageUniverseSnapshot;
+  variant: "full" | "paper";
 }) {
   const [feed, setFeed] = useState<ArbitrageUniverseSnapshot>(initialSnapshot);
   const universe = feed.universe;
@@ -657,7 +659,7 @@ function ArbitrageMarketConsoleLoaded({
   const [activeTab, setActiveTab] = useState<PlotTab>("universe");
   const [zoom, setZoom] = useState<Zoom>(1);
   const [sortBy, setSortBy] = useState<"index" | "multiplier" | "liquidity">("index");
-  const [tableOpen, setTableOpen] = useState(false);
+  const [tableOpen, setTableOpen] = useState(variant === "paper");
   const motionReduced = useSyncExternalStore(subscribeToReducedMotion, reducedMotionSnapshot, () => false);
   const [announcement, setAnnouncement] = useState("Simulated market universe ready.");
 
@@ -761,7 +763,7 @@ function ArbitrageMarketConsoleLoaded({
   }
 
   return (
-    <>
+    <div className={variant === "paper" ? styles.paperConsole : undefined} data-console-variant={variant}>
       <section className={styles.consoleSection} id="market-universe" aria-labelledby="market-universe-title">
         <div className={styles.consoleHeading}>
           <span>01 / Market universe</span>
@@ -860,16 +862,18 @@ function ArbitrageMarketConsoleLoaded({
       </section>
 
       <RouteDetail direction={selectedDirection} feeBps={feeBps} frame={feed.frame} key={selectedRouteId} onDirection={(direction) => { setSelectedDirection(direction); setAnnouncement(`${direction} route selected.`); }} onFee={setFeeBps} triangle={selectedTriangle} universe={universe} />
-    </>
+    </div>
   );
 }
 
 export function ArbitrageMarketConsole({
   manifest,
   sourceFactory,
+  variant = "full",
 }: {
   manifest: ArbitrageUniverseManifestV1;
   sourceFactory?: ArbitrageUniverseSourceFactory;
+  variant?: "full" | "paper";
 }) {
   const [loaded, setLoaded] = useState<{
     source: ArbitrageUniverseDataSource;
@@ -902,7 +906,7 @@ export function ArbitrageMarketConsole({
     };
   }, [createSource]);
 
-  if (loaded) return <ArbitrageMarketConsoleLoaded initialSnapshot={loaded.snapshot} source={loaded.source} />;
+  if (loaded) return <ArbitrageMarketConsoleLoaded initialSnapshot={loaded.snapshot} source={loaded.source} variant={variant} />;
 
   return (
     <section className={styles.consoleSection} id="market-universe" aria-labelledby="market-universe-title">

@@ -81,7 +81,7 @@ function result(row: PwrEmpiricalRowV1, methodId: string): PwrEmpiricalResultV1 
   return value;
 }
 
-export function PwrEmpiricalConsole({ evidence }: { evidence: PwrActualEvidenceSummary }) {
+export function PwrEmpiricalConsole({ evidence, variant = "full" }: { evidence: PwrActualEvidenceSummary; variant?: "full" | "paper" }) {
   const [data, setData] = useState<PwrEmpiricalDemoV1 | null>(null);
   const [error, setError] = useState("");
   const [selection, setSelection] = useState<PwrEmpiricalDemoV1["design"]["defaultSelection"] | null>(null);
@@ -108,6 +108,36 @@ export function PwrEmpiricalConsole({ evidence }: { evidence: PwrActualEvidenceS
   const runtimeSeries = data.design.methods.map((method) => ({ method, values: permutationRows.map((row) => result(row, method.id).runtimeMs) }));
   const announce = `${scenario.label}, n ${selection.nPerGroup} per group, effect ${selection.effectSize.toFixed(2)}, mismatch ${selection.mismatch.toFixed(2)}, ${selection.permutations} permutations. Synthetic PWR-Scan power ${formatPercent(pwr.power)}.`;
   const update = (patch: Partial<typeof selection>) => setSelection((current) => current ? { ...current, ...patch } : current);
+
+  if (variant === "paper") return (
+    <article className={styles.paperConsole} aria-label="PWR synthetic empirical console">
+      <div className={styles.paperControls}>
+        <label><span>Scenario</span><select value={selection.scenarioId} onChange={(event) => update({ scenarioId: event.target.value })}>{data.design.scenarios.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+        <Segmented label="Samples / group" values={data.design.controls.sampleSizes} value={selection.nPerGroup} onChange={(nPerGroup) => update({ nPerGroup })} />
+        <label className={styles.range}><span>Effect size <output>{selection.effectSize.toFixed(2)}</output></span><input type="range" min="0" max="1.5" step="0.25" value={selection.effectSize} onChange={(event) => update({ effectSize: Number(event.target.value) })} /></label>
+        <Segmented label="Mismatch" values={data.design.controls.mismatchLevels} value={selection.mismatch} render={(value) => value.toFixed(1)} onChange={(mismatch) => update({ mismatch })} />
+        <Segmented label="Permutations" values={data.design.controls.permutationBudgets} value={selection.permutations} onChange={(permutations) => update({ permutations })} />
+      </div>
+      <p className={styles.liveRegion} aria-live="polite" aria-atomic="true">{announce}</p>
+      <div className={styles.paperResults}>
+        <div className={styles.paperKpis} aria-label="Selected simulated study results">
+          <div><span>Power</span><strong>{formatPercent(pwr.power)}</strong><small>95% CI {formatPercent(pwr.powerInterval[0])}–{formatPercent(pwr.powerInterval[1])}</small></div>
+          <div><span>Best-baseline gap</span><strong>{`${100 * (pwr.power - bestBaseline) >= 0 ? "+" : ""}${(100 * (pwr.power - bestBaseline)).toFixed(1)} pp`}</strong><small>Selected condition</small></div>
+          <div><span>Null rejection</span><strong>{formatPercent(pwr.level)}</strong><small>Nominal α = 5%</small></div>
+          <div><span>Runtime</span><strong>{formatRuntime(pwr.runtimeMs)}</strong><small>{selection.permutations.toLocaleString()} permutations</small></div>
+        </div>
+        <div className={styles.paperPlot}>
+          <Plot series={powerSeries} xValues={data.design.controls.effectSizes} ariaLabel={`Simulated power curves for ${scenario.label}`} />
+          <MethodLegend methods={data.design.methods} />
+        </div>
+      </div>
+      <dl className={styles.paperEvidence}>
+        <div><dt>Repository evidence</dt><dd>{evidence.engineeringRuns}/56 runs · {evidence.computationalTests} tests</dd></div>
+        <div><dt>External DCASE</dt><dd>AUC {evidence.dcase.rocAuc} · sensitivity {evidence.dcase.sensitivity}</dd></div>
+        <div><dt>Artifact</dt><dd>{data.provenance.generatorVersion} · {data.provenance.fingerprint.slice(0, 12)}…</dd></div>
+      </dl>
+    </article>
+  );
 
   return <article className={styles.console}>
     <header className={styles.hero}>

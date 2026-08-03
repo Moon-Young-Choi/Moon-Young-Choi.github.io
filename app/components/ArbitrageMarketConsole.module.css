@@ -522,6 +522,29 @@
   .timelinePoint { transition: none !important; }
 }
 
+.paperConsole { min-width:0; background:var(--paper); color:var(--ink); font-family:var(--font-sans),Arial,sans-serif; }
+.paperConsole .consoleSection { padding:16px; }
+.paperConsole .consoleHeading { grid-template-columns:1fr auto; gap:10px; margin-bottom:12px; }
+.paperConsole .consoleHeading>span { display:none; }
+.paperConsole .consoleHeading h2 { margin:3px 0 0; font-size:24px; line-height:1; }
+.paperConsole .consoleHeading p { margin:0; font-size:8px; }
+.paperConsole .controlSurface { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+.paperConsole .controlSurface>* { min-width:0; }
+.paperConsole .feedBar { margin-top:8px; grid-template-columns:repeat(5,minmax(0,1fr)) auto; }
+.paperConsole .feedBar>div { min-height:56px; padding:8px; }
+.paperConsole .plotHeader { margin-top:9px; }
+.paperConsole .tabs button { min-height:52px; padding:8px; }
+.paperConsole .selectedStrip { grid-template-columns:repeat(5,minmax(0,1fr)); }
+.paperConsole .selectedStrip>div { min-height:62px; padding:8px; }
+.paperConsole .dataTableDisclosure { margin-top:8px; }
+.paperConsole .dataTableDisclosure[open] .tableScroll { max-height:260px; overflow:auto; }
+.paperConsole .tableScroll table { min-width:760px; }
+.paperConsole .routeDetail { padding:16px; }
+.paperConsole .routeDetail h2 { font-size:28px; }
+.paperConsole .routeGrid,.paperConsole .executionGrid { gap:8px; }
+.paperConsole .lifecycle { flex-wrap:wrap; }
+@media(max-width:700px){.paperConsole .consoleHeading{grid-template-columns:1fr}.paperConsole .controlSurface{grid-template-columns:1fr}.paperConsole .feedBar{grid-template-columns:repeat(2,minmax(0,1fr))}.paperConsole .selectedStrip{grid-template-columns:repeat(2,minmax(0,1fr))}.paperConsole .tabs{overflow-x:auto}.paperConsole .tabs button{min-width:130px}.paperConsole .routeGrid,.paperConsole .executionGrid{grid-template-columns:1fr}}
+
 @media print {
   .controlSurface,
   .feedBar button,

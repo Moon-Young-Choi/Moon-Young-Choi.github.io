@@ -70,18 +70,14 @@ test("links permutation budget to resolution and runtime and rejects provenance 
   assert.throws(() => validatePwrEmpiricalDemo(secret), /unknown or missing keys|credential-like/i);
 });
 
-test("ships accessible tabs and an HTML/CSS-only empirical renderer", async () => {
-  const [tabs, consoleSource, theoryCss, consoleCss] = await Promise.all([
-    readFile(new URL("../app/components/PwrStudyTabs.tsx", import.meta.url), "utf8"),
+test("ships an accessible HTML/CSS-only empirical renderer with a compact paper variant", async () => {
+  const [consoleSource, consoleCss] = await Promise.all([
     readFile(new URL("../app/components/PwrEmpiricalConsole.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/PwrTheoryPage.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/PwrEmpiricalConsole.module.css", import.meta.url), "utf8"),
   ]);
-  for (const marker of ['role="tablist"', 'role="tab"', "aria-selected", "aria-controls", "ArrowRight", "Home", "End", "hidden={active"] ) assert.ok(tabs.includes(marker), marker);
-  for (const marker of ["SIMULATED STUDY", 'aria-live="polite"', "Data table", "Detection power", "Null calibration", "Band localization", "Mismatch robustness", "Permutation budget", "loadPwrEmpiricalDemo"]) assert.ok(consoleSource.includes(marker), marker);
-  assert.doesNotMatch(tabs, /localStorage|sessionStorage|history\.|location\.|URLSearchParams/);
+  for (const marker of ['aria-live="polite"', "variant === \"paper\"", "paperControls", "paperResults", "Detection power", "Null calibration", "Band localization", "Mismatch robustness", "Permutation budget", "loadPwrEmpiricalDemo"]) assert.ok(consoleSource.includes(marker), marker);
   assert.doesNotMatch(consoleSource, /<svg|<canvas|<img|wss:\/\/|api\.upbit/i);
   for (const width of [900, 640, 420, 320]) assert.match(consoleCss, new RegExp(`@media \\(max-width:${width}px\\)`));
   assert.match(consoleCss, /prefers-reduced-motion:reduce/);
-  assert.match(theoryCss, /\.studyTabs/);
+  assert.match(consoleCss, /\.paperConsole/);
 });

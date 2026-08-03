@@ -203,15 +203,12 @@ test.describe("shared triangle route geometry", () => {
       await expectNoDocumentOverflow(page, width, "/");
 
       await page.goto(DETAIL_PATH);
-      const hero = page.locator('[data-triangle-route][data-variant="hero"]');
       const lab = page.locator('[data-triangle-route][data-variant="lab"]');
-      await expect(hero).toBeVisible();
       // The lab mounts after its verified local universe artifact is decoded.
       // Give the cold, parallel CI worker enough time without weakening the
       // geometry assertion that follows.
       await expect(lab).toBeVisible({ timeout: 15_000 });
 
-      assertTriangleGeometry(await readTriangleGeometry(hero));
       const forward = await readTriangleGeometry(lab);
       assertTriangleGeometry(forward);
       expect(forward.direction).toBe("forward");
@@ -234,10 +231,7 @@ test.describe("shared triangle route geometry", () => {
       );
 
       await page.goto(DETAIL_PATH);
-      const detailSnapshots = await Promise.all([
-        readTriangleGeometry(page.locator('[data-triangle-route][data-variant="hero"]')),
-        readTriangleGeometry(page.locator('[data-triangle-route][data-variant="lab"]')),
-      ]);
+      const detailSnapshots = [await readTriangleGeometry(page.locator('[data-triangle-route][data-variant="lab"]'))];
 
       for (const snapshot of [cardSnapshot, ...detailSnapshots]) {
         for (const edge of snapshot.edges) {

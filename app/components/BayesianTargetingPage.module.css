@@ -66,6 +66,20 @@
 
 /* Shared mathematical labs */
 .labs { margin-top: 72px; display: grid; gap: 56px; }
+.labs[data-variant="paper"] { margin-top:0; gap:12px; padding:12px; }
+.labs[data-variant="paper"] .lab > header { grid-template-columns:58px minmax(0,1fr); }
+.labs[data-variant="paper"] .lab > header > span { padding:12px 8px; font-size:8px; }
+.labs[data-variant="paper"] .lab > header > div { padding:11px; }
+.labs[data-variant="paper"] .lab > header h3 { margin:0 0 2px; font-size:22px; }
+.labs[data-variant="paper"] .lab > header p { font-size:10px; }
+.labs[data-variant="paper"] .demoNote { margin:0; padding:8px 10px; font-size:8px; }
+.labs[data-variant="paper"] .labGrid { grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr); }
+.labs[data-variant="paper"] .controls { padding:12px; }
+.labs[data-variant="paper"] .results { padding:12px; }
+.labs[data-variant="paper"] .metricGrid > div { min-height:76px; padding:8px; }
+.labs[data-variant="paper"] table { font-size:9px; }
+.labs[data-variant="paper"] th,.labs[data-variant="paper"] td { padding:8px 6px; }
+@media(max-width:700px){.labs[data-variant="paper"] .labGrid{grid-template-columns:1fr}}
 .lab { min-width: 0; border: 1px solid var(--ink); background: var(--paper); }
 .lab > header { display: grid; grid-template-columns: 90px minmax(0,1fr); border-bottom: 1px solid var(--ink); background: var(--blue); color: var(--paper); }
 .lab > header > span { padding: 22px 14px; border-right: 1px solid var(--paper); font: 500 10px var(--font-mono); text-transform: uppercase; }

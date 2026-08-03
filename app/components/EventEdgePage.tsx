@@ -1,184 +1,58 @@
-import Link from "next/link";
 import type { CaseStudy } from "@/app/content";
 import { EventEdgeMarketConsole } from "@/app/components/EventEdgeMarketConsole";
-import styles from "@/app/components/EventEdgeMarket.module.css";
+import {
+  EvidenceNote,
+  PaperEquation,
+  PaperFigure,
+  PaperFlow,
+  PaperSection,
+  ResearchPaperShell,
+  type PaperSectionLink,
+} from "@/app/components/ResearchPaperShell";
 
-const cycle = [
-  ["01", "Load configuration", "Fix games, contracts, fees, limits and the run seed."],
-  ["02", "Initialize games", "Create up to twenty independent Kuhn or Leduc underlyings."],
-  ["03", "Advance public action", "Apply the latest legal game action under the configured policy."],
-  ["04", "Freeze public snapshot", "Expose only the state available to market participants."],
-  ["05", "Enumerate local futures", "Expand hidden deals and equilibrium-policy action branches."],
-  ["06", "Merge payoff states", "Aggregate terminal histories with the same registered payoff vector."],
-  ["07", "Assign scenario weights", "Keep benchmark, maker and user measures explicitly separate."],
-  ["08", "Mark contract values", "Map each measure through the same payoff registry."],
-  ["09", "Reserve and skew", "Translate inventory covariance and uncertainty into quote centers."],
-  ["10", "Publish 20 × 2 depth", "Construct bid and ask ladders before the next underlying action."],
-  ["11", "Evaluate combined book", "Score candidate packages with old positions, costs and tail limits."],
-  ["12", "Atomic pro-rata fill", "Use one immutable book and one common fill ratio for every leg."],
-  ["13", "Reveal, settle, log", "Only now expose the terminal state, transfer payoff and close invariants."],
-] as const;
-
-const roadmap = [
-  ["Typed state boundary", "Separate immutable PublicSnapshot from engine-private cards, seed and future actions at the type level."],
-  ["Versioned payoff registry", "Bind contract definitions and the terminal payoff matrix to an explicit schema and content hash."],
-  ["Exact / Monte Carlo split", "Retain exact single-game oracles while sampling only the joint multi-game portfolio distribution."],
-  ["Solver evidence", "Record feasibility, CVaR auxiliary variables, tolerances and termination status for every proposed package."],
-  ["Two-phase package commit", "Add prepare, common-fill, commit and rollback records with cash, position and depth invariants."],
-  ["Evidence artifact", "Generate eventedge-evidence.v1.json with seed, config, commit, scenario and result fingerprints for later portfolio synchronization."],
-  ["Validation campaign", "Cross-check Kuhn exact probabilities, CFR diagnostics, property-based accounting, net-cost OOS episodes and dependent-tail uncertainty."],
-] as const;
-
-function HeroGraphic() {
-  const payoffs = [[1, 0, 1], [1, 0, 0], [0, 1, 0], [0, 1, 1]];
-  return (
-    <figure className={styles.heroGraphic} aria-labelledby="eventedge-hero-caption">
-      <div className={styles.heroCanvas} aria-hidden="true">
-        <div className={styles.heroPublic}><span>Public snapshot</span><i /><i /><i /><i /></div>
-        <div className={styles.heroHidden}><span>Engine-private</span><strong>?</strong></div>
-        <div className={styles.heroMatrix}>{payoffs.flatMap((row, rowIndex) => [<b key={`s${rowIndex}`}>S{rowIndex + 1}</b>, ...row.map((value, columnIndex) => <i data-on={Boolean(value)} key={`${rowIndex}-${columnIndex}`}>{value ? 100 : 0}</i>)])}</div>
-        <div className={styles.heroBook}>{[34, 58, 82, 69, 47, 38, 63, 91, 74, 52].map((height, index) => <i key={index} style={{ height: `${height}%` }} />)}</div>
-        <div className={styles.heroDecision}><div><span>A / EDGE +13</span><strong>REJECT</strong></div><div><span>B / EDGE −35</span><strong>φ .50</strong></div></div>
-      </div>
-      <figcaption id="eventedge-hero-caption" style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: 0 }}>
-        Public game information is converted into four terminal payoff states, market-maker quotes and a portfolio decision while hidden cards and the realized terminal state remain inaccessible until settlement.
-      </figcaption>
-    </figure>
-  );
-}
+const sections: PaperSectionLink[] = [
+  { id: "market-boundary", number: "1", title: "Market and information boundary" },
+  { id: "reconstructed-market", number: "2", title: "Interactive reconstructed market" },
+  { id: "valuation-mechanics", number: "3", title: "Valuation, CVaR, quoting, and atomic fill" },
+  { id: "evidence-status", number: "4", title: "Evidence status" },
+];
 
 export function EventEdgePage({ study }: { study: CaseStudy }) {
   return (
-    <main className={styles.page}>
-      <header className={`site-header ${styles.nav}`}>
-        <Link className="wordmark" href="/">MYC / 26</Link>
-        <nav aria-label="EventEdge page navigation">
-          <a href="#market-console">Market</a>
-          <a href="#event-cycle">Cycle</a>
-          <a href="#model">Model</a>
-          <a href="#validation">Evidence</a>
-        </nav>
-        <Link className="header-link" href="/#projects">Close ×</Link>
-      </header>
+    <ResearchPaperShell study={study} status="Private simulator · reconstructed interface" abstract="EventEdge turns public states from multiple incomplete-information games into a finite derivatives market. Registered terminal payoffs are valued under distinct scenario measures, inventory-aware order books quote depth, and multi-leg requests are accepted only when the combined portfolio satisfies tail-risk and execution constraints. The interactive market below is a deterministic reconstruction: it demonstrates the decision contract without exposing private game state or claiming observed trading performance." sections={sections}>
+      <PaperSection {...sections[0]} deck="A trade can use the frozen public snapshot and registered future branches, but never a private card or realized terminal state.">
+        <p>The underlying processes are independent Kuhn or Leduc games. At a decision checkpoint the engine freezes pot size, public action history, legal actions, public cards, and the registered derivative definitions. Private cards, the random seed, future actions, and the realized terminal state remain inside the game engine. Contracts are traded after the public action and before the next underlying transition; the true state is revealed only after the package decision and settlement boundary have been fixed.</p>
+        <p>Terminal histories are merged when they produce the same registered payoff vector. This produces a finite scenario basis shared by every participant. The benchmark generator, market maker, and user may assign different weights to that basis, but they do not receive different payoff definitions. Separating what can happen, what each contract pays, and what each agent believes prevents valuation disagreements from becoming accidental information leakage.</p>
+        <PaperFlow items={["Freeze public state", "Enumerate local futures", "Quote and decide", "Reveal and settle"]} />
+        <EvidenceNote title="Information contract"><p>The true benchmark distribution is evaluation-only. Neither trading agent can inspect it, the terminal state, or engine-private data before the transaction gate.</p></EvidenceNote>
+        <p>The boundary is enforced across time as well as fields. A quote is labeled by the public snapshot, payoff-registry version, scenario generator, and book sequence that produced it. Advancing an underlying game invalidates the old quote before a new one is published. Settlement references the committed package and its original contract versions, so a later configuration change cannot rewrite an outstanding obligation. This versioned lifecycle makes the simulator suitable for invariant testing even when participants disagree about probabilities.</p>
+      </PaperSection>
 
-      <article>
-        <header className={styles.hero}>
-          <div className={styles.heroMeta}>
-            <span>Project / {study.number}</span>
-            <div><strong>Private research artifact</strong><strong>Reconstructed demo</strong><strong>No real-money trading</strong></div>
-          </div>
-          <div className={styles.heroGrid}>
-            <div className={styles.heroCopy}>
-              <p>{study.eyebrow}</p>
-              <h1>EventEdge<br />Derivatives</h1>
-              <p className={styles.heroSummary}>Incomplete-information games become a finite event market: public states generate terminal payoff scenarios, inventory-aware quotes, portfolio-level tail decisions and atomic multi-leg settlement.</p>
-            </div>
-            <HeroGraphic />
-          </div>
-          <dl className={styles.heroFacts}>
-            <div><dt>Underlying processes</dt><dd>Up to 20 Kuhn · Leduc games</dd></div>
-            <div><dt>Contract families</dt><dd>Futures · options · swaps</dd></div>
-            <div><dt>Quoted market</dt><dd>20 bid + 20 ask levels</dd></div>
-            <div><dt>Public evidence</dt><dd>Architecture · reconstructed demo</dd></div>
-          </dl>
-        </header>
+      <PaperSection {...sections[1]} deck="The compact console preserves perspective, package, notional, book stress, terminal selection, risk decision, execution, and settlement reveal.">
+        <p>The reconstruction exposes one four-state market with two candidate requests. Changing perspective changes fair values while retaining the same payoff matrix. Book profiles modify available depth and therefore the common fill ratio. Requested notional is evaluated against the user’s existing positions, cash flows, transaction costs, and tail objective rather than as a standalone spread.</p>
+        <PaperFigure number="1" title="Deterministic reconstructed market. Terminal information remains locked until Reveal & Settle is activated; no order is submitted." interactive>
+          <EventEdgeMarketConsole variant="paper" />
+        </PaperFigure>
+        <p>The console deliberately includes a positive standalone edge that can fail the combined-book gate and a hedge package that may remain acceptable after costs. This makes the distinction between valuation and action observable. A favorable expected payoff is not sufficient when it increases worst-state loss, violates a loss limit, or cannot be filled consistently across legs.</p>
+      </PaperSection>
 
-        <EventEdgeMarketConsole />
+      <PaperSection {...sections[2]} deck="Every contract uses one payoff registry; reservation prices, risk, and execution are applied after valuation.">
+        <p>For contract k, a perspective-specific fair value is the expectation of its registered terminal payoff. The market maker then shifts the quote center by inventory covariance and attaches spread and depth. A candidate package is scored on the distribution of the old portfolio plus requested legs and all costs. The private implementation targets CVaR; the public four-state reconstruction shows the corresponding tail decision directly.</p>
+        <PaperEquation number="1" label="Valuation, tail risk, reservation quote, and common fill" expression={String.raw`\begin{aligned}V_k&=\sum_{s=1}^{S}p_sA_{sk},\\ \operatorname{CVaR}_\alpha(L)&=\min_\zeta\left[\zeta+\frac{\mathbb E(L-\zeta)_+}{1-\alpha}\right],\\ r_k&=V_k-\gamma\operatorname{Cov}(Y_k,q^\top Y),\\ \phi&=\min\left(1,\min_{\ell}\frac{D_\ell}{q_\ell}\right).\end{aligned}`} note="The immutable book snapshot supplies Dℓ. Every leg receives the same proportional fill φ." />
+        <p>The package executor follows a two-phase rule. It first computes every leg against one immutable depth snapshot, derives the minimum feasible fill ratio, and evaluates the post-fill combined book. It then commits all position and cash changes or rolls them all back. After commit, buyer and seller changes sum to zero contract by contract, cash transfers reconcile, and two-sided realized PnL sums to zero at settlement.</p>
+        <p>This ordering closes a common simulation loophole: later legs cannot consume a newer book than earlier legs, and the risk engine cannot authorize the requested package before learning that depth would materially alter it. Execution price, fees, and filled quantity remain inside the final gate.</p>
+        <h3>Risk interpretation</h3>
+        <p>Expected value and CVaR are evaluated under a declared perspective, not under the hidden benchmark. Inventory covariance moves the reservation center because a contract that looks inexpensive in isolation can reinforce an existing loss state. CVaR concentrates on the configured upper tail of loss and is paired with a hard worst-state limit; it is not presented as a complete model of ambiguity or model error. Stress profiles in the reconstruction vary depth and transaction conditions while leaving terminal payoffs fixed, making it possible to see whether rejection comes from economics, tail exposure, or execution capacity.</p>
+      </PaperSection>
 
-        <section className={styles.staticSection} id="event-cycle" aria-labelledby="eventedge-cycle-title">
-          <div className={styles.sectionGrid}>
-            <div className={styles.sectionLabel}>02 / Event cycle</div>
-            <div className={styles.sectionBody}>
-              <header className={styles.sectionHeading}>
-                <div><span>Decision-time ordering</span><h2 id="eventedge-cycle-title">Trade after public action. Reveal after settlement.</h2></div>
-                <p>The sequence is part of the model. A valuation may use the frozen public state and future-policy branches, but never the private card, future random draw or terminal result that the trade precedes.</p>
-              </header>
-              <ol className={styles.eventCycle}>
-                {cycle.map(([number, title, detail], index) => <li data-boundary={index === 11 ? "trade" : index === 12 ? "hidden" : undefined} key={number}><span>{number}</span><h3>{title}</h3><p>{detail}</p></li>)}
-              </ol>
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.staticSection} id="model" aria-labelledby="eventedge-model-title">
-          <div className={styles.sectionGrid}>
-            <div className={styles.sectionLabel}>03 / Information model</div>
-            <div className={styles.sectionBody}>
-              <header className={styles.sectionHeading}>
-                <div><span>One payoff basis · three measures</span><h2 id="eventedge-model-title">Separate what happens, what pays and what each agent believes.</h2></div>
-                <p>The system keeps terminal generation, contract payoff and scenario weighting as independent layers. The true benchmark is evaluation-only and cannot be used by either trading agent.</p>
-              </header>
-              <div className={styles.modelGrid}>
-                <article className={styles.boundaryCard}><span>Public observation</span><h3>Finite game snapshot</h3><p>Pot, action history, legal moves and registered contracts define the observation available to the market.</p><ul><li>Kuhn for exact small-tree checks</li><li>Leduc for public-card and checkpoint structure</li><li>Trade before the next underlying action</li></ul></article>
-                <article className={styles.boundaryCard} data-tone="hidden"><span>Engine-private</span><h3>Hidden state stays hidden</h3><p>Private cards, seed, future actions and the realized terminal state remain behind the engine boundary.</p><ul><li>No look-ahead valuation</li><li>No benchmark leakage</li><li>Reveal only after decision</li></ul></article>
-                <article className={styles.boundaryCard} data-tone="payoff"><span>Registered payoff</span><h3>Contracts are functions</h3><p>Futures, options and swaps map the same terminal history to different cash flows before positions are valued.</p><ul><li>Winner-linked binaries</li><li>Strike-dependent options</li><li>Path-dependent variance exposure</li></ul></article>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.staticSection} aria-labelledby="eventedge-mechanics-title">
-          <div className={styles.sectionGrid}>
-            <div className={styles.sectionLabel}>04 / Market mechanics</div>
-            <div className={styles.sectionBody}>
-              <header className={styles.sectionHeading}>
-                <div><span>Scenario → quote → risk → fill</span><h2 id="eventedge-mechanics-title">The decision object is the combined portfolio.</h2></div>
-                <p>A fair value is not a fill price. Spread, depth, inventory covariance, transaction cost and the old portfolio all remain inside the package decision.</p>
-              </header>
-              <div className={styles.formulaRail}>
-                <article><span>Scenario value</span><h3>Payoff expectation</h3><div className={styles.mathScroll}><math aria-label="Contract value equals the sum of scenario weight times payoff"><mrow><msub><mi>V</mi><mi>k</mi></msub><mo>=</mo><mrow><munderover><mo>∑</mo><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mi>S</mi></munderover><msub><mi>p</mi><mi>s</mi></msub><msub><mi>A</mi><mrow><mi>s</mi><mi>k</mi></mrow></msub></mrow></mrow></math></div><p>Every perspective weights the same registered payoff matrix.</p></article>
-                <article><span>Tail objective</span><h3>Portfolio CVaR</h3><div className={styles.mathScroll}><math aria-label="Conditional value at risk Rockafellar Uryasev representation"><mrow><msub><mi>CVaR</mi><mi>α</mi></msub><mo>=</mo><munder><mi>min</mi><mi>ζ</mi></munder><mfenced><mrow><mi>ζ</mi><mo>+</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>−</mo><mi>α</mi></mrow></mfrac><mi>𝔼</mi><msup><mfenced><mrow><mi>L</mi><mo>−</mo><mi>ζ</mi></mrow></mfenced><mo>+</mo></msup></mrow></mfenced></mrow></math></div><p>The console uses a labeled four-state tail proxy; the full engine target is CVaR.</p></article>
-                <article><span>Inventory quote</span><h3>Reservation center</h3><div className={styles.mathScroll}><math aria-label="Reservation price equals fair value minus inventory risk adjustment"><mrow><msub><mi>r</mi><mi>k</mi></msub><mo>=</mo><msub><mi>V</mi><mi>k</mi></msub><mo>−</mo><mi>γ</mi><mi>Cov</mi><mfenced><mrow><msub><mi>Y</mi><mi>k</mi></msub><mo>,</mo><msup><mi>q</mi><mi>T</mi></msup><mi>Y</mi></mrow></mfenced></mrow></math></div><p>Inventory exposure moves quote centers and depth rather than becoming a binary rejection.</p></article>
-                <article><span>Atomic execution</span><h3>Common fill ratio</h3><div className={styles.mathScroll}><math aria-label="Common fill ratio is the minimum of one and each leg available depth divided by requested depth"><mrow><mi>φ</mi><mo>=</mo><mi>min</mi><mfenced><mrow><mn>1</mn><mo>,</mo><munder><mi>min</mi><mi>ℓ</mi></munder><mfrac><msub><mi>D</mi><mi>ℓ</mi></msub><mrow><msub><mi>q</mi><mi>ℓ</mi></msub></mrow></mfrac></mrow></mfenced></mrow></math></div><p>Every leg uses the same immutable snapshot and the same proportional fill.</p></article>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.staticSection} id="validation" aria-labelledby="eventedge-validation-title">
-          <div className={styles.sectionGrid}>
-            <div className={styles.sectionLabel}>05 / Evidence boundary</div>
-            <div className={styles.sectionBody}>
-              <header className={styles.sectionHeading}>
-                <div><span>Confirmed · reconstructed · roadmap</span><h2 id="eventedge-validation-title">Evidence classes do not substitute for one another.</h2></div>
-                <p>The console is a deterministic explanation of system decisions, not a historical performance screen. The private implementation, reconstructed interface and future validation campaign remain distinct.</p>
-              </header>
-              <div className={styles.validationWrap}>
-                <table className={styles.validationTable}>
-                  <caption>EventEdge public claim ledger</caption>
-                  <thead><tr><th scope="col">Item</th><th scope="col">Evidence class</th><th scope="col">Public statement</th></tr></thead>
-                  <tbody>
-                    <tr><th scope="row">Linux CLI simulator</th><td data-status="confirmed">Confirmed record</td><td>Private research implementation; source is not published.</td></tr>
-                    <tr><th scope="row">Kuhn/Leduc multi-game market</th><td data-status="confirmed">Confirmed record</td><td>Up to twenty underlying games with derivatives traded outside the games.</td></tr>
-                    <tr><th scope="row">20 × 2 order books and atomic packages</th><td data-status="confirmed">Confirmed record</td><td>System structure is described publicly; exact historical parameters are not.</td></tr>
-                    <tr><th scope="row">Four-state console and stress profiles</th><td data-status="reconstructed">Reconstructed demo</td><td>Deterministic explanatory values, not historical configuration or observed output.</td></tr>
-                    <tr><th scope="row">Performance, calibration and solver statistics</th><td data-status="roadmap">Not established</td><td>No public return, significance, latency or solver-performance claim is made.</td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className={styles.claimBoundary}><strong>Claim boundary</strong><p>{study.boundary} The private study guide and source are not distributed by this page.</p></div>
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.staticSection} aria-labelledby="eventedge-roadmap-title">
-          <div className={styles.sectionGrid}>
-            <div className={styles.sectionLabel}>06 / Engine roadmap</div>
-            <div className={styles.sectionBody}>
-              <header className={styles.sectionHeading}>
-                <div><span>Not implemented in this portfolio revision</span><h2 id="eventedge-roadmap-title">Make the private engine emit public evidence, not private state.</h2></div>
-                <p>When the original repository is available, the interface can replace reconstructed rows with a sanitized, hashed artifact without changing the page’s decision contract.</p>
-              </header>
-              <div className={styles.roadmapGrid}>{roadmap.map(([title, detail], index) => <article key={title}><span>Roadmap / {String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{detail}</p></article>)}</div>
-            </div>
-          </div>
-        </section>
-
-        <footer className={styles.footer}>
-          <div><span>Source status</span><strong>Private research artifact · PDF not published</strong></div>
-          <Link href="/#projects">Back to projects ↑</Link>
-        </footer>
-      </article>
-    </main>
+      <PaperSection {...sections[3]} deck="Private implementation claims, public reconstruction, and unestablished performance claims are kept in separate evidence classes.">
+        <p>The project record supports a Linux C++ simulator containing multiple Kuhn or Leduc underlyings, derivatives traded outside those games, depth on both sides of the quoted market, package execution, and settlement checks. The portfolio interface is reconstructed from the architecture and uses deterministic explanatory values. It is not a recording of the private engine, a live feed, or a historical result.</p>
+        <p>Small-game probabilities and policy behavior are intended to be checked against exact enumeration before Monte Carlo scenarios are trusted. Accounting tests cover cash conservation, position conservation, common-fill invariants, rollback, and terminal settlement. A full validation campaign would additionally report policy exploitability, public-belief calibration, solver tolerances, scenario error, and net performance after spread, slippage, and fees.</p>
+        <EvidenceNote title="Claim boundary"><p>{study.boundary} The page reports no return, significance, latency, calibration, or solver-performance statistic.</p></EvidenceNote>
+        <p>The reconstruction is therefore useful as an executable specification: it makes the information gate, valuation disagreement, portfolio risk test, atomic fill, and settlement journal inspectable without conflating those mechanisms with empirical success.</p>
+        <p>Because every displayed state is deterministic, reviewers can reproduce a decision, change one control, and identify exactly which valuation, risk, depth, or settlement field caused the outcome to change.</p>
+        <p>Important open questions remain empirical. Scenario weights may be misspecified, approximate policies may drift from equilibrium, dependent underlyings can thicken the portfolio tail, and a solver can terminate with a feasible but economically poor package. A publishable evaluation would pin seeds and configuration, compare small games with exact oracles, report Monte Carlo error and solver status, and measure net outcomes on held-out episodes. Until such an artifact exists, the interface communicates mechanics and failure modes only.</p>
+      </PaperSection>
+    </ResearchPaperShell>
   );
 }

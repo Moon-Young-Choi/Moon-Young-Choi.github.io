@@ -136,17 +136,19 @@ test("sync check is local, deterministic and rejects secrets or unauthenticated 
   assert.throws(() => validatePwrTheory(secret), /Unknown field|Forbidden account or credential field/);
 });
 
-test("ships an accessible proof renderer and isolated responsive visual system", async () => {
-  const [page, panel, css, panelCss] = await Promise.all([
+test("ships an accessible compact paper renderer and isolated responsive visual system", async () => {
+  const [page, shell, shellCss, panel, panelCss] = await Promise.all([
     readFile(new URL("../app/components/PwrTheoryPage.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ResearchPaperShell.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ResearchPaperShell.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/PwrTheoryProjectPanel.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/PwrTheoryPage.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/PwrTheoryProjectPanel.module.css", import.meta.url), "utf8"),
   ]);
-  for (const marker of ["htmlAndMathml", "aria-label", "<table>", "<caption", "PDF not published", "proofEntriesFor", "Selected proof-dependency spine", "Pooled-whitening transformation", "PwrStudyTabs", "PwrEmpiricalConsole", "TheoryContents"]) {
-    assert.ok(page.includes(marker), `page renderer is missing ${marker}`);
-  }
-  assert.doesNotMatch(page, /EvidencePips|Assumptions, proof chain and boundary|<details open=/);
+  for (const marker of ["ResearchPaperShell", "PaperEquation", "Proof sketch", "PwrEmpiricalConsole", "variant=\"paper\""]) assert.ok(page.includes(marker), `page renderer is missing ${marker}`);
+  assert.match(shell, /MathBlock/);
+  assert.match(shell, /data-paper-toc/);
+  assert.doesNotMatch(shell, /<details[^>]*open/);
+  assert.doesNotMatch(page, /proofEntriesFor|PwrStudyTabs|TheoryContents|<table/);
   assert.doesNotMatch(page, /["']src\/pwrscan\//);
   assert.doesNotMatch(page, /\.pdf|<svg|<canvas|<img/i);
   assert.doesNotMatch(panel, /<svg|<canvas|<img/i);
@@ -154,11 +156,13 @@ test("ships an accessible proof renderer and isolated responsive visual system",
   assert.match(panel, /data-tone=/);
   assert.match(panel, /styles\.scanWindow/);
   assert.doesNotMatch(panel, /styles\.(header|footer|whitener|root|orbit)/);
-  for (const width of [900, 640, 420, 320]) assert.match(css, new RegExp(`@media \\(max-width:\\s*${width}px\\)`));
-  assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
-  assert.match(css, /\.studyTabs/);
+  assert.match(shellCss, /920px/);
+  assert.match(shellCss, /60px/);
+  assert.match(shellCss, /@media \(max-width:\s*760px\)/);
+  assert.match(shellCss, /@media \(max-width:\s*360px\)/);
+  assert.match(shellCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
   assert.match(panelCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
   assert.match(panelCss, /@keyframes scan-diagonal/);
   assert.match(panelCss, /@keyframes matrix-drift/);
-  assert.match(css, /overflow:\s*clip/);
+  assert.match(shellCss, /overflow-x:\s*clip/);
 });

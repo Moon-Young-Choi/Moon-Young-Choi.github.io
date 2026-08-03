@@ -4,54 +4,30 @@ import test from "node:test";
 
 const htmlUrl = new URL("../dist/client/projects/open-source-intelligence/index.html", import.meta.url);
 
-test("renders the dedicated mathematical OSINT study in the required order", async () => {
+test("renders the four-section OSINT research paper in order", async () => {
   const html = await readFile(htmlUrl, "utf8");
-  const system = html.indexOf("01 / System");
-  const method = html.indexOf("02 / Method");
-  const stack = html.indexOf("03 / Technology stack");
-  const validation = html.indexOf("04 / Validation");
-
-  assert.ok(system >= 0, "System is missing");
-  assert.ok(method > system, "Method is out of order");
-  assert.ok(stack > method, "Technology stack is out of order");
-  assert.ok(validation > stack, "Validation is out of order");
+  const headings = ["Point-in-time data contract", "Document–market model", "Fixed chronological test", "Verification and evidence boundary"];
+  let cursor = -1;
+  for (const heading of headings) { const next = html.indexOf(heading); assert.ok(next > cursor, `${heading} is missing or out of order`); cursor = next; }
+  assert.equal((html.match(/<section[^>]*data-paper-section/g) ?? []).length, 4);
+  assert.equal((html.match(/<h1/g) ?? []).length, 1);
   assert.match(html, /<math[\s>]/);
+  assert.match(html, /data-paper-toc/);
   assert.match(html, /rel="canonical"[^>]*href="\/projects\/open-source-intelligence\/"|href="\/projects\/open-source-intelligence\/"[^>]*rel="canonical"/);
-  for (let gate = 1; gate <= 12; gate += 1) assert.match(html, new RegExp(`<b>G${gate}<\\/b>`));
 });
 
-test("locks the tensor, parameter, and sealed TEST evidence into static HTML", async () => {
+test("keeps the numeric sealed TEST result and negative interpretation", async () => {
   const html = await readFile(htmlUrl, "utf8");
-
-  for (const marker of [
-    "60 × 8",
-    "8 × 6 × 128 → 48 × 128",
-    "Bᵢ × 768 · Bᵢ=16…785",
-    "217 total · max 26",
-    "3,548,161",
-    "82,624",
-    "585",
-    "3,631,370",
-    "−3.2648975849",
-    "−0.9690",
-    "0.04285",
-    "0.04839",
-    "0.2917",
-    "1.0000",
-    "−2.4312",
-    "−2.4233",
-  ]) assert.ok(html.includes(marker), `OSINT evidence is missing ${marker}`);
-
-  assert.match(html, /href="https:\/\/github\.com\/Moon-Young-Choi\/open-source-intelligence"/);
-  assert.equal((html.match(/data-evidence-boundary="true"/g) ?? []).length, 1);
-  assert.match(html, /too wide(?:<!-- -->)?—not perfect calibration/);
+  for (const marker of ["36 observations", "22 for training", "six for validation", "eight for the terminal test", "3,631,370", "−0.9690", "0.04285", "0.04839", "0.2917", "1.0000", "−2.4312", "−2.4233"]) assert.ok(html.includes(marker), `OSINT evidence is missing ${marker}`);
+  assert.match(html, /<table[^>]*>.*?<caption/s);
+  assert.match(html, /intervals that are too wide, not perfect calibration/);
+  assert.match(html, /negative/);
+  assert.match(html, /github\.com\/Moon-Young-Choi\/open-source-intelligence/);
 });
 
-test("keeps specification and observed evidence semantically distinct", async () => {
+test("uses no prose-only tables", async () => {
   const html = await readFile(htmlUrl, "utf8");
-
-  assert.ok((html.match(/Research specification/g) ?? []).length >= 3);
-  assert.ok((html.match(/Observed IRVS evidence/g) ?? []).length >= 3);
-  assert.match(html, /The completed public evidence is the smaller 36-observation IRVS/);
-  assert.match(html, /not evidence of market-wide predictive superiority, profitability, or a production trading system/);
+  assert.equal((html.match(/<table/g) ?? []).length, 1);
+  assert.match(html, /DART\/FSC cutoff/);
+  assert.match(html, /Correction-family snapshot/);
 });

@@ -1,0 +1,6 @@
+.resultTable { margin:28px 0; overflow-x:auto; border:1px solid var(--ink); background:#fff; font-family:var(--font-sans),Arial,sans-serif; }
+.resultTable table { min-width:690px; width:100%; border-collapse:collapse; }
+.resultTable caption { padding:12px; text-align:left; font:11px/1.45 Georgia,"Times New Roman",serif; }
+.resultTable th,.resultTable td { padding:11px 10px; border-top:1px solid var(--line); border-right:1px solid var(--line); text-align:right; font-size:11px; }
+.resultTable th:first-child { text-align:left; }
+.resultTable th:last-child,.resultTable td:last-child { border-right:0; }

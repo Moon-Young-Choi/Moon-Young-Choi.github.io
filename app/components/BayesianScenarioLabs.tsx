@@ -101,7 +101,7 @@ function DensityBars({ draws, hurdle }: { draws: number[]; hurdle: number }) {
   );
 }
 
-export function BayesianScenarioLabs() {
+export function BayesianScenarioLabs({ variant = "full" }: { variant?: "full" | "paper" }) {
   const hydrated = useSyncExternalStore(subscribeHydration, () => true, () => false);
   const [preset, setPreset] = useState<Preset>(DEFAULTS.preset);
   const [rates, setRates] = useState<Rates>(DEFAULTS.rates);
@@ -212,7 +212,7 @@ export function BayesianScenarioLabs() {
   };
 
   return (
-    <div className={styles.labs} data-hydrated={hydrated ? "true" : "false"}>
+    <div className={styles.labs} data-hydrated={hydrated ? "true" : "false"} data-variant={variant}>
       <section className={styles.lab} id="split-lab" aria-labelledby="split-lab-title">
         <header><span>Lab 01</span><div><h3 id="split-lab-title">Split Value Lab</h3><p>Structural evidence is not yet decision value.</p></div></header>
         <p className={styles.demoNote}>Illustrative controls only · 4,096 seeded posterior draws · never mixed with the 500k benchmark below.</p>

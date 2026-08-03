@@ -1,0 +1,5 @@
+.benchmark { margin:28px 0; overflow-x:auto; border:1px solid var(--ink); background:#fff; font-family:var(--font-sans),Arial,sans-serif; }
+.benchmark table { min-width:720px; width:100%; border-collapse:collapse; }
+.benchmark caption { padding:12px; text-align:left; font:11px/1.45 Georgia,"Times New Roman",serif; }
+.benchmark th,.benchmark td { padding:10px; border-top:1px solid var(--line); border-right:1px solid var(--line); text-align:left; font-size:10px; }
+.benchmark td { font-weight:700; }.benchmark td:last-child{border-right:0}

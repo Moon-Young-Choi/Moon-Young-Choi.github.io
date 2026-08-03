@@ -6,12 +6,11 @@ const componentUrl = new URL("../app/components/TriangleRouteGraphic.tsx", impor
 const cssUrl = new URL("../app/components/TriangleRouteGraphic.module.css", import.meta.url);
 const legacyCssUrl = new URL("../app/components/ArbitrageLab.module.css", import.meta.url);
 const consumerUrls = [
-  new URL("../app/components/ArbitrageLabPage.tsx", import.meta.url),
   new URL("../app/components/ArbitrageRouteLab.tsx", import.meta.url),
   new URL("../app/components/ArbitrageProjectPanel.tsx", import.meta.url),
 ];
 
-test("uses one CSS and HTML triangle implementation in all three surfaces", async () => {
+test("uses one CSS and HTML triangle implementation in the remaining interactive surfaces", async () => {
   const [component, ...consumers] = await Promise.all([componentUrl, ...consumerUrls].map((url) => readFile(url, "utf8")));
 
   assert.match(component, /variant:\s*"hero"\s*\|\s*"lab"\s*\|\s*"card"/);
@@ -50,7 +49,7 @@ test("anchors three equal edges to a single non-crossing coordinate system", asy
   assert.doesNotMatch(legacyCss, /heroLineA|routeLineA|homeEdgeA|routeReverse|homeSignal|homeBook|homeStats/);
 });
 
-test("exports static hero and card variants and hydrates the lab variant", async () => {
+test("exports the card variant and hydrates the lab variant inside the paper", async () => {
   const [home, detail, consoleSource] = await Promise.all([
     readFile(new URL("../dist/client/index.html", import.meta.url), "utf8"),
     readFile(new URL("../dist/client/projects/triangular-arbitrage-detector/index.html", import.meta.url), "utf8"),
@@ -58,7 +57,7 @@ test("exports static hero and card variants and hydrates the lab variant", async
   ]);
 
   assert.match(home, /data-triangle-route="true"[^>]*data-variant="card"/);
-  assert.match(detail, /data-triangle-route="true"[^>]*data-variant="hero"/);
-  assert.match(detail, /data-direction="forward"/);
+  assert.match(detail, /data-paper-header/);
+  assert.match(detail, /Loading the verified local simulation artifact/);
   assert.match(consoleSource, /<TriangleRouteGraphic[^>]+variant="lab"/s);
 });

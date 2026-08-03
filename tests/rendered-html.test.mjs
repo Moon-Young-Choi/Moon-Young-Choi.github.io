@@ -111,40 +111,19 @@ test("renders the architecture-only Quant Platform page from the sanitized snaps
   assert.doesNotMatch(html, /live returns?|deployed service|realized profit/i);
 });
 
-test("renders the default PWR theory panel, client empirical shell, and the static legacy alias", async () => {
+test("renders the compact PWR paper, empirical figure, and static legacy alias", async () => {
   const [html, legacy, home] = await Promise.all([routeHtml(pwrRoute), routeHtml(pwrLegacyRoute), routeHtml()]);
-
   assert.equal(pwrEvidence.proofEntries.length, 49);
-  assert.equal(pwrEvidence.appendixSections.length, 14);
-  assert.equal(pwrEvidence.foundations.length, 15);
-  for (const entry of pwrEvidence.proofEntries) {
-    assert.equal((html.match(new RegExp(`id="${entry.id}"`, "g")) ?? []).length, 1, `${entry.id} must render once`);
-  }
-  for (const foundation of pwrEvidence.foundations) {
-    assert.equal((html.match(new RegExp(`id="${foundation.id}"`, "g")) ?? []).length, 1, `${foundation.id} must render once`);
-  }
-  for (const marker of [
-    "Proof-led statistical system",
-    "Finite-sample randomization",
-    "PWR-Scan · proof and study console",
-    "PWR-Scan theory contents",
-    "pwr-theory-tab",
-    "pwr-empirical-tab",
-    "Loading verified synthetic study",
-    "PDF not published",
-  ]) assert.ok(html.includes(marker), `PWR theory page is missing ${marker}`);
-
-  assert.match(html, /id="pwr-theory-panel"[^>]*role="tabpanel"/);
-  assert.match(html, /id="pwr-empirical-panel"[^>]*role="tabpanel"[^>]*hidden/);
-  assert.doesNotMatch(html, /Assumptions, proof chain and boundary|Code-path \/ trace mapping/);
-
+  for (const marker of ["Proof-led statistical system", "Problem and statistic", "Finite-sample validity", "Minimax rate and adaptation", "Implementation and empirical evidence", "Loading verified synthetic study"]) assert.ok(html.includes(marker), `PWR paper is missing ${marker}`);
+  assert.equal((html.match(/<section[^>]*data-paper-section/g) ?? []).length, 4);
+  assert.equal((html.match(/<h1/g) ?? []).length, 1);
+  assert.match(html, /data-paper-toc/);
   assert.match(html, /<math[\s>]/);
-  assert.match(html, /<table[^>]*>.*?<caption(?:\s[^>]*)?>/s);
+  assert.doesNotMatch(html, /<table/);
   assert.match(html, /href="https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan"/);
   assert.doesNotMatch(home, /https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan/);
   assert.ok(legacy.includes("Proof-led statistical system"));
   assert.match(legacy, /rel="canonical"[^>]*href="\/projects\/pwr-scan\/"|href="\/projects\/pwr-scan\/"[^>]*rel="canonical"/);
-  assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
 });
 
 test("copies the authenticated local PWR synthetic study artifact", async () => {
@@ -278,7 +257,7 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(pageCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
 });
 
-test("renders the dedicated EventEdge market and its private-source boundary", async () => {
+test("renders the four-section EventEdge paper and interactive market boundary", async () => {
   const [html, home, css, clientSource] = await Promise.all([
     routeHtml(eventEdgeRoute),
     routeHtml(),
@@ -287,15 +266,13 @@ test("renders the dedicated EventEdge market and its private-source boundary", a
   ]);
 
   for (const marker of [
-    "Private research artifact",
-    "Reconstructed demo",
-    "No real-money trading",
+    "Private simulator",
+    "reconstructed interface",
     "Loading verified reconstructed market",
-    "Trade after public action. Reveal after settlement.",
-    "The decision object is the combined portfolio.",
-    "EventEdge public claim ledger",
-    "Not implemented in this portfolio revision",
-    "PDF not published",
+    "Market and information boundary",
+    "Interactive reconstructed market",
+    "Valuation, CVaR, quoting, and atomic fill",
+    "Evidence status",
   ]) assert.ok(html.includes(marker), `EventEdge is missing ${marker}`);
 
   for (const marker of ["Perspective", "Candidate", "Requested notional", "Book profile", "Terminal state", "REVEAL & SETTLE", "aria-live=\"polite\"", "loadEventEdgeDemo"]) {
@@ -303,7 +280,8 @@ test("renders the dedicated EventEdge market and its private-source boundary", a
   }
   for (const item of expectedStack[eventEdgeRoute]) assert.ok(html.includes(item) || studyMarker(item), `EventEdge is missing ${item}`);
   assert.match(html, /<math[\s>]/);
-  assert.match(html, /<table[^>]*>.*?<caption(?:\s[^>]*)?>/s);
+  assert.equal((html.match(/<section[^>]*data-paper-section/g) ?? []).length, 4);
+  assert.equal((html.match(/<h1/g) ?? []).length, 1);
   assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
   assert.doesNotMatch(html, /href="https:\/\/github\.com\/Moon-Young-Choi\/.*eventedge/i);
   assert.doesNotMatch(html, /observed return|realized performance|live order submission/i);
@@ -340,7 +318,7 @@ test("copies the verified local EventEdge artifact", async () => {
   assert.equal(data.boundary.observedPerformance, false);
 });
 
-test("renders the dedicated arbitrage lab and its precomputed controls", async () => {
+test("renders the triangular-arbitrage paper and its precomputed controls", async () => {
   const [html, home, css, consoleCss, triangleCss, clientSource] = await Promise.all([
     routeHtml(arbitrageRoute),
     routeHtml(),
@@ -351,14 +329,12 @@ test("renders the dedicated arbitrage lab and its precomputed controls", async (
   ]);
 
   for (const marker of [
-    "Live trading disabled",
-    "All valid listed triangles, one plane.",
+    "live trading disabled",
+    "Market universe and admissibility",
+    "Interactive route scanner",
+    "Depth-aware execution plan",
+    "Safety and evidence",
     "Loading the verified local simulation artifact",
-    "Guards and evidence stay attached.",
-    "Baseline guarded-mode requirements",
-    "Execution modes",
-    "Core SHA-256",
-    "No live calls, orders or profit claims",
   ]) assert.ok(html.includes(marker), `arbitrage lab is missing ${marker}`);
 
   for (const marker of ["role=\"combobox\"", "Universe", "Liquidity", "Timeline", "Forward", "Reverse", "const feeOptions: UniverseFeeBps[] = [0, 5, 10]", "SimulatedUniverseSource"]) {
@@ -369,8 +345,8 @@ test("renders the dedicated arbitrage lab and its precomputed controls", async (
     assert.ok(html.includes(item), `arbitrage lab is missing ${item}`);
   }
 
-  assert.match(html, /<table[^>]*>.*?<caption>/s);
-  assert.match(html, /aria-live="polite"/);
+  assert.equal((html.match(/<section[^>]*data-paper-section/g) ?? []).length, 4);
+  assert.equal((html.match(/<h1/g) ?? []).length, 1);
   assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
   assert.match(home, /data-triangle-route="true"[^>]*data-variant="card"/);
   assert.match(home, />KRW<.*?>BTC<.*?>ETH</s);
