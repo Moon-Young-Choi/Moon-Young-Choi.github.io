@@ -20,17 +20,6 @@ type GridSegment = {
   to: number;
 };
 
-type SignalTarget = {
-  x: number;
-  y: number;
-};
-
-type AvikusWaterGridProps = {
-  cycleSeconds: number;
-  slotSeconds: number;
-  targets: readonly SignalTarget[];
-};
-
 const gridPoints: GridPoint[] = Array.from({ length: POINT_COUNT * POINT_COUNT }, (_, index) => ({
   column: index % POINT_COUNT,
   row: Math.floor(index / POINT_COUNT),
@@ -66,9 +55,6 @@ const gridCells = Array.from({ length: CELL_COUNT * CELL_COUNT }, (_, index) => 
   };
 });
 
-const rippleOffsets = [0.05, 0.22];
-const rippleTravelSeconds = 0.8;
-
 function unitHash(value: number) {
   const sine = Math.sin(value * 127.1 + 311.7) * 43758.5453;
   return sine - Math.floor(sine);
@@ -91,7 +77,7 @@ function initialSegmentStyle(segment: GridSegment): CSSProperties {
   };
 }
 
-export function AvikusWaterGrid({ cycleSeconds, slotSeconds, targets }: AvikusWaterGridProps) {
+export function AvikusWaterGrid() {
   const fieldRef = useRef<HTMLDivElement | null>(null);
   const cellRefs = useRef<Array<HTMLElement | null>>([]);
   const pointRefs = useRef<Array<HTMLElement | null>>([]);
@@ -102,6 +88,7 @@ export function AvikusWaterGrid({ cycleSeconds, slotSeconds, targets }: AvikusWa
     if (!field) return;
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const waveNodes = Array.from(field.parentElement?.querySelectorAll<HTMLElement>(`.${styles.signalWave}`) ?? []);
     let frame = 0;
     let lastPaint = -Infinity;
     let width = field.getBoundingClientRect().width;
@@ -111,6 +98,19 @@ export function AvikusWaterGrid({ cycleSeconds, slotSeconds, targets }: AvikusWa
       const isStatic = forceStatic || motionQuery.matches;
       const seconds = timestamp / 1000;
       const scale = Math.min(width, height);
+      const fieldBounds = field.getBoundingClientRect();
+      const wavefronts = isStatic ? [] : waveNodes.flatMap((wave) => {
+        const opacity = Number.parseFloat(getComputedStyle(wave).opacity);
+        if (opacity <= 0.02) return [];
+        const bounds = wave.getBoundingClientRect();
+        if (bounds.width <= 0) return [];
+        return [{
+          opacity,
+          radius: bounds.width / 2,
+          x: bounds.left + bounds.width / 2 - fieldBounds.left,
+          y: bounds.top + bounds.height / 2 - fieldBounds.top,
+        }];
+      });
       const positions = gridPoints.map((point, index) => {
         const baseX = (point.column / CELL_COUNT) * width;
         const baseY = (point.row / CELL_COUNT) * height;
@@ -120,8 +120,8 @@ export function AvikusWaterGrid({ cycleSeconds, slotSeconds, targets }: AvikusWa
         const yPhase = unitHash(index + 103) * TAU;
         const xPeriod = 4.8 + unitHash(index + 211) * 3.7;
         const yPeriod = 5.1 + unitHash(index + 307) * 3.9;
-        const xAmplitude = scale * (0.004 + unitHash(index + 401) * 0.009);
-        const yAmplitude = scale * (0.004 + unitHash(index + 503) * 0.009);
+        const xAmplitude = scale * (0.018 + unitHash(index + 401) * 0.028);
+        const yAmplitude = scale * (0.018 + unitHash(index + 503) * 0.028);
         const x = baseX + xAmplitude * (
           Math.sin((seconds / xPeriod) * TAU + xPhase) * 0.72
           + Math.sin((seconds / (xPeriod * 0.61)) * TAU + yPhase) * 0.28
@@ -141,7 +141,6 @@ export function AvikusWaterGrid({ cycleSeconds, slotSeconds, targets }: AvikusWa
         point.style.transform = `translate3d(${position.x - 1}px, ${position.y - 1}px, 0)`;
       });
 
-      const cycleTime = seconds % cycleSeconds;
       let litCells = 0;
       gridCells.forEach((cell, index) => {
         const tile = cellRefs.current[index];
@@ -155,19 +154,14 @@ export function AvikusWaterGrid({ cycleSeconds, slotSeconds, targets }: AvikusWa
         }
 
         const center = corners.reduce((sum, corner) => ({ x: sum.x + corner.x / 4, y: sum.y + corner.y / 4 }), { x: 0, y: 0 });
-        const bandWidth = scale * 0.052;
+        const bandWidth = scale * 0.032;
         let brightness = 0;
-        targets.forEach((target, targetIndex) => {
-          const source = { x: (target.x / 100) * width, y: (target.y / 100) * height };
-          const reach = Math.hypot(source.x - width / 2, source.y - height / 2);
-          rippleOffsets.forEach((offset) => {
-            const elapsed = cycleTime - targetIndex * slotSeconds - offset;
-            if (elapsed < 0 || elapsed > rippleTravelSeconds) return;
-            const radius = reach * (elapsed / rippleTravelSeconds);
-            const cellDistance = Math.hypot(center.x - source.x, center.y - source.y);
-            const proximity = Math.max(0, 1 - Math.abs(cellDistance - radius) / bandWidth);
-            brightness = Math.max(brightness, proximity * proximity);
-          });
+        wavefronts.forEach((wavefront) => {
+          const cellDistance = Math.hypot(center.x - wavefront.x, center.y - wavefront.y);
+          const trail = wavefront.radius - cellDistance;
+          if (trail < 0 || trail > bandWidth) return;
+          const proximity = 1 - trail / bandWidth;
+          brightness = Math.max(brightness, proximity * proximity * Math.min(1, wavefront.opacity / 0.68));
         });
         tile.style.opacity = (brightness * 0.28).toFixed(3);
         if (brightness > 0.04) litCells += 1;
@@ -188,6 +182,7 @@ export function AvikusWaterGrid({ cycleSeconds, slotSeconds, targets }: AvikusWa
 
       field.dataset.gridMotion = isStatic ? "static" : "active";
       field.dataset.litCells = String(litCells);
+      field.dataset.wavefronts = String(wavefronts.length);
     };
 
     const tick = (timestamp: number) => {
@@ -223,7 +218,7 @@ export function AvikusWaterGrid({ cycleSeconds, slotSeconds, targets }: AvikusWa
       resizeObserver.disconnect();
       motionQuery.removeEventListener("change", start);
     };
-  }, [cycleSeconds, slotSeconds, targets]);
+  }, []);
 
   return (
     <div className={styles.signalGrid} data-grid-cells={CELL_COUNT} ref={fieldRef}>

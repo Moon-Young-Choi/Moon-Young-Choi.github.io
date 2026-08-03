@@ -332,8 +332,10 @@ test("Avikus water-grid vertices move independently without moving either ship l
     y: point.y - before.points[index].y,
   }));
   const movingPoints = pointVectors.filter(({ x, y }) => Math.hypot(x, y) > .05);
+  const maximumDisplacement = Math.max(...pointVectors.map(({ x, y }) => Math.hypot(x, y)));
   const uniqueVectors = new Set(pointVectors.map(({ x, y }) => `${x.toFixed(2)}:${y.toFixed(2)}`));
   expect(movingPoints.length).toBeGreaterThan(60);
+  expect(maximumDisplacement).toBeGreaterThan(2.5);
   expect(uniqueVectors.size).toBeGreaterThan(40);
   expect(after.cells.filter((clipPath, index) => clipPath !== before.cells[index]).length).toBeGreaterThan(50);
   after.targets.forEach((target, index) => {

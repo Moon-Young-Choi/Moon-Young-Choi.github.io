@@ -243,6 +243,11 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(waterGridSource, /requestAnimationFrame/);
   assert.match(waterGridSource, /prefers-reduced-motion: reduce/);
   assert.match(waterGridSource, /const gridCells = Array\.from\(\{ length: CELL_COUNT \* CELL_COUNT \}/);
+  assert.match(waterGridSource, /scale \* \(0\.018 \+ unitHash\(index \+ 401\) \* 0\.028\)/);
+  assert.match(waterGridSource, /querySelectorAll<HTMLElement>\(`\.\$\{styles\.signalWave\}`\)/);
+  assert.match(waterGridSource, /const trail = wavefront\.radius - cellDistance;/);
+  assert.match(waterGridSource, /if \(trail < 0 \|\| trail > bandWidth\) return;/);
+  assert.doesNotMatch(waterGridSource, /cycleTime|rippleOffsets|rippleTravelSeconds/);
   assert.match(waterGridSource, /brightness \* 0\.28/);
   assert.match(graphicCss, /\.gridSegment,[\s\S]*?\.gridPoint\s*\{[^}]*background:\s*#fff;/s);
   assert.match(graphicCss, /\.gridCell\s*\{[^}]*background:\s*#fff;[^}]*opacity:\s*0;/s);
