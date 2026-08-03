@@ -309,24 +309,47 @@ test("work-card visuals use the open column beside the copy on desktop", async (
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
   const workCards = page.locator(".experience-grid .project-card");
+  await expect(workCards).toHaveCount(2);
 
   for (const card of await workCards.all()) {
     const geometry = await card.evaluate((element) => {
       const copy = element.querySelector(".card-copy").getBoundingClientRect();
       const visual = element.querySelector(".work-card-visual").getBoundingClientRect();
+      const brand = element.querySelector(".employer-logo-lockup, .maingate-wordmark").getBoundingClientRect();
+      const cross = element.querySelector(".brand-cross").getBoundingClientRect();
+      const shape = element.querySelector(".work-shape-wrap").getBoundingClientRect();
       const cardBounds = element.getBoundingClientRect();
       return {
         cardHeight: cardBounds.height,
         copyRight: copy.right,
         visualLeft: visual.left,
+        visualOffset: (visual.left - cardBounds.left) / cardBounds.width,
+        leftVisualGap: cross.left - brand.right,
+        rightVisualGap: shape.left - cross.right,
         verticalOverlap: Math.min(copy.bottom, visual.bottom) - Math.max(copy.top, visual.top),
       };
     });
 
     expect(geometry.visualLeft).toBeGreaterThan(geometry.copyRight);
+    expect(geometry.visualOffset).toBeLessThan(0.6);
+    expect(geometry.leftVisualGap).toBeGreaterThan(10);
+    expect(Math.abs(geometry.leftVisualGap - geometry.rightVisualGap)).toBeLessThan(2);
     expect(geometry.verticalOverlap).toBeGreaterThan(180);
     expect(geometry.cardHeight).toBeLessThan(650);
   }
+
+  const finburhGeometry = await workCards.nth(1).evaluate((card) => {
+    const conversation = card.querySelector('[class*="conversationAgent"]').getBoundingClientRect();
+    const task = card.querySelector('[class*="taskAgent"]').getBoundingClientRect();
+    const research = card.querySelector('[class*="researchAgent"]').getBoundingClientRect();
+    const researchRoute = card.querySelector('[class*="taskResearchRoute"]').getBoundingClientRect();
+    return {
+      conversationGap: task.left - conversation.right,
+      researchCoversRouteEnd: research.top < researchRoute.bottom && research.bottom > researchRoute.bottom,
+    };
+  });
+  expect(finburhGeometry.conversationGap).toBeGreaterThan(10);
+  expect(finburhGeometry.researchCoversRouteEnd).toBe(true);
 });
 
 test("Avikus water-grid vertices move independently without moving either ship layer", async ({ page }) => {

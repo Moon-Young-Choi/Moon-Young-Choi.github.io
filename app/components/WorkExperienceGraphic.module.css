@@ -147,7 +147,7 @@
   animation: command-flow 4.8s ease-in-out infinite;
 }
 
-.conversationRoute { left: 20%; top: 43%; width: 24%; }
+.conversationRoute { left: 7%; top: 43%; width: 39%; }
 .taskRoute { left: 48%; top: 43%; width: 28%; }
 .taskResearchRoute { left: 46%; top: 48%; width: 26%; transform: rotate(55deg); }
 .workResearchRoute { left: 77%; top: 48%; width: 27%; transform: rotate(128deg); }
@@ -165,11 +165,11 @@
 
 .agentNode { width: 66px; height: 66px; border: 2px solid currentColor; }
 .agentNode > i { width: 18px; height: 18px; border: 2px solid currentColor; }
-.conversationAgent { left: 9%; top: calc(43% - 33px); border-radius: 50%; background: var(--paper); animation: agent-breathe 4.8s ease-in-out infinite; }
+.conversationAgent { left: -6%; top: calc(43% - 30px); width: 60px; height: 60px; border-radius: 50%; background: var(--paper); animation: agent-breathe 4.8s ease-in-out infinite; }
 .conversationAgent > i { border-radius: 50%; }
 .taskAgent { left: calc(46% - 33px); top: calc(43% - 33px); background: var(--coral); transform: rotate(45deg); animation: task-breathe 4.8s ease-in-out infinite; }
 .taskAgent > i { transform: rotate(-45deg); }
-.researchAgent { left: calc(61% - 33px); top: 70%; border-color: var(--ink); border-radius: 50%; background: var(--ink); color: var(--paper); animation: research-receive 4.8s ease-in-out infinite; }
+.researchAgent { left: calc(61% - 33px); top: calc(69% - 33px); border-color: var(--ink); border-radius: 50%; background: var(--ink); color: var(--paper); animation: research-receive 4.8s ease-in-out infinite; }
 .researchAgent > i { width: 23px; height: 23px; border-radius: 50%; background: currentColor; }
 
 .workAgent { left: 76%; top: calc(43% - 34px); width: 76px; height: 74px; }
@@ -204,9 +204,9 @@
 @media (max-width: 640px) {
   .graphic { width: min(100%, 400px); }
   .agentNode { width: 50px; height: 50px; }
-  .conversationAgent { left: 8%; top: calc(43% - 25px); }
+  .conversationAgent { left: -4%; top: calc(43% - 25px); }
   .taskAgent { left: calc(46% - 25px); top: calc(43% - 25px); }
-  .researchAgent { left: calc(61% - 25px); }
+  .researchAgent { left: calc(61% - 25px); top: calc(69% - 25px); }
   .workAgent { top: calc(43% - 28px); transform: scale(.82); transform-origin: left center; }
 }
 

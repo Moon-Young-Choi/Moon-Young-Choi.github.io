@@ -261,6 +261,8 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(graphicCss, /\.ownShip\s*\{[^}]*width:\s*15px;[^}]*height:\s*15px;[^}]*border:\s*2px solid var\(--ink\);[^}]*background:\s*var\(--lime\);/s);
   assert.match(graphicCss, /\.secondaryWave\s*\{[^}]*animation-delay:\s*calc\(var\(--signal-delay\) \+ \.17s\);/s);
   assert.match(graphicCss, /@keyframes command-flow/);
+  assert.match(graphicCss, /\.conversationRoute\s*\{[^}]*left:\s*7%;[^}]*width:\s*39%;/s);
+  assert.match(graphicCss, /\.researchAgent\s*\{[^}]*top:\s*calc\(69% - 33px\);/s);
   for (const fill of ["background: var(--paper)", "background: var(--coral)", "background: var(--blue)", "background: var(--ink)"]) {
     assert.ok(graphicCss.includes(fill), `FINBURH agent palette is missing ${fill}`);
   }
@@ -423,7 +425,8 @@ test("locks the rendered site to light mode and keeps all responsive tiers", asy
   assert.match(css, /@media \(hover:\s*hover\) and \(pointer:\s*fine\)/);
   assert.match(css, /@media \(prefers-color-scheme:\s*dark\)/);
   assert.match(css, /\.experience-grid[^}]+grid-template-columns:\s*minmax\(0,1fr\)/);
-  assert.match(css, /\.experience-card-body[^}]+grid-template-columns:\s*minmax\(0,3fr\) minmax\(360px,2fr\)/);
+  assert.match(css, /\.experience-card-body[^}]+grid-template-columns:\s*minmax\(0,1\.25fr\) minmax\(0,1fr\)/);
+  assert.match(css, /\.work-card-visual[^}]+grid-template-columns:\s*minmax\(0,\.92fr\) auto minmax\(0,1\.08fr\)/);
   assert.match(css, /\.work-card-visual[^}]+margin:\s*0/);
   assert.match(css, /\.identity-name h1 span\s*\{\s*white-space:\s*nowrap/);
 });
