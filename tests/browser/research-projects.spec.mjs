@@ -450,6 +450,37 @@ test("dedicated work pages expose compact implementation evidence without tables
   await expect(page.getByText("~5 min", { exact: true })).toBeVisible();
 });
 
+test("FINBURH detail-page dependency routes terminate inside the Research node", async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto("/experience/finburh-document-automation/");
+
+  const routeGeometry = await page.locator('[class*="heroFigure"] [class*="finburh"], [class*="latticeFigure"] [class*="finburh"]').evaluateAll((graphics) => graphics.map((graphic) => {
+    const research = graphic.querySelector('[class*="researchAgent"]');
+    const routes = [
+      graphic.querySelector('[class*="taskResearchRoute"]'),
+      graphic.querySelector('[class*="workResearchRoute"]'),
+    ];
+    const researchCenter = {
+      x: research.offsetLeft + research.offsetWidth / 2,
+      y: research.offsetTop + research.offsetHeight / 2,
+    };
+
+    return routes.map((route) => {
+      const matrix = new DOMMatrixReadOnly(getComputedStyle(route).transform);
+      const endpoint = {
+        x: route.offsetLeft + route.offsetWidth * matrix.a,
+        y: route.offsetTop + route.offsetWidth * matrix.b,
+      };
+      return Math.hypot(endpoint.x - researchCenter.x, endpoint.y - researchCenter.y);
+    });
+  }));
+
+  expect(routeGeometry).toHaveLength(2);
+  for (const graphic of routeGeometry) {
+    for (const endpointDistance of graphic) expect(endpointDistance).toBeLessThan(8);
+  }
+});
+
 test("reduced-motion preference freezes both work-card graphic systems", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");

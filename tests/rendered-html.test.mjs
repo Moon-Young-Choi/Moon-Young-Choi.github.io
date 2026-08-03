@@ -263,6 +263,8 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(graphicCss, /@keyframes command-flow/);
   assert.match(graphicCss, /\.conversationRoute\s*\{[^}]*left:\s*11%;[^}]*width:\s*35%;/s);
   assert.match(graphicCss, /\.researchAgent\s*\{[^}]*top:\s*calc\(69% - 33px\);/s);
+  assert.match(graphicCss, /\.hero \.taskResearchRoute\s*\{[^}]*width:\s*20%;[^}]*rotate\(41deg\);/s);
+  assert.match(graphicCss, /\.hero \.workResearchRoute\s*\{[^}]*width:\s*21%;[^}]*rotate\(141deg\);/s);
   for (const fill of ["background: var(--paper)", "background: var(--coral)", "background: var(--blue)", "background: var(--ink)"]) {
     assert.ok(graphicCss.includes(fill), `FINBURH agent palette is missing ${fill}`);
   }

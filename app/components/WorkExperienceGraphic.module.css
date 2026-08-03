@@ -151,6 +151,8 @@
 .taskRoute { left: 48%; top: 43%; width: 28%; }
 .taskResearchRoute { left: 46%; top: 48%; width: 26%; transform: rotate(55deg); }
 .workResearchRoute { left: 77%; top: 48%; width: 27%; transform: rotate(128deg); }
+.hero .taskResearchRoute { width: 20%; transform: rotate(41deg); }
+.hero .workResearchRoute { width: 21%; transform: rotate(141deg); }
 .taskRoute i { animation-delay: -1.2s !important; }
 .taskResearchRoute i { animation-delay: -2.4s !important; }
 .workResearchRoute i { animation-delay: -3.6s !important; }
