@@ -306,7 +306,7 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
 });
 
 test("work-card visuals use the open column beside the copy on desktop", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.setViewportSize({ width: 1600, height: 900 });
   await page.goto("/");
   const workCards = page.locator(".experience-grid .project-card");
   await expect(workCards).toHaveCount(2);
@@ -331,7 +331,7 @@ test("work-card visuals use the open column beside the copy on desktop", async (
     });
 
     expect(geometry.visualLeft).toBeGreaterThan(geometry.copyRight);
-    expect(geometry.visualOffset).toBeLessThan(0.6);
+    expect(geometry.visualOffset).toBeLessThan(0.54);
     expect(geometry.leftVisualGap).toBeGreaterThan(10);
     expect(Math.abs(geometry.leftVisualGap - geometry.rightVisualGap)).toBeLessThan(2);
     expect(geometry.verticalOverlap).toBeGreaterThan(180);
@@ -343,13 +343,17 @@ test("work-card visuals use the open column beside the copy on desktop", async (
     const task = card.querySelector('[class*="taskAgent"]').getBoundingClientRect();
     const research = card.querySelector('[class*="researchAgent"]').getBoundingClientRect();
     const researchRoute = card.querySelector('[class*="taskResearchRoute"]').getBoundingClientRect();
+    const graphic = card.querySelector('[class*="finburh"]').getBoundingClientRect();
+    const work = card.querySelector('[class*="workAgent"]').getBoundingClientRect();
     return {
       conversationGap: task.left - conversation.right,
       researchCoversRouteEnd: research.top < researchRoute.bottom && research.bottom > researchRoute.bottom,
+      diagramContained: conversation.left >= graphic.left && work.right <= graphic.right,
     };
   });
   expect(finburhGeometry.conversationGap).toBeGreaterThan(10);
   expect(finburhGeometry.researchCoversRouteEnd).toBe(true);
+  expect(finburhGeometry.diagramContained).toBe(true);
 });
 
 test("Avikus water-grid vertices move independently without moving either ship layer", async ({ page }) => {
