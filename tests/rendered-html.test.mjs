@@ -5,7 +5,6 @@ import test from "node:test";
 const outputRoot = new URL("../dist/client/", import.meta.url);
 const universeManifest = JSON.parse(await readFile(new URL("../app/data/arbitrage-universe-manifest.json", import.meta.url), "utf8"));
 const pwrEvidence = JSON.parse(await readFile(new URL("../app/data/pwr-theory-evidence.v1.json", import.meta.url), "utf8"));
-const quantSnapshot = JSON.parse(await readFile(new URL("../app/data/quant-architecture.snapshot.v1.json", import.meta.url), "utf8"));
 const routes = [
   "experience/avikus-simulation-perception",
   "experience/finburh-document-automation",
@@ -61,15 +60,15 @@ test("renders the revised home information architecture", async () => {
 test("renders the six projects in the revised order while keeping position colors", async () => {
   const html = await routeHtml();
   const eventEdgePanel = await readFile(new URL("../app/components/EventEdgeProjectPanel.tsx", import.meta.url), "utf8");
-  const quant = html.indexOf(">Quant Platform<");
+  const quant = html.indexOf(">Quantitative Platform<");
   const pwr = html.indexOf(">PWR-Scan<");
   const osint = html.indexOf(">Open Source Intelligence<");
   const eventEdge = html.indexOf(">EventEdge Derivatives<");
   const arbitrage = html.indexOf(">Triangular Arbitrage Detector<");
   const bayesian = html.indexOf(">Bayesian Ad Targeting<");
 
-  assert.ok(quant >= 0, "Quant Platform card is missing");
-  assert.ok(pwr > quant, "PWR-Scan must follow Quant Platform");
+  assert.ok(quant >= 0, "Quantitative Platform card is missing");
+  assert.ok(pwr > quant, "PWR-Scan must follow Quantitative Platform");
   assert.ok(osint > pwr, "Open Source Intelligence must follow PWR-Scan");
   assert.ok(eventEdge > osint, "EventEdge must occupy project position 04");
   assert.ok(arbitrage > eventEdge, "Triangular Arbitrage must follow EventEdge");
@@ -85,30 +84,32 @@ test("renders the six projects in the revised order while keeping position color
   assert.doesNotMatch(html, /https:\/\/github\.com\/Moon-Young-Choi\/pwr-scan/);
 });
 
-test("renders the architecture-only Quant Platform page from the sanitized snapshot", async () => {
+test("renders the completed Quantitative Platform specification as a compact paper", async () => {
   const html = await routeHtml(quantRoute);
 
   for (const marker of [
-    "Architecture model",
-    "Work in progress",
-    "No live portfolio output",
-    "One request · one frozen context",
-    "Five operational domains",
-    "Complete pair or fail",
-    "Market Price Service",
-    "Historical Return Evaluator",
-    "Reuse without lookahead",
-    "Product selection pending",
-    "deployment units · ",
-    "logical children",
-    "validated views · QP-001—012",
-    quantSnapshot.provenance.sourceSha256.slice(0, 12),
-  ]) assert.ok(html.includes(marker), `Quant Platform is missing ${marker}`);
+    "Quantitative Platform",
+    "Completed functional and mathematical design",
+    "Request contract and seven-module boundary",
+    "Current joint-distribution construction",
+    "Historical weight calibration",
+    "Portfolio objective and specification boundary",
+    "Seven fixed boundaries",
+    "Algorithm Data Collection",
+    "Optimization Data Collection",
+    "Weighted log pooling",
+    "CRPS calibration objective",
+    "Final portfolio objective",
+  ]) assert.ok(html.includes(marker), `Quantitative Platform is missing ${marker}`);
 
-  assert.match(html, /<table[^>]*>.*?<caption(?:\s[^>]*)?>/s);
-  assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
+  assert.equal((html.match(/<section[^>]*data-paper-section/g) ?? []).length, 4);
+  assert.equal((html.match(/<h1/g) ?? []).length, 1);
+  assert.match(html, /data-paper-toc/);
+  assert.match(html, /<math[\s>]/);
+  assert.doesNotMatch(html, /<table/);
+  assert.doesNotMatch(html, /Five operational domains|Market Price Service|Historical Return Evaluator|Product selection pending/);
   assert.doesNotMatch(html, /github\.com\/Moon-Young-Choi\/.*quant/i);
-  assert.doesNotMatch(html, /live returns?|deployed service|realized profit/i);
+  assert.doesNotMatch(html, /live returns?|realized profit/i);
 });
 
 test("renders the compact PWR paper, empirical figure, and static legacy alias", async () => {

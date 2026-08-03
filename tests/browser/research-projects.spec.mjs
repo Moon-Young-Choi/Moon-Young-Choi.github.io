@@ -30,9 +30,9 @@ for (const width of widths) {
   });
 }
 
-test("all five research papers use one compact header, closed keyboard-operable contents, and four sections", async ({ page }) => {
+test("all six research papers use one compact header, closed keyboard-operable contents, and four sections", async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 });
-  for (const route of routes.filter((route) => route.startsWith("/projects/") && !route.includes("quant-platform"))) {
+  for (const route of routes.filter((route) => route.startsWith("/projects/"))) {
     await page.goto(route);
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.locator("[data-paper-section]")).toHaveCount(4);
@@ -73,16 +73,21 @@ test("legacy PWR path renders the consolidated page with one canonical target", 
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/projects\/pwr-scan\/$/);
 });
 
-test("Quant architecture exposes tables and truthful work-in-progress boundaries", async ({ page }) => {
+test("Quantitative Platform exposes the seven-module V2 paper without legacy architecture claims", async ({ page }) => {
   await page.goto("/projects/quant-platform/");
-  await expect(page.getByText("Architecture model", { exact: true })).toBeVisible();
-  await expect(page.getByText("No live portfolio output", { exact: true })).toBeVisible();
-  const architecture = page.locator("#architecture");
-  await expect(architecture.getByText("Market Price Service", { exact: true })).toBeVisible();
-  await expect(architecture.getByText("Historical Return Evaluator", { exact: true })).toBeVisible();
-  await expect(page.getByText("12 validated views · QP-001—012", { exact: true })).toBeVisible();
-  await expect(page.getByRole("table", { name: /evidence lifecycle/i })).toBeVisible();
-  await expect(page.getByText("Product selection pending")).toHaveCount(5);
+  await expect(page.getByRole("heading", { level: 1, name: "Quantitative Platform" })).toBeVisible();
+  await expect(page.getByText("Completed functional and mathematical design", { exact: true }).first()).toBeVisible();
+  await expect(page.locator("[data-paper-section]")).toHaveCount(4);
+  await expect(page.getByRole("heading", { name: "Request contract and seven-module boundary" })).toBeVisible();
+  await expect(page.getByText("Portfolio Optimization", { exact: true })).toBeVisible();
+  await expect(page.getByText("Joint Probability Distribution", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Algorithm Data Collection", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Optimization Data Collection", exact: true })).toBeVisible();
+  await expect(page.getByText("FSC + DART", { exact: true })).toBeVisible();
+  await expect(page.getByText("FSC only", { exact: true })).toBeVisible();
+  await expect(page.getByRole("table")).toHaveCount(0);
+  await expect(page.locator("math")).toHaveCount(6);
+  await expect(page.locator("body")).not.toContainText(/Five operational domains|Market Price Service|Historical Return Evaluator|Product selection pending/);
   await expect(page.getByRole("link", { name: /GitHub/i })).toHaveCount(0);
 });
 
