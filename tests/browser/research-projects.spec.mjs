@@ -356,24 +356,42 @@ test("Avikus water-grid vertices move independently without moving either ship l
   expect(opacityRanges.some((range) => range > .06)).toBe(true);
 });
 
-test("dedicated work pages expose public-safe evidence and table alternatives", async ({ page }) => {
+test("dedicated work pages expose compact implementation evidence without tables or formulas", async ({ page }) => {
   await page.goto("/experience/avikus-simulation-perception/");
   await expect(page.getByText("Public-safe reconstruction", { exact: false }).first()).toBeVisible();
-  await expect(page.getByText("NMEA 0183", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("350× stable", { exact: true })).toBeVisible();
-  await expect(page.getByRole("table")).toHaveCount(4);
-  await expect(page.locator("math")).toHaveCount(1);
-  await expect(page.locator("body")).not.toContainText(/355×|10,000×|\b(?:GGA|RMC|HDT|VTG)\b/i);
+  await expect(page.getByText("NMEA 0183", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("350× simulation", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Built reusable vessel scenarios from conditional events/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /visible and infrared pinhole-camera views/i })).toBeVisible();
+  await expect(page.getByRole("table")).toHaveCount(0);
+  await expect(page.locator("math")).toHaveCount(0);
+  await expect(page.locator("body")).not.toContainText(/150×|\breplay\b|355×|10,000×|\b(?:GGA|RMC|HDT|VTG)\b/i);
+
+  const signalPlot = page.locator('[data-received-count]');
+  await expect(signalPlot).toHaveCount(1);
+  await page.waitForTimeout(320);
+  const earlyCount = Number(await signalPlot.getAttribute("data-received-count"));
+  await page.waitForTimeout(580);
+  const laterCount = Number(await signalPlot.getAttribute("data-received-count"));
+  expect(earlyCount).toBeGreaterThan(0);
+  expect(laterCount).toBeGreaterThan(earlyCount);
+  await expect(signalPlot.locator('[data-signal-state="missing"]')).toHaveCount(3);
+  await expect(signalPlot.locator('[data-signal-state="outlier"]')).toHaveCount(1);
 
   await page.goto("/experience/finburh-document-automation/");
   await expect(page.getByText("Private product architecture", { exact: false }).first()).toBeVisible();
-  await expect(page.getByRole("table")).toHaveCount(4);
-  for (const label of ["Conversation", "Task", "Work", "Research", "Assumption", "Orchestrator"]) {
-    await expect(page.getByRole("rowheader", { name: label, exact: true })).toBeVisible();
+  await expect(page.getByRole("table")).toHaveCount(0);
+  await expect(page.locator("math")).toHaveCount(0);
+  const agentList = page.locator('[class*="agentList"]');
+  for (const label of ["Conversation", "Task", "Work", "Research"]) {
+    await expect(agentList.getByText(label, { exact: true })).toBeVisible();
   }
-  await expect(page.getByRole("heading", { name: "Word", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "PowerPoint", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Excel", exact: true })).toBeVisible();
+  await expect(agentList.getByText("Assumption", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Assumption was not an agent", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("Separate LLM orchestrator", { exact: true })).toBeVisible();
+  for (const label of ["DART MCP", "KRX MCP", "Web MCP"]) await expect(page.getByText(label, { exact: true })).toBeVisible();
+  await expect(page.getByText("~30%", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Generated editable Word, PowerPoint, and Excel outputs/i })).toBeVisible();
   await expect(page.getByText("30+", { exact: true })).toBeVisible();
   await expect(page.getByText("~200", { exact: true })).toBeVisible();
   await expect(page.getByText("~5 min", { exact: true })).toBeVisible();
@@ -400,4 +418,9 @@ test("reduced-motion preference freezes both work-card graphic systems", async (
   for (const target of await avikusCard.locator('[class*="targetPoint"]').all()) {
     await expect(target).toHaveCSS("background-color", "rgb(255, 255, 255)");
   }
+
+  await page.goto("/experience/avikus-simulation-perception/");
+  const signalPlot = page.locator('[data-received-count]');
+  await expect(signalPlot).toHaveAttribute("data-received-count", "24");
+  await expect(signalPlot.locator('[data-received="true"]')).toHaveCount(24);
 });

@@ -4,20 +4,13 @@ import { FinburhDependencyLattice } from "@/app/components/WorkExperienceGraphic
 import { finburhExperience } from "@/app/data/work-experience";
 import styles from "@/app/components/WorkExperiencePage.module.css";
 
-function EvidenceTable({ caption, rows }: { caption: string; rows: ReadonlyArray<{ label: string; detail: string; purpose: string }> }) {
+function TechnologyStrip({ items }: { items: readonly string[] }) {
   return (
-    <div className={styles.tableWrap}>
-      <table className={styles.table}>
-        <caption>{caption}</caption>
-        <thead><tr><th>Layer</th><th>Public description</th><th>Responsibility</th></tr></thead>
-        <tbody>{rows.map((row) => <tr key={row.label}><th scope="row">{row.label}</th><td>{row.detail}</td><td>{row.purpose}</td></tr>)}</tbody>
-      </table>
-    </div>
+    <aside className={styles.technologyStrip} aria-label="Technology stack">
+      <span>Technology stack</span>
+      <div>{items.map((item) => <b key={item}>{item}</b>)}</div>
+    </aside>
   );
-}
-
-function ArtifactGeometry({ type }: { type: "word" | "slides" | "sheet" }) {
-  return <div className={`${styles.artifactGeometry} ${styles[type]}`} aria-hidden="true"><i /><i /><i /><i /></div>;
 }
 
 export function FinburhExperiencePage({ study }: { study: CaseStudy }) {
@@ -26,7 +19,7 @@ export function FinburhExperiencePage({ study }: { study: CaseStudy }) {
       <header className={`site-header ${styles.nav}`}>
         <Link className="wordmark" href="/">MYC / 26</Link>
         <nav aria-label="FINBURH experience navigation">
-          <a href="#orchestration">Agents</a><a href="#assumptions">Evidence</a><a href="#outputs">Outputs</a>
+          <a href="#orchestration">Agents</a><a href="#assumptions">Assumptions</a><a href="#retrieval">Retrieval</a><a href="#outputs">Outputs</a>
         </nav>
         <Link className="header-link" href="/#experience">Close ×</Link>
       </header>
@@ -38,91 +31,84 @@ export function FinburhExperiencePage({ study }: { study: CaseStudy }) {
             <div className={styles.heroCopy}>
               <span className={styles.status}>{finburhExperience.status}</span>
               <p className={styles.eyebrow}>{study.eyebrow}</p>
-              <h1>Financial<br />Document<br />Automation</h1>
-              <strong>{study.organization}</strong>
+              <h1>{study.title}</h1>
+              <strong>{study.organization} · {study.role}</strong>
               <p>{study.summary}</p>
             </div>
             <figure className={styles.heroFigure} aria-labelledby="finburh-lattice-caption">
               <FinburhDependencyLattice variant="hero" />
-              <figcaption id="finburh-lattice-caption">A four-agent command geometry: conversation feeds task, task dispatches a stacked work group, and both task and work can request research.</figcaption>
+              <figcaption id="finburh-lattice-caption">Conversation, Task, Work, and Research form the execution graph; a separate LLM orchestrator checks and redistributes assignments.</figcaption>
             </figure>
           </div>
           <div className={styles.factDock}>
             <div><span>Role</span><b>Co-Founder & CEO</b></div>
-            <div><span>Domain</span><b>IB · PE workflows</b></div>
-            <div><span>Evidence</span><b>DART · KRX · Web</b></div>
-            <div><span>Outputs</span><b>Word · PowerPoint · Excel</b></div>
+            <div><span>Agents</span><b>Four execution · one orchestrator</b></div>
+            <div><span>Data tools</span><b>DART · KRX · Web MCP</b></div>
+            <div><span>Context</span><b>~30% of initial tokens</b></div>
           </div>
         </header>
 
         <div className={styles.contentSheet}>
           <section className={styles.section} id="orchestration" aria-labelledby="orchestration-title">
-            <div className={styles.sectionLabel}>01 / Orchestration</div>
+            <div className={styles.sectionLabel}>01 / Multi-agent orchestration</div>
             <div className={styles.sectionBody}>
-              <span className={styles.reconstruction}>Public architecture reconstruction</span>
-              <h2 id="orchestration-title">A conversation becomes a checked execution graph.</h2>
+              <h2 id="orchestration-title">Built four execution agents and a separate LLM orchestrator.</h2>
               <div className={styles.splitFeature}>
                 <figure className={`${styles.featureFigure} ${styles.latticeFigure}`} aria-labelledby="dag-caption">
                   <FinburhDependencyLattice variant="hero" />
-                  <figcaption id="dag-caption">Commands move from conversation to task, from task to the stacked work group, and from both task and work toward the shared research node.</figcaption>
+                  <figcaption id="dag-caption">The four-node geometry represents Conversation, Task, Work, and Research. Assumption is not an agent.</figcaption>
                 </figure>
-                <div className={styles.workflowStatement}>
-                  <span>Execution contract</span>
-                  <p>User intent is converted into a DAG whose Work nodes carry explicit success criteria. The orchestrator accepts completed work or reassigns a failed job without discarding the rest of the graph.</p>
-                  <div className={styles.dagRail}><i>Conversation</i><i>Task DAG</i><i>Work</i><i>Check</i><i>Reassign</i></div>
-                </div>
+                <div className={styles.agentList}>{finburhExperience.agents.map((agent) => <div key={agent.label}><b>{agent.label}</b><span>{agent.detail}</span></div>)}</div>
               </div>
-              <EvidenceTable caption="Public agent responsibilities" rows={finburhExperience.agents} />
+              <div className={styles.orchestratorCallout}><span>Separate LLM orchestrator</span><p>{finburhExperience.orchestrator}</p></div>
+              <div className={styles.mcpGrid} aria-label="DART, KRX, and Web MCP connections to Work and Research">
+                {finburhExperience.mcpSources.map((source) => <div key={source}><b>{source}</b><span>→</span><i>Work</i><i>Research</i></div>)}
+              </div>
             </div>
           </section>
 
           <section className={styles.section} id="assumptions" aria-labelledby="assumptions-title">
-            <div className={styles.sectionLabel}>02 / Evidence & assumptions</div>
+            <div className={styles.sectionLabel}>02 / Assumption-driven forecasting</div>
             <div className={styles.sectionBody}>
-              <span className={styles.reconstruction}>Structure only · no customer model or values</span>
-              <h2 id="assumptions-title">Evidence stays traceable. Forecast logic stays editable.</h2>
-              <div className={styles.assumptionFeature}>
-                <div className={styles.assumptionTree} aria-hidden="true">
-                  <div className={styles.driverColumn}><i>Revenue</i><i>COGS</i><i>Rate</i><i>Inflation</i></div>
-                  <div className={styles.operatorColumn}><i>+</i><i>×</i><i>+</i></div>
-                  <div className={styles.periodColumn}><i>Month</i><i>Year</i></div>
-                  <div className={styles.forecastNode}>Forecast</div>
-                </div>
-                <div className={styles.formula}>
-                  <span>Public assumption abstraction</span>
-                  <math aria-label="X at t plus one equals X at t times the product of one plus growth drivers plus the sum of additive drivers"><mrow><msub><mi>X</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>X</mi><mi>t</mi></msub><mo>×</mo><munder><mo>∏</mo><mi>k</mi></munder><mfenced><mrow><mn>1</mn><mo>+</mo><msub><mi>g</mi><mrow><mi>k</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow></mfenced><mo>+</mo><munder><mo>∑</mo><mi>l</mi></munder><msub><mi>a</mi><mrow><mi>l</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow></math>
-                  <p>Accounting drivers and external forecasts compose through additive and multiplicative branches over monthly or annual horizons.</p>
-                </div>
+              <h2 id="assumptions-title">Generated forecast values from editable assumption-driver trees.</h2>
+              <p className={styles.lede}>Assumption was not an agent. It was a driver system that populated future financial values from operating inputs, market conditions, and scenario paths, while keeping each forecast dependency editable.</p>
+              <div className={styles.assumptionTree} aria-label="Operating, market, and scenario drivers combine through an assumption tree into forecast values">
+                <div className={styles.driverColumn}>{finburhExperience.assumptionDrivers.map((driver) => <i key={driver}>{driver}</i>)}</div>
+                <span className={styles.treeArrow}>→</span>
+                <div className={styles.assumptionNode}>Assumption tree</div>
+                <span className={styles.treeArrow}>→</span>
+                <div className={styles.forecastNode}>Forecast values</div>
               </div>
-              <div className={styles.tablePair}>
-                <EvidenceTable caption="Evidence planes" rows={finburhExperience.evidenceRows} />
-                <EvidenceTable caption="Assumption-tree contract" rows={finburhExperience.assumptionRows} />
+              <TechnologyStrip items={finburhExperience.stack} />
+            </div>
+          </section>
+
+          <section className={styles.section} id="retrieval" aria-labelledby="retrieval-title">
+            <div className={styles.sectionLabel}>03 / Context-efficient retrieval</div>
+            <div className={styles.sectionBody}>
+              <h2 id="retrieval-title">Retrieved only task-relevant evidence and reduced prompt tokens to about 30%.</h2>
+              <p className={styles.lede}>DART disclosures, KRX market data, and web material were partitioned and embedded by company, period, and material type. The system retrieved only the evidence required by the active job and injected that subset into agent context.</p>
+              <div className={styles.retrievalFeature}>
+                <div className={styles.flowDiagram} aria-label="Sources, partitioned embeddings, task-specific retrieval, and agent context flow">
+                  {finburhExperience.retrievalFlow.map((item, index) => <div key={item}><span>0{index + 1}</span><b>{item}</b></div>)}
+                </div>
+                <div className={styles.contextMetric}><b>{finburhExperience.contextMetric.value}</b><span>{finburhExperience.contextMetric.label}</span><p>{finburhExperience.contextMetric.note}</p></div>
               </div>
             </div>
           </section>
 
           <section className={styles.section} id="outputs" aria-labelledby="outputs-title">
-            <div className={styles.sectionLabel}>03 / Editable outputs</div>
+            <div className={styles.sectionLabel}>04 / Role-period outputs</div>
             <div className={styles.sectionBody}>
-              <span className={styles.reconstruction}>Abstract artifact paths · no templates or customer content</span>
-              <h2 id="outputs-title">One evidence layer. Three generation paths.</h2>
-              <div className={styles.outputGrid}>
-                {finburhExperience.outputs.map((output, index) => (
-                  <article key={output.label}>
-                    <ArtifactGeometry type={index === 0 ? "word" : index === 1 ? "slides" : "sheet"} />
-                    <span>0{index + 1}</span><h3>{output.label}</h3><p>{output.detail}</p><b>{output.purpose}</b>
-                  </article>
-                ))}
-              </div>
-              <div className={styles.metricGrid}>
-                {finburhExperience.metrics.map((metric) => <div key={metric.label}><b>{metric.value}</b><span>{metric.label}</span><p>{metric.note}</p></div>)}
-              </div>
-              <EvidenceTable caption="Workflow validation structure" rows={finburhExperience.validationRows} />
-              <aside className={styles.boundary}><span>Evidence boundary</span><p>{finburhExperience.boundary}</p></aside>
+              <h2 id="outputs-title">Generated editable Word, PowerPoint, and Excel outputs.</h2>
+              <div className={styles.metricStrip}>{finburhExperience.outputMetrics.map((metric) => <div key={metric.label}><b>{metric.value}</b><span>{metric.label}</span><p>{metric.note}</p></div>)}</div>
             </div>
           </section>
 
-          <footer className={styles.footer}><div><span>Source status</span><strong>Private product artifact</strong></div><Link href="/#experience">Back to experience ↑</Link></footer>
+          <footer className={styles.footer}>
+            <div><span>Source status</span><strong>Private product artifact</strong><p>{finburhExperience.boundary}</p></div>
+            <Link href="/#experience">Back to experience ↑</Link>
+          </footer>
         </div>
       </article>
     </main>

@@ -10,6 +10,7 @@ The site is a compact, multi-page index of education, experience, public work, a
 
 - English only.
 - Facts over claims. Prefer a repository, method, result, date, institution, or tool over an adjective.
+- Experience titles and section headings must name the system, implementation, or measured result directly. Do not use metaphorical contrasts or abstract portfolio language in place of what was built, how it worked, or what it achieved.
 - Do not add slogans, mission statements, availability notices, testimonials, self-ratings, or personality copy.
 - Do not name a target employer or advertise a specific target role.
 - Keep the full resume, phone number, availability date, and other private application details off the public site.

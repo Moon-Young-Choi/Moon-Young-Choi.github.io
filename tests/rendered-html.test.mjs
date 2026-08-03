@@ -190,12 +190,15 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
     "Public-safe reconstruction",
     "No employer code or data",
     "NMEA 0183",
-    "Own Ship",
-    "Target Ship",
+    "Event-driven scenario engine",
+    "Relative speed",
+    "if · else · while",
+    "Visible and infrared panorama alignment",
+    "OpenCV homography",
     "CUDA warp + blend",
-    "Stable accelerated replay",
+    "OpenMP",
+    "Accelerated simulation",
     "350×",
-    "CONCEPTUAL RECONSTRUCTION",
   ]) assert.ok(avikus.toUpperCase().includes(marker.toUpperCase()), `Avikus is missing ${marker}`);
 
   for (const marker of [
@@ -204,10 +207,12 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
     "Task",
     "Work",
     "Research",
-    "Assumption",
-    "Orchestrator",
-    "DART",
-    "KRX",
+    "Assumption was not an agent",
+    "Separate LLM orchestrator",
+    "DART MCP",
+    "KRX MCP",
+    "Web MCP",
+    "~30%",
     "Word",
     "PowerPoint",
     "Excel",
@@ -220,9 +225,9 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   for (const html of [avikus, finburh]) {
     assert.doesNotMatch(html, /02 \/ Method|03 \/ Technology stack|04 \/ Validation/);
     assert.doesNotMatch(html, /<svg|<canvas|<pre|<code/i);
-    assert.match(html, /<table[^>]*>.*?<caption(?:\s[^>]*)?>/s);
+    assert.doesNotMatch(html, /<table|<math/i);
   }
-  assert.doesNotMatch(avikus, /355×|10,000×|\b(?:GGA|RMC|HDT|VTG)\b/i);
+  assert.doesNotMatch(avikus, /150×|\breplay\b|355×|10,000×|\b(?:GGA|RMC|HDT|VTG)\b/i);
   assert.match(home, /src="\/brand\/hd-hyundai\.png"/);
   assert.match(home, /src="\/brand\/avikus\.png"/);
   assert.match(home, />MainGate</);
@@ -263,6 +268,9 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(pageCss, /@media \(max-width:\s*900px\)/);
   assert.match(pageCss, /@media \(max-width:\s*640px\)/);
   assert.match(pageCss, /@media \(max-width:\s*420px\)/);
+  assert.match(pageCss, /\.signalPlot i\[data-received="true"\]/);
+  assert.match(pageCss, /\.panoramaFrame/);
+  assert.match(pageCss, /\.infraredWindow/);
   assert.match(pageCss, /@media \(prefers-reduced-motion:\s*reduce\)/);
 });
 

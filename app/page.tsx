@@ -73,7 +73,10 @@ export default function Home() {
               </div>
               <WorkCardVisual type={study.shape} />
               <div className="card-copy">
-                <span className="card-org mono">{study.organization} / {study.period}</span>
+                <span className="card-org mono">
+                  <span>{study.organization} · {study.role}</span>
+                  <time>{study.period}</time>
+                </span>
                 <h3>{study.title}</h3>
                 <p>{study.summary}</p>
                 <div className="tags">{study.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>

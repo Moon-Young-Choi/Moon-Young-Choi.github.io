@@ -13,6 +13,7 @@ export type CaseStudy = {
   slug: string;
   title: string;
   organization?: string;
+  role?: string;
   period?: string;
   accent: Accent;
   shape: string;
@@ -51,14 +52,15 @@ export const workStudies: CaseStudy[] = [
     presentation: "avikus-experience",
     number: "01",
     slug: "avikus-simulation-perception",
-    title: "Simulation & Perception Systems",
+    title: "Synthetic Signal & Video Simulator for Autonomous-Navigation AI Training",
     organization: "HD Hyundai Avikus",
+    role: "Research Intern",
     period: "Dec 2025 — Jan 2026",
     accent: "blue",
     shape: "navigation",
-    eyebrow: "Research internship · Integrated situational awareness",
+    eyebrow: "Integrated situational awareness research",
     summary:
-      "Synthetic NMEA 0183 and video scenarios for autonomous-navigation training, coupled with an accelerated panoramic alignment pipeline.",
+      "Built NMEA 0183 signal, conditional vessel-event, and visible-infrared video simulation for repeatable autonomous-navigation AI training.",
     tags: ["C++", "CUDA", "OpenCV", "OpenMP"],
     stack: [
       { group: "Core", items: ["C++", "CUDA"] },
@@ -68,43 +70,32 @@ export const workStudies: CaseStudy[] = [
     facts: [
       ["Role", "Research Intern"],
       ["Domain", "Autonomous navigation"],
-      ["Inputs", "Signals · video · vessel states"],
-      ["Disclosure", "Architecture only"],
+      ["Inputs", "NMEA 0183 · visible · infrared"],
+      ["Validation", "350× simulation"],
     ],
-    flow: ["Scenario state", "Signal synthesis", "Frame alignment", "Replay & inspection"],
-    formulas: [
-      {
-        label: "Signal model",
-        expression: String.raw`\widetilde{s}_t=m_t\,(s_t+\varepsilon_t)+(1-m_t)\,s_{\mathrm{miss}},\quad m_t\sim\operatorname{Bernoulli}(1-p_t)`,
-        note: "A compact public abstraction of missingness, sensor noise, and scenario-dependent observations.",
-      },
-      {
-        label: "Image registration",
-        expression: String.raw`\widetilde{\mathbf{x}}'\;\propto\;\mathbf{H}\widetilde{\mathbf{x}},\qquad \mathbf{H}\in\mathbb{R}^{3\times3}`,
-        note: "Homography maps overlapping camera views into a common projective frame before blending.",
-      },
-    ],
+    flow: ["Conditional vessel events", "NMEA 0183 synthesis", "Visible-infrared panorama", "350× simulation"],
+    formulas: [],
     sections: [
       {
-        title: "Scenario synthesis",
+        title: "Signal and event simulation",
         paragraphs: [
-          "The simulator varied own-ship and target-ship distance, speed, and region-entry conditions. Signal generation introduced outliers, missing observations, and sensor noise so that training and inspection could be repeated over controlled uncertainty rather than a single clean trajectory.",
-          "The design separated scenario state from rendering. That boundary made a vessel interaction reusable across signal traces and video outputs while keeping the failure mechanism explicit in the generated record.",
+          "The simulator injected outliers, probability-controlled missing observations, and sensor noise into generated NMEA 0183 streams.",
+          "Conditional events changed vessel course, speed, and route state, then combined into reusable maritime scenarios.",
         ],
       },
       {
-        title: "Accelerated perception path",
+        title: "Panorama alignment and accelerated execution",
         paragraphs: [
-          "Panoramic alignment used OpenCV homography estimation and CUDA image operations. Execution, output, and visualization were separated with OpenMP so that inspection work did not block the compute path.",
-          "At final product validation, the pipeline remained stable at the processor-limited 350× replay rate. The figure below describes the engineering boundary; it does not reproduce internal imagery, datasets, thresholds, or source code.",
+          "OpenCV homography and CUDA warp-and-blend aligned visible and infrared pinhole-camera views into one panorama.",
+          "OpenMP separated execution, output, and visualization so the simulator itself ran stably at 350× during final product validation under the processor ceiling.",
         ],
       },
     ],
     validation: [
-      "Replay the same scenario under controlled missingness and noise seeds.",
+      "Repeat the same scenario under controlled missingness and noise seeds.",
       "Check geometric consistency across overlapping frames before blending.",
       "Keep compute, output, and visualization paths independently observable.",
-      "Stress the completed pipeline at accelerated replay speed.",
+      "Stress the completed simulator at 350× execution speed.",
     ],
     boundary:
       "This page is a public-safe reconstruction from the role description. No employer code, imagery, dataset, parameter, or internal system name is shown.",
@@ -114,14 +105,15 @@ export const workStudies: CaseStudy[] = [
     presentation: "finburh-experience",
     number: "02",
     slug: "finburh-document-automation",
-    title: "Financial Document Automation",
-    organization: "MainGate Partners Inc. · FINBURH",
+    title: "Financial Modeling Architecture with a Multi-Agent Orchestrator",
+    organization: "Main Gate Partners Inc. · FINBURH",
+    role: "Co-Founder & CEO",
     period: "Feb 2025 — Dec 2025",
     accent: "lime",
     shape: "agents",
-    eyebrow: "Co-Founder & CEO · Product, engineering, operations",
+    eyebrow: "Product · engineering · operations",
     summary:
-      "An agentic workflow that converted public financial evidence into editable Word, PowerPoint and Excel artifacts.",
+      "Built four execution agents, a separate LLM orchestrator, three financial-data MCPs, and assumption-driven forecasting for editable financial models.",
     tags: ["Python", "Agent orchestration", "DART · KRX", "MCP"],
     stack: [
       { group: "Core", items: ["Python", "MCP"] },
@@ -132,34 +124,23 @@ export const workStudies: CaseStudy[] = [
     facts: [
       ["Role", "Co-Founder & CEO"],
       ["Domain", "IB · PE workflows"],
-      ["Outputs", "Models · presentations"],
-      ["Disclosure", "Architecture only"],
+      ["Agents", "Four execution · one orchestrator"],
+      ["Context", "~30% of initial tokens"],
     ],
-    flow: ["DART · KRX · web", "Evidence tools", "Agent graph", "Sheets · slides"],
-    formulas: [
-      {
-        label: "Evidence contract",
-        expression: String.raw`E(q,t)=E_{\mathrm{exact}}(q,t)\;\cup\;E_{\mathrm{narrative}}(q,t),\qquad \operatorname{available}(e)\le t`,
-        note: "Exact values and narrative evidence remain distinct while sharing an availability-aware retrieval contract.",
-      },
-      {
-        label: "Context allocation",
-        expression: String.raw`\min_{S\subseteq E}\ \sum_{e\in S}\operatorname{tokens}(e)\quad\text{s.t.}\quad \operatorname{coverage}(S,q)\ge\tau`,
-        note: "The routing objective is to cover the task with the smallest relevant evidence set, not to place every source in every prompt.",
-      },
-    ],
+    flow: ["DART · KRX · web MCPs", "Task-specific retrieval", "Agent orchestration", "Editable financial outputs"],
+    formulas: [],
     sections: [
       {
         title: "Workflow decomposition",
         paragraphs: [
-          "Valuation and M&A advisory work was decomposed into conversation, task, work, and research agents with an explicit assumption layer. The orchestrator routed bounded tasks, retained intermediate artifacts, and could reassign failed steps rather than restart an entire document.",
+          "Valuation and M&A advisory work was decomposed into Conversation, Task, Work, and Research agents. A separate LLM orchestrator checked success criteria and reassigned failed steps.",
           "This made the unit of recovery smaller than the final workbook or presentation. A user revision could target one assumption, table, or slide while preserving upstream evidence and unaffected outputs.",
         ],
       },
       {
         title: "Evidence to editable output",
         paragraphs: [
-          "Purpose-built tools collected and parsed DART, KRX, and web sources. Structured values were normalized separately from embedded narrative material, then retrieved only for the active task to reduce irrelevant context.",
+          "DART, KRX, and web MCPs served both Work and Research. Evidence was partitioned by company, period, and material type, then only the active-task subset was injected into agent context.",
           "The production workflow generated workbooks with more than 30 sheets and presentations with roughly 200 slides in about five minutes, after which individual edits were applied within seconds. These figures describe the role period, not a public benchmark or a guarantee for other workloads.",
         ],
       },
