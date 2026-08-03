@@ -1,5 +1,6 @@
 import styles from "@/app/components/WorkExperienceGraphic.module.css";
 import type { CSSProperties } from "react";
+import { AvikusWaterGrid } from "@/app/components/AvikusWaterGrid";
 
 type GraphicProps = {
   variant?: "panel" | "hero";
@@ -16,13 +17,14 @@ const signalTargets = [
 ];
 
 const signalSlotSeconds = 1.35;
+const signalCycleSeconds = signalSlotSeconds * signalTargets.length;
 type SignalTargetStyle = CSSProperties & Record<`--${string}`, string>;
 
 export function AvikusProjectiveField({ variant = "panel" }: GraphicProps) {
   return (
     <div className={`${styles.graphic} ${variant === "hero" ? styles.hero : ""}`}>
       <div className={styles.signalField} aria-hidden="true">
-        <i className={styles.signalGrid} />
+        <AvikusWaterGrid cycleSeconds={signalCycleSeconds} slotSeconds={signalSlotSeconds} targets={signalTargets} />
         {signalTargets.map((target, index) => {
           const reach = Math.hypot(target.x - 50, target.y - 50);
           return (

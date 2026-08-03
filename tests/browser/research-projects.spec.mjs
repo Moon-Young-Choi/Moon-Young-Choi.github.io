@@ -223,6 +223,9 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(1).getByText("Partners Inc.", { exact: true })).toBeVisible();
   await expect(workCards.nth(0).locator('[class*="signalField"]')).toHaveCount(1);
   await expect(workCards.nth(0).locator('[class*="signalGrid"]')).toHaveCount(1);
+  await expect(workCards.nth(0).locator('[class*="gridCell"]')).toHaveCount(64);
+  await expect(workCards.nth(0).locator('[class*="gridPoint"]')).toHaveCount(81);
+  await expect(workCards.nth(0).locator('[class*="gridSegment"]')).toHaveCount(144);
   await expect(workCards.nth(0).locator('[class*="signalTarget"]')).toHaveCount(7);
   await expect(workCards.nth(0).locator('[class*="targetPoint"]')).toHaveCount(7);
   await expect(workCards.nth(0).locator('[class*="signalWave"]')).toHaveCount(14);
@@ -237,28 +240,13 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   await expect(workCards.nth(1).locator('[class*="researchAgent"]')).toHaveCount(1);
   await expect(workCards.locator("svg, canvas, pre, code")).toHaveCount(0);
 
-  const gridStyles = await workCards.nth(0).locator('[class*="signalGrid"]').evaluate((node) => ({
-    backgroundPosition: getComputedStyle(node).backgroundPosition,
-    backgroundSize: getComputedStyle(node).backgroundSize,
-    borderColor: getComputedStyle(node).borderTopColor,
-    zIndex: getComputedStyle(node).zIndex,
-    ownShipCell: (() => {
-      const grid = node.getBoundingClientRect();
-      const ownShip = node.parentElement.querySelector('[class*="ownShip"]').getBoundingClientRect();
-      return {
-        x: (ownShip.left + ownShip.width / 2 - grid.left) / (grid.width / 8),
-        y: (ownShip.top + ownShip.height / 2 - grid.top) / (grid.height / 8),
-      };
-    })(),
-  }));
-  expect(gridStyles).toMatchObject({
-    backgroundPosition: "0px 0px, 0px 0px",
-    backgroundSize: "12.5% 12.5%, 12.5% 12.5%",
-    borderColor: "rgb(255, 255, 255)",
-    zIndex: "1",
-  });
-  expect(gridStyles.ownShipCell.x).toBeCloseTo(4, 3);
-  expect(gridStyles.ownShipCell.y).toBeCloseTo(4, 3);
+  const signalGrid = workCards.nth(0).locator('[class*="signalGrid"]');
+  await expect(signalGrid).toHaveAttribute("data-grid-cells", "8");
+  await expect(signalGrid).toHaveAttribute("data-grid-motion", "active");
+  await expect(signalGrid.locator('[class*="gridCell"]').first()).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(signalGrid.locator('[class*="gridSegment"]').first()).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(signalGrid.locator('[class*="gridSegment"]').first()).toHaveCSS("height", "1px");
+  await expect(signalGrid.locator('[class*="gridPoint"]').first()).toHaveCSS("width", "2px");
 
   const homographyAnimation = await workCards.nth(0).locator('[class*="signalWave"]').first().evaluate((node) => getComputedStyle(node).animationName);
   const commandAnimation = await workCards.nth(1).locator('[class*="commandRoutes"] i').first().evaluate((node) => getComputedStyle(node).animationName);
@@ -317,6 +305,55 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   expect(new Set(agentFills).size).toBe(4);
 });
 
+test("Avikus water-grid vertices move independently without moving either ship layer", async ({ page }) => {
+  await page.goto("/");
+  const avikusCard = page.locator(".experience-grid .project-card").first();
+  const grid = avikusCard.locator('[class*="signalGrid"]');
+  await expect(grid).toHaveAttribute("data-grid-motion", "active");
+
+  const capture = () => avikusCard.evaluate((card) => {
+    const center = (node) => {
+      const bounds = node.getBoundingClientRect();
+      return { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
+    };
+    return {
+      cells: Array.from(card.querySelectorAll('[class*="gridCell"]'), (node) => getComputedStyle(node).clipPath),
+      points: Array.from(card.querySelectorAll('[class*="gridPoint"]'), center),
+      targets: Array.from(card.querySelectorAll('[class*="targetPoint"]'), center),
+      ownShip: center(card.querySelector('[class*="ownShip"]')),
+    };
+  });
+
+  const before = await capture();
+  await page.waitForTimeout(600);
+  const after = await capture();
+  const pointVectors = after.points.map((point, index) => ({
+    x: point.x - before.points[index].x,
+    y: point.y - before.points[index].y,
+  }));
+  const movingPoints = pointVectors.filter(({ x, y }) => Math.hypot(x, y) > .05);
+  const uniqueVectors = new Set(pointVectors.map(({ x, y }) => `${x.toFixed(2)}:${y.toFixed(2)}`));
+  expect(movingPoints.length).toBeGreaterThan(60);
+  expect(uniqueVectors.size).toBeGreaterThan(40);
+  expect(after.cells.filter((clipPath, index) => clipPath !== before.cells[index]).length).toBeGreaterThan(50);
+  after.targets.forEach((target, index) => {
+    expect(Math.hypot(target.x - before.targets[index].x, target.y - before.targets[index].y)).toBeLessThan(.05);
+  });
+  expect(Math.hypot(after.ownShip.x - before.ownShip.x, after.ownShip.y - before.ownShip.y)).toBeLessThan(.05);
+
+  const opacityFrames = [];
+  for (let sample = 0; sample < 12; sample += 1) {
+    opacityFrames.push(await grid.locator('[class*="gridCell"]').evaluateAll((cells) => cells.map((cell) => Number.parseFloat(getComputedStyle(cell).opacity))));
+    await page.waitForTimeout(100);
+  }
+  const opacityRanges = opacityFrames[0].map((_, cellIndex) => {
+    const values = opacityFrames.map((frame) => frame[cellIndex]);
+    return Math.max(...values) - Math.min(...values);
+  });
+  expect(Math.max(...opacityFrames.flat())).toBeGreaterThan(.08);
+  expect(opacityRanges.some((range) => range > .06)).toBe(true);
+});
+
 test("dedicated work pages expose public-safe evidence and table alternatives", async ({ page }) => {
   await page.goto("/experience/avikus-simulation-perception/");
   await expect(page.getByText("Public-safe reconstruction", { exact: false }).first()).toBeVisible();
@@ -350,6 +387,12 @@ test("reduced-motion preference freezes both work-card graphic systems", async (
     await expect(movingNodes.nth(index)).toHaveCSS("animation-name", "none");
   }
   const avikusCard = page.locator(".experience-grid .project-card").first();
+  const signalGrid = avikusCard.locator('[class*="signalGrid"]');
+  await expect(signalGrid).toHaveAttribute("data-grid-motion", "static");
+  await expect(signalGrid.locator('[class*="gridCell"]')).toHaveCount(64);
+  await expect(signalGrid.locator('[class*="gridCell"]').first()).toHaveCSS("opacity", "0");
+  await expect(signalGrid.locator('[class*="gridPoint"]')).toHaveCount(81);
+  await expect(signalGrid.locator('[class*="gridSegment"]')).toHaveCount(144);
   await expect(avikusCard.locator('[class*="signalWave"]')).toHaveCount(14);
   await expect(avikusCard.locator('[class*="signalWave"]').first()).toHaveCSS("display", "none");
   for (const target of await avikusCard.locator('[class*="targetPoint"]').all()) {

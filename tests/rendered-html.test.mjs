@@ -176,11 +176,12 @@ test("keeps the standard case-study contract on the remaining standard pages", a
 });
 
 test("renders dedicated public-safe work pages and abstract geometric home graphics", async () => {
-  const [avikus, finburh, home, graphicSource, graphicCss, pageCss] = await Promise.all([
+  const [avikus, finburh, home, graphicSource, waterGridSource, graphicCss, pageCss] = await Promise.all([
     routeHtml("experience/avikus-simulation-perception"),
     routeHtml("experience/finburh-document-automation"),
     routeHtml(),
     readFile(new URL("../app/components/WorkExperienceGraphic.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/AvikusWaterGrid.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/WorkExperienceGraphic.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/WorkExperiencePage.module.css", import.meta.url), "utf8"),
   ]);
@@ -227,17 +228,24 @@ test("renders dedicated public-safe work pages and abstract geometric home graph
   assert.match(home, />MainGate</);
   assert.match(home, />Partners Inc\.</);
 
-  for (const marker of ["AvikusProjectiveField", "FinburhDependencyLattice", "signalField", "signalGrid", "signalTarget", "targetPoint", "signalWave", "primaryWave", "secondaryWave", "ownShip", "signalTargets", "commandRoutes", "conversationAgent", "taskAgent", "workAgent", "researchAgent"]) {
-    assert.ok(graphicSource.includes(marker) || graphicCss.includes(marker), `work graphic is missing ${marker}`);
+  for (const marker of ["AvikusProjectiveField", "AvikusWaterGrid", "FinburhDependencyLattice", "signalField", "signalGrid", "gridCell", "gridSegment", "gridPoint", "signalTarget", "targetPoint", "signalWave", "primaryWave", "secondaryWave", "ownShip", "signalTargets", "commandRoutes", "conversationAgent", "taskAgent", "workAgent", "researchAgent"]) {
+    assert.ok(graphicSource.includes(marker) || waterGridSource.includes(marker) || graphicCss.includes(marker), `work graphic is missing ${marker}`);
   }
   for (const coordinate of ["41.6, y: 40.0", "30.1, y: 40.7", "36.9, y: 21.9", "82.6, y: 34.8", "87.6, y: 63.7", "6.5, y: 61.6", "98.0, y: 51.7"]) {
     assert.ok(graphicSource.includes(coordinate), `Avikus signal field is missing coordinate ${coordinate}`);
   }
-  assert.doesNotMatch(graphicSource, /<svg|<canvas/i);
+  assert.doesNotMatch(`${graphicSource}\n${waterGridSource}`, /<svg|<canvas/i);
   assert.doesNotMatch(graphicSource, /opticalField|wavefrontField|apertureOne|apertureTwo|refractiveLens|refractedBands|caustic|mosaicField|mosaicSpiral|spiralTile|spiralPoints|spiralTiles|homographyField|referencePlane|inputFrames|inputFrameOne|inputFrameTwo|inputFrameThree|correspondenceLinks|linkSetOne|linkSetTwo|linkSetThree|overlapRegion|projectionGrid|packetOrbit|panoramaFrame|thermalWindow|shipCuboid|outputCluster|wordCluster|slideCluster|sheetCluster/);
   assert.match(graphicCss, /@keyframes target-transmit/);
   assert.match(graphicCss, /@keyframes signal-wave/);
-  assert.match(graphicCss, /\.signalGrid\s*\{[^}]*border:\s*1px solid #fff;[^}]*linear-gradient\(to right, #fff 1px,[^}]*linear-gradient\(to bottom, #fff 1px,[^}]*background-position:\s*0 0;[^}]*background-size:\s*12\.5% 12\.5%;/s);
+  assert.match(waterGridSource, /const CELL_COUNT = 8;/);
+  assert.match(waterGridSource, /const POINT_COUNT = CELL_COUNT \+ 1;/);
+  assert.match(waterGridSource, /requestAnimationFrame/);
+  assert.match(waterGridSource, /prefers-reduced-motion: reduce/);
+  assert.match(waterGridSource, /const gridCells = Array\.from\(\{ length: CELL_COUNT \* CELL_COUNT \}/);
+  assert.match(waterGridSource, /brightness \* 0\.28/);
+  assert.match(graphicCss, /\.gridSegment,[\s\S]*?\.gridPoint\s*\{[^}]*background:\s*#fff;/s);
+  assert.match(graphicCss, /\.gridCell\s*\{[^}]*background:\s*#fff;[^}]*opacity:\s*0;/s);
   assert.doesNotMatch(graphicCss, /@keyframes ownship-receive|\.ownShip::after/);
   assert.match(graphicCss, /\.targetPoint\s*\{[^}]*width:\s*12px;[^}]*height:\s*12px;[^}]*background:\s*#fff;/s);
   assert.match(graphicCss, /\.ownShip\s*\{[^}]*width:\s*15px;[^}]*height:\s*15px;[^}]*border:\s*2px solid var\(--ink\);[^}]*background:\s*var\(--lime\);/s);
