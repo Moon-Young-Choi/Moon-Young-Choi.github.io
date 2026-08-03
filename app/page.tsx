@@ -71,15 +71,17 @@ export default function Home() {
                 <span>{study.number}</span>
                 <span>Case study <i aria-hidden="true">↗</i></span>
               </div>
-              <WorkCardVisual type={study.shape} />
-              <div className="card-copy">
-                <span className="card-org mono">
-                  <span>{study.organization} · {study.role}</span>
-                  <time>{study.period}</time>
-                </span>
-                <h3>{study.title}</h3>
-                <p>{study.summary}</p>
-                <div className="tags">{study.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+              <div className="experience-card-body">
+                <div className="card-copy">
+                  <span className="card-org mono">
+                    <span>{study.organization} · {study.role}</span>
+                    <time>{study.period}</time>
+                  </span>
+                  <h3>{study.title}</h3>
+                  <p>{study.summary}</p>
+                  <div className="tags">{study.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+                </div>
+                <WorkCardVisual type={study.shape} />
               </div>
             </Link>
           ))}

@@ -423,6 +423,7 @@ test("locks the rendered site to light mode and keeps all responsive tiers", asy
   assert.match(css, /@media \(hover:\s*hover\) and \(pointer:\s*fine\)/);
   assert.match(css, /@media \(prefers-color-scheme:\s*dark\)/);
   assert.match(css, /\.experience-grid[^}]+grid-template-columns:\s*minmax\(0,1fr\)/);
-  assert.match(css, /\.work-card-visual[^}]+margin:\s*24px 0 76px/);
+  assert.match(css, /\.experience-card-body[^}]+grid-template-columns:\s*minmax\(0,3fr\) minmax\(360px,2fr\)/);
+  assert.match(css, /\.work-card-visual[^}]+margin:\s*0/);
   assert.match(css, /\.identity-name h1 span\s*\{\s*white-space:\s*nowrap/);
 });

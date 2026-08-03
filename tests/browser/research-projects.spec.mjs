@@ -305,6 +305,30 @@ test("work cards preserve employer lockups while rendering dedicated geometric s
   expect(new Set(agentFills).size).toBe(4);
 });
 
+test("work-card visuals use the open column beside the copy on desktop", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/");
+  const workCards = page.locator(".experience-grid .project-card");
+
+  for (const card of await workCards.all()) {
+    const geometry = await card.evaluate((element) => {
+      const copy = element.querySelector(".card-copy").getBoundingClientRect();
+      const visual = element.querySelector(".work-card-visual").getBoundingClientRect();
+      const cardBounds = element.getBoundingClientRect();
+      return {
+        cardHeight: cardBounds.height,
+        copyRight: copy.right,
+        visualLeft: visual.left,
+        verticalOverlap: Math.min(copy.bottom, visual.bottom) - Math.max(copy.top, visual.top),
+      };
+    });
+
+    expect(geometry.visualLeft).toBeGreaterThan(geometry.copyRight);
+    expect(geometry.verticalOverlap).toBeGreaterThan(180);
+    expect(geometry.cardHeight).toBeLessThan(650);
+  }
+});
+
 test("Avikus water-grid vertices move independently without moving either ship layer", async ({ page }) => {
   await page.goto("/");
   const avikusCard = page.locator(".experience-grid .project-card").first();

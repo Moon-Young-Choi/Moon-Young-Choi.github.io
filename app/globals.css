@@ -213,16 +213,17 @@ a { color: inherit; text-decoration: none; }
 .experience { background: var(--paper); }
 .repositories { background: var(--paper-dark); }
 .experience-grid { width: 100%; display: grid; grid-template-columns: minmax(0,1fr); align-items: stretch; gap: 12px; }
-.experience-grid .project-card { width: 100%; min-width: 0; min-height: 760px; height: 100%; }
+.experience-grid .project-card { width: 100%; min-width: 0; min-height: 560px; height: 100%; }
 .experience-grid .card-copy { margin-top: 0; }
+.experience-card-body { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0,3fr) minmax(360px,2fr); gap: clamp(40px,5vw,96px); align-items: end; padding-top: clamp(52px,5vw,76px); }
 .card-org { margin-bottom: 16px; display: flex; flex-direction: column; gap: 5px; font-size: 13px; line-height: 1.45; }
 .card-org time { font-size: 11px; opacity: .76; }
 .project-grid .project-card:nth-child(5) { grid-column: span 7; min-height: 680px; }
 .project-grid .project-card:nth-child(6) { grid-column: span 5; min-height: 650px; }
 .project-card.paper { --card-bg: var(--paper); }
 
-/* Employer lockups pair official wordmarks with the existing kinetic systems. */
-.work-card-visual { position: relative; flex: 0 0 310px; width: 100%; height: 310px; margin: 24px 0 76px; }
+/* Employer lockups and kinetic systems occupy the open column beside each work summary. */
+.work-card-visual { position: relative; align-self: center; width: 100%; height: clamp(260px,21vw,340px); margin: 0; }
 .employer-logo-lockup, .maingate-wordmark { position: absolute; left: 25%; top: 50%; width: 40%; transform: translate(-50%,-50%); }
 .employer-logo-lockup { min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 28px; }
 .employer-logo-lockup img { display: block; width: auto; height: auto; max-width: min(100%,290px); max-height: 46px; object-fit: contain; object-position: center; }
@@ -232,6 +233,7 @@ a { color: inherit; text-decoration: none; }
 .maingate-wordmark strong { font-size: clamp(46px,4.2vw,70px); font-weight: 750; }
 .maingate-wordmark span { font-size: clamp(28px,2.8vw,42px); font-weight: 450; letter-spacing: .015em; }
 .work-shape-wrap { position: absolute; left: 50%; right: 0; top: 0; height: 100%; min-width: 0; display: grid; place-items: center; overflow: hidden; }
+.work-card-visual .work-shape-wrap > div { width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; }
 
 /* Case-study framework */
 .case-page { --case-accent: var(--lime); min-height: 100vh; background: var(--case-accent); }
@@ -350,8 +352,10 @@ a { color: inherit; text-decoration: none; }
   .identity-axis { width: calc(100% - 40px); left: 20px; top: 235px; bottom: auto; }
   .identity-block { display: none; }
 
-  .experience-grid .project-card { min-height: 700px; height: 100%; }
-  .work-card-visual { flex-basis: 290px; height: 290px; margin: 18px 0 58px; }
+  .experience-grid .project-card { min-height: 520px; height: 100%; }
+  .experience-card-body { grid-template-columns: minmax(0,1.22fr) minmax(280px,.78fr); gap: 32px; padding-top: 48px; }
+  .experience-grid .card-copy h3 { font-size: clamp(34px,6.2vw,50px); }
+  .work-card-visual { height: 260px; }
 
   .case-hero { min-height: 0; padding: 24px 20px 0; }
   .case-kicker { flex-direction: column; gap: 8px; }
@@ -423,17 +427,15 @@ a { color: inherit; text-decoration: none; }
   .tags { gap: 6px; }
   .tags span { max-width: 100%; padding: 7px 9px; font-size: 9px; overflow-wrap: anywhere; }
   .experience-grid .project-card { min-height: 0; }
-  .work-card-visual { position: relative; inset: auto; flex: 0 0 auto; height: 310px; margin: 10px 0 22px; display: grid; grid-template-columns: minmax(0,1fr); grid-template-rows: 98px 30px 182px; justify-items: center; }
-  .employer-logo-lockup, .maingate-wordmark { position: static; width: 100%; transform: none; }
-  .employer-logo-lockup { flex-direction: column; justify-content: center; gap: 13px; }
-  .employer-logo-lockup img { width: min(74%,220px); max-height: 34px; }
-  .employer-logo-lockup img:last-child { width: min(64%,182px); max-height: 46px; }
-  .maingate-wordmark { justify-content: center; }
-  .maingate-wordmark strong { font-size: clamp(40px,14vw,52px); }
-  .maingate-wordmark span { font-size: clamp(25px,9vw,34px); }
-  .brand-cross { position: static; transform: none; font-size: 24px; }
-  .work-shape-wrap { position: relative; inset: auto; width: 100%; height: 182px; }
-  .work-shape-wrap .project-shape { top: 0; height: 182px; transform: scale(.72); }
+  .experience-card-body { grid-template-columns: minmax(0,1fr); gap: 28px; padding-top: 42px; }
+  .experience-grid .card-copy h3 { font-size: clamp(32px,11.5vw,48px); }
+  .work-card-visual { height: 160px; }
+  .employer-logo-lockup { gap: 12px; }
+  .employer-logo-lockup img { max-width: min(100%,120px); max-height: 24px; }
+  .employer-logo-lockup img:last-child { max-width: min(100%,110px); max-height: 32px; }
+  .maingate-wordmark strong { font-size: clamp(26px,8vw,36px); }
+  .maingate-wordmark span { font-size: clamp(17px,5.2vw,24px); }
+  .brand-cross { font-size: 20px; }
 
   .case-hero { padding: 20px 16px 0; }
   .case-title-grid { padding: 54px 0 16px; }
@@ -516,9 +518,8 @@ a { color: inherit; text-decoration: none; }
   .education-row { grid-template-columns: 24px minmax(0,1fr); }
   .project-card:nth-child(n), .project-grid .project-card:nth-child(n) { padding: 16px; }
   .project-card > .project-shape { flex-basis: 216px; height: 216px; transform: scale(.74); }
-  .work-card-visual { height: 300px; grid-template-rows: 96px 28px 176px; }
-  .work-shape-wrap { height: 176px; }
-  .work-shape-wrap .project-shape { height: 176px; transform: scale(.66); }
+  .experience-card-body { gap: 24px; padding-top: 36px; }
+  .work-card-visual { height: 146px; }
   .case-facts { grid-template-columns: 1fr; }
   .case-facts > div { border-right: 0; }
   .case-facts > div + div { padding-left: 16px; }

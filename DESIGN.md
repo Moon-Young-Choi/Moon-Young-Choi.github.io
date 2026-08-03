@@ -44,7 +44,7 @@ The site is a compact, multi-page index of education, experience, public work, a
 - The first section combines identity, public contact, and education with kinetic geometry. No biography or slogan.
 - Education shows institutions, degrees, month-level attendance dates, location, and selected coursework only. Do not add scholarships or awards.
 - Two experience cards follow education as equal full-width rows, stacked vertically, and link to public-safe case studies.
-- In each experience card, the employer lockup and system geometry form one visual band with generous separation before the title, description, and tags.
+- In each experience card, the title, description, and tags occupy the left column while the employer lockup and system geometry share the open right column. Preserve a clear gutter between copy and visuals; below 640px, recompose the visual pair as one compact horizontal strip after the copy.
 - Research projects remain the largest content index and use asymmetric colored blocks.
 - Home cards always open an internal case study. A public GitHub link appears only on that case-study page.
 - Each case study follows `system map → model and decisions → technology stack → validation and evidence boundary`; use KaTeX for mathematical notation and HTML/CSS for diagrams.
